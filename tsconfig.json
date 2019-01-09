@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "yoda-table": [
+        "dist/yoda-table"
+      ],
+      "yoda-table/*": [
+        "dist/yoda-table/*"
+      ]
+    }
   }
 }

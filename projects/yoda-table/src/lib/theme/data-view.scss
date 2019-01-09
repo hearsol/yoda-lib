@@ -1,0 +1,263 @@
+@import "./theme-variables";
+
+.se-title {
+  display: flex;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.se-title:not(:first-of-type),
+.se-title.audio {
+  margin-top: 30px;
+}
+
+.se-title h3 {
+  font-size: 13px;
+  background: $white !important;
+  margin: 0;
+  line-height: 24px;
+  align-self: center;
+  z-index: 1;
+  padding-right: 20px;
+}
+
+.se-title .btn-icon {
+  margin-top: -5px;
+  padding: 0 10px 0 0;
+  background: $white !important;
+  align-self: center;
+  background-color: transparent;
+  border: 0;
+  -webkit-appearance: none;
+  z-index: 1;
+}
+
+.se-title:before {
+  content: '';
+  position: absolute;
+  bottom: 50%;
+  border-bottom: 1px solid $bgray-200;
+  width: 100%;
+  z-index: 0;
+}
+
+.se-content {
+  font-size: 16px;
+  color: $bgray-800;
+  padding: 10px;
+  background: $even;
+  border-radius: 4px;
+}
+
+.se-detail {
+  margin-bottom: 20px;
+}
+
+.se-detail dt {
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.se-detail dd {
+  font-size: 16px;
+}
+
+.se-detail dd .d-left {
+  background: $bl-accent;
+}
+
+.se-detail dd .d-right {
+  background: $rd-accent;
+}
+
+.se-detail dd .d-left,
+.se-detail dd .d-right {
+  padding: 0 3px;
+  margin-right: 3px;
+  color: $white;
+}
+
+.numeric-audio {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.se-content,
+.numeric-audio,
+.audiogram {
+  margin-bottom: 15px;
+}
+
+.numeric-audio li {
+  display: flex;
+  padding: 0;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.numeric-audio .direction {
+  width: 60px;
+  padding: 4px;
+  text-align: center;
+  align-self: center;
+  line-height: 1.5;
+  color: $white;
+  border-radius: 4px 0 0 4px
+}
+
+.numeric-audio .left {
+  color: $bl-accent !important;
+}
+
+.numeric-audio .left .direction {
+  background: $bl-accent;
+  color: $white;
+}
+
+.numeric-audio .right {
+  color: $rd-accent !important;
+}
+
+.numeric-audio .right .direction {
+  background: $rd-accent;
+  color: $white;
+}
+
+.numeric-audio .data {
+  padding: 4px;
+  flex: 1;
+  text-align: center;
+  align-self: center;
+  line-height: 1.5;
+  background: $even;
+  border-radius: 0 4px 4px 0;
+}
+
+.audiogram img {
+  width: 100%;
+}
+
+.tbl-audio,
+.tbl-product {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tbl-audio thead th {
+  color: $bgray-600;
+  font-size: 13px;
+  padding-bottom: 10px;
+}
+
+.tbl-audio tbody td,
+.tbl-product tbody td {
+  font-size: 13px;
+  color: $bgray-800;
+}
+
+.tbl-audio thead th:first-of-type {
+  font-weight: bold;
+  color: $bgray-800;
+  text-align: left;
+}
+
+.tbl-audio thead th {
+  text-align: right;
+  border-bottom: 1px solid $bgray-200;
+}
+
+.tbl-audio tbody th {
+  font-weight: normal;
+  font-size: 13px;
+  color: $bgray-600;
+  text-align: left;
+}
+
+.tbl-audio tbody th,
+.tbl-audio tbody td {
+  padding: 4px 0;
+}
+
+.tbl-audio tbody td {
+  text-align: right !important;
+}
+
+.tbl-audio tr:last-of-type td,
+.tbl-audio .last {
+  border-bottom: 1px solid $bgray-200;
+}
+
+.tbl-product {
+  margin-bottom: 30px;
+}
+
+.tbl-product tbody th {
+  text-align: left;
+  font-weight: 700;
+  padding: 5px 0;
+  font-size: 11px;
+}
+
+.tbl-product tbody td {
+  vertical-align: top;
+  padding: 5px;
+  line-height: 1.6;
+  background: $even;
+  word-break: break-all;
+  font-size: 16px;
+}
+
+.code {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 16px;
+  /*width: 50px;
+  display: inline-block;*/
+}
+
+.in-serial,
+.in-desc {
+  border: 1px solid $bgray-200;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 16px;
+  color: $bgray-800;
+  background: #FFFDE1;
+  width: 100%;
+  font-weight: bold;
+}
+
+.in-desc {
+  height: 80px;
+}
+
+.in-serial::placeholder,
+.in-desc::placeholder {
+  font-weight: normal;
+}
+
+.order-history {
+  font-size: 13px;
+  color: $bgray-800;
+  margin: 0;
+  padding: 0 0 0 25px;
+}
+
+.order-history li {
+  padding: 2px 0;
+}
+
+.order-history span {
+  padding-right: 3px;
+}
+
+.order-history .date {
+  color: $bgray-600;
+}
+
+.order-history .subject {
+  color: $os;
+  font-style: italic;
+}

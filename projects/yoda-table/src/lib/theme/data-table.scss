@@ -1,0 +1,316 @@
+$tbl:#CDD5E4;
+$tbl-line:#dfe8f1;
+$tbl-even:#f9f9f9;
+/*$tbl-th:#F9FAFE;
+$tbl-th:#D5DBE7;*/
+$tbl-th:#E5E9F1;
+$tbl-th-line:#D5DBE7;
+
+$selected-bg : #A0DDCC;
+$selected-link :#E67E22;
+$selected-text:#21705D;
+$white : #fff;
+$disable-bg: #e9ecef;
+$disable-text: #ced4da;
+$disable-btn: #495057;
+/*$text-link : #2ECC71;*/
+$text-link : #3AB980;
+$text-th:#212C39;
+$text-td:#37495F;
+
+$border:#dfe8f1;
+$hover:#f9f9f9;
+$green-lt:#D7EDDC;
+$red-lt:#FFDFE2;
+$red: #dc3545;
+$green: #28a745;
+
+
+.data-tbl-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-tbl {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid $tbl;
+  background-color: $white;
+  width: 100%;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.data-tbl thead th {
+  padding: 0.5rem 1rem 0.5rem;
+  border-right: 1px solid $tbl-th-line;
+  border-bottom: 1px solid $tbl-line;
+  background: $tbl-th;
+  text-align: center;
+  color: $text-th;
+}
+
+.data-tbl thead th.no-last {
+  border-right: 1px solid $tbl-th;
+}
+
+.data-tbl tbody td {
+  padding: 0.5rem 1rem 0.5rem;
+  border-bottom: 1px solid $tbl-line;
+  border-right: 1px solid $tbl-line;
+  color: $text-td;
+}
+
+.data-tbl tfoot td {
+  padding: 0.5rem 1rem 0.5rem;
+  text-align: center;
+  border-right: 1px solid $tbl-line;
+  border-top: 2px solid $tbl-line;
+  border-bottom: none;
+  background: $tbl-th;
+}
+
+.data-tbl tbody td:last-of-type,
+.data-tbl tfoot td:last-of-type {
+  border-right: none;
+}
+
+.data-tbl tbody tr:nth-child(even) td {
+  background: $tbl-even;
+}
+
+.data-tbl tbody tr:last-of-type td {
+  border-bottom: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.data-tbl a:link,
+.data-tbl a:hover,
+.data-tbl a:visited,
+.data-tbl a:hover {
+  text-decoration: underline;
+  color: $text-th;
+}
+
+
+/* type */
+.tr-selected td,
+.data-tbl tr:hover td {
+  background: $selected-bg !important;
+  color: $selected-text !important;
+}
+
+.tr-disabled td {
+  text-decoration: line-through;
+  color: $disable-text !important;
+  background: $disable-bg !important;
+}
+
+.tr-disabled:hover td {
+  color: $disable-text !important;
+  background: $disable-bg !important;
+}
+
+.tr-disabled td a:link,
+.tr-disabled td a:hover,
+.tr-disabled td a:visited {
+  color: $disable-text !important;
+}
+
+.tr-disabled td a:hover {
+  text-decoration: none;
+}
+
+.tr-complete td {
+  color: $green !important;
+  background: $green-lt !important;
+}
+
+.tr-cancel td {
+  color: $red !important;
+  background: $red-lt !important;
+}
+
+.tr-cancel td a:link,
+.tr-cancel td a:hover,
+.tr-cancel td a:visited {
+  color: $red;
+}
+
+.td-product {
+  display: block;
+  font-weight: bold;
+}
+
+.td-desc {
+  font-size: 11px;
+}
+
+/* input */
+.input-wrap {
+  padding: 0 !important;
+}
+
+.input {
+  display: block;
+  font-size: 13px;
+  height: 34px;
+  border: none;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem 0.5rem;
+}
+
+.input:focus {
+  background: #FFF8ED;
+}
+
+.data-tbl button[class^=btn] {
+  font-size: 11px;
+  padding: 0.125rem 0.3125rem;
+  border-radius: 2px;
+  margin: 0 4px;
+  cursor: pointer;
+}
+
+.data-tbl button:disabled {
+  background: $disable-btn;
+  border-color: $disable-btn;
+}
+
+.check-wrap {
+  padding-left: 4px;
+  width:20px;
+}
+
+.radio+label,
+.checkbox+label {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.radio,
+.checkbox {
+  display: none;
+}
+
+.radio+label:before,
+.checkbox+label:before {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  content: '';
+  border: 1px solid $disable-text;
+  background: $white;
+}
+
+.radio+label:before {
+  border-radius: 50%;
+}
+
+.checkbox+label:before {
+  border-radius: 3px;
+}
+
+.checkbox:checked+label:before {
+  border-color: $text-link;
+  background: $text-link;
+}
+
+.radio:checked+label:before {
+  border-color: $text-link;
+  background: $white;
+}
+
+.radio:checked+label:before,
+.checkbox:checked+label:before {
+  animation-name: none;
+}
+
+.radio:checked+label:after,
+.checkbox:checked+label:after {
+  display: block;
+}
+
+.checkbox+label:after {
+  top: -6px;
+  left: 6px;
+  box-sizing: border-box;
+  width: 5px;
+  height: 10px;
+  transform: rotate(45deg);
+  border-width: 2px;
+  border-style: solid;
+  border-color: $white;
+  border-top: 0;
+  border-left: 0;
+}
+
+.radio+label:after {
+  top: -5px;
+  left: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: $text-link;
+}
+
+.radio+label:after,
+.checkbox+label:after {
+  position: absolute;
+  display: none;
+  content: '';
+}
+
+
+.radio:checked+label:before,
+.checkbox:checked+label:before {
+  animation-name: none;
+}
+
+/* button color */
+.btn-sm {
+  color: $white;
+  background-color: $green;
+  border-color: $green;
+}
+
+.check {
+  width:50px!important;
+}
+
+.badge {
+  display: inline-block;
+  padding: .25em .4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
+}
+
+.badge-left {
+  color:$white;
+  background-color: $left;
+}
+
+.badge-right {
+  color: $white;
+  background-color: $right;
+}

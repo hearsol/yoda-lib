@@ -133,6 +133,41 @@
           }
         }
       }
+    },
+    "yoda-table": {
+      "root": "projects/yoda-table",
+      "sourceRoot": "projects/yoda-table/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/yoda-table/tsconfig.lib.json",
+            "project": "projects/yoda-table/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/yoda-table/src/test.ts",
+            "tsConfig": "projects/yoda-table/tsconfig.spec.json",
+            "karmaConfig": "projects/yoda-table/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/yoda-table/tsconfig.lib.json",
+              "projects/yoda-table/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "yoda-lib"

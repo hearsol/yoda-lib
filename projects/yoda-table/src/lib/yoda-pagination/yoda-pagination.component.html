@@ -1,0 +1,5 @@
+<select *ngIf="!hidePageSize" class="page-counter" [(ngModel)]="pageSize" (change)="onPageSize($event.target.value)">
+  <option *ngFor="let v of pageSizeList" [value]="v">{{v}}</option>
+</select>
+<ngb-pagination (pageChange)="onPageChanges($event)" [maxSize]="maxSize" [collectionSize]="totalSize"
+  [(page)]="page" [pageSize]="pageSize"></ngb-pagination>

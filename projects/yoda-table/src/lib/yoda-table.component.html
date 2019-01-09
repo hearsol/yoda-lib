@@ -1,0 +1,99 @@
+<div class="data-tbl-wrap">
+  <table class="data-tbl" *ngIf="options">
+    <thead>
+      <tr>
+        <th *ngFor="let f of options.fields; let idx = index;">
+
+          <ng-container *ngIf="f.checkBox; else elseTemplate">
+            <div class="check-wrap">
+              <input [id]="'trcb-'+idx" [(ngModel)]="_fielddata[idx].checked"
+              class="checkbox" type="checkbox" (change)="onChangeTitleCheck($event, f)">
+              <label [for]="'trcb-'+idx"></label>
+            </div>
+          </ng-container>
+
+          <ng-template #elseTemplate>
+            <span [ngSwitch]="_fielddata[idx].sortDir">
+              <span *ngSwitchCase="'none'">
+                {{f.title}}
+              </span>
+              <a *ngSwitchCase="'default'" (click)="changeSort(idx)">
+                <span class="sort">
+                  <span [innerHTML]="f.title | safeHtml"></span>
+                  <i class="fas fa-sort"></i>
+                </span>
+              </a>
+              <a *ngSwitchCase="'asc'" (click)="changeSort(idx)">
+                <span class="sort">
+                  <span [innerHTML]="f.title | safeHtml"></span>
+                  <i class="fas fa-sort-down"></i>
+                </span>
+              </a>
+              <a *ngSwitchCase="'desc'" (click)="changeSort(idx)">
+                <span class="sort">
+                  <span [innerHTML]="f.title | safeHtml"></span>
+                  <i class="fas fa-sort-up"></i>
+                </span>
+              </a>
+            </span>
+          </ng-template>
+
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data; let rowIdx = index;" [ngClass]="row.__yoda_row_class" (click)="onSelectRow($event, row)">
+        <ng-container *ngFor="let field of options.fields; let idx = index;">
+          <td [ngClass]="_fielddata[idx].class">
+
+            <ng-container *ngIf="field.actions; else checkFormatterTemplate">
+              <ng-container *ngFor="let action of field.actions; let actionIdx = index;">
+                <ng-container *ngIf="row.__yoda_action_state[action.id] !== 'hide'">
+                  <ng-container [ngSwitch]="action.type">
+                    <ng-container *ngSwitchCase="'button'">
+                      <button [ngClass]="row.__yoda_action_class[action.id]" [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true"
+                        (click)="onAction($event, action, row)">
+                        <span [innerHTML]="action.label | safeHtml"></span>
+                      </button>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'checkbox'">
+                      <div class="check-wrap" (click)="$event.stopPropagation();">
+                        <input class="checkbox" type="checkbox" (change)="onAction($event, action, row)"
+                          [(ngModel)]="row.__yoda_action_checked"  [id]="action.id+rowIdx"
+                          [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true">
+                        <label [for]="action.id+rowIdx"></label>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'radio'">
+                      <div class="check-wrap" (click)="$event.stopPropagation();">
+                        <input class="radio" type="radio" [id]="action.id" (change)="onAction($event, action, row)"
+                        [(ngModel)]="row.__yoda_action_checked"
+                        [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true">
+                        <label><span [innerHTML]="action.label | safeHtml"></span></label>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+
+            <ng-template #checkFormatterTemplate>
+              <ng-container *ngIf="field.formatter; else elseTemplate">
+                <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
+              </ng-container>
+              <ng-template #elseTemplate>
+                <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
+              </ng-template>
+            </ng-template>
+
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination-wrap" *ngIf="options&&showPagination">
+  <yoda-pagination class="unit-footer" [(page)]="currentPage" (pageChanges)="onPaginationChanges($event)" [maxSize]="5"
+    [totalSize]="totalSize" [pageSize]="pageSize"></yoda-pagination>
+</div>

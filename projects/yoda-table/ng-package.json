@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/yoda-table",
+  "lib": {
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "file-saver": "fileSaver",
+      "moment": "momentImported",
+      "xlsx": "XLSX",
+      "@ng-bootstrap/ng-bootstrap": "ngBootstrap"
+    }
+  },
+  "whitelistedNonPeerDependencies": [
+    "tslib",
+    "@ng-bootstrap/ng-bootstrap",
+    "@types/file-saver",
+    "bootstrap",
+    "file-saver",
+    "moment",
+    "xlsx"
+  ]
+}
