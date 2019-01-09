@@ -24,6 +24,26 @@
       ],
       "yoda-table/*": [
         "dist/yoda-table/*"
+      ],
+      "yoda-float": [
+        "dist/yoda-float"
+      ],
+      "yoda-float/*": [
+        "dist/yoda-float/*"
+      ],
+      "yoda-list": [
+        "dist/yoda-list",
+        "dist/yoda-list"
+      ],
+      "yoda-list/*": [
+        "dist/yoda-list/*",
+        "dist/yoda-list/*"
+      ],
+      "yoda-form": [
+        "dist/yoda-form"
+      ],
+      "yoda-form/*": [
+        "dist/yoda-form/*"
       ]
     }
   }

@@ -66,5 +66,6 @@ $theme-colors: (
 
 // Use Bootstrap defaults for other variables, imported here so we can access all app variables in one place when used
 // in components.
+@import "./theme/data-table.scss";
 @import "~bootstrap/scss/_functions";
 @import "~bootstrap/scss/_variables";

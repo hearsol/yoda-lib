@@ -1,0 +1,20 @@
+
+.work {
+  overflow-x: auto;
+  height: 100%;
+}
+
+
+.layout-wrap {
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+  padding: 20px;
+}
+
+.sub-layout-wrap {
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+  padding: 0;
+}

@@ -141,6 +141,11 @@ export class YodaTableComponent implements OnInit, OnChanges {
     }
   }
 
+  setOptions(options: YodaTableOptions) {
+    this.options = options;
+    this.initTable();
+  }
+
   initTable() {
     this.data = [];
     this.totalSize = 0;

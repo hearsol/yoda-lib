@@ -168,6 +168,111 @@
           }
         }
       }
+    },
+    "yoda-float": {
+      "root": "projects/yoda-float",
+      "sourceRoot": "projects/yoda-float/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/yoda-float/tsconfig.lib.json",
+            "project": "projects/yoda-float/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/yoda-float/src/test.ts",
+            "tsConfig": "projects/yoda-float/tsconfig.spec.json",
+            "karmaConfig": "projects/yoda-float/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/yoda-float/tsconfig.lib.json",
+              "projects/yoda-float/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "yoda-list": {
+      "root": "projects/yoda-list",
+      "sourceRoot": "projects/yoda-list/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/yoda-list/tsconfig.lib.json",
+            "project": "projects/yoda-list/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/yoda-list/src/test.ts",
+            "tsConfig": "projects/yoda-list/tsconfig.spec.json",
+            "karmaConfig": "projects/yoda-list/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/yoda-list/tsconfig.lib.json",
+              "projects/yoda-list/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "yoda-form": {
+      "root": "projects/yoda-form",
+      "sourceRoot": "projects/yoda-form/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/yoda-form/tsconfig.lib.json",
+            "project": "projects/yoda-form/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/yoda-form/src/test.ts",
+            "tsConfig": "projects/yoda-form/tsconfig.spec.json",
+            "karmaConfig": "projects/yoda-form/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/yoda-form/tsconfig.lib.json",
+              "projects/yoda-form/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "yoda-lib"

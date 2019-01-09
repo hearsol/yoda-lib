@@ -1,1 +1,83 @@
+$border:#dfe8f1;
+$text-link: #3AB980;
+$text-th:#212C39;
+$text-td:#37495F;
+$white:#fff;
+$disable-text: #ced4da;
+$hover:#D7EDDC;
 
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 2px;
+  margin:0;
+}
+
+.page-link {
+  position: relative;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: $text-td;
+  /*border: 1px solid $border;*/
+  font-size: 13px;
+  border: none;
+  background: none;
+}
+
+.page-link:link,
+.page-link:hover,
+.page-link:visited {
+  text-decoration: none;
+}
+
+.page-link:hover {
+  background: $hover;
+  color: $text-link;
+}
+
+
+.page-link:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
+
+.page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.page-item:last-child .page-link {
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.page-item.active .page-link {
+  z-index: 1;
+  color: $white;
+  background-color: $text-link;
+  border-color:$text-link;
+}
+
+.page-item.disabled .page-link {
+  color: $disable-text;
+  pointer-events: none;
+  cursor: auto;
+  background: none;
+  border:none;
+}
+
+.page-counter {
+  background: transparent;
+  font-size: 13px;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  line-height: 1.25;
+  background-color: $white;
+  color: $text-td;
+  border-radius: 2px;
+  border: 1px solid $border;
+  margin-right:10px;
+}

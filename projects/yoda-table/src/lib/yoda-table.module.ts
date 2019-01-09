@@ -19,6 +19,9 @@ import { SafeHtmlPipe } from './safe-html.pipe';
     ReactiveFormsModule,
     NgbModule,
   ],
+  entryComponents: [
+    YodaTableComponent,
+  ],
   exports: [
     YodaTableComponent,
     YodaPaginationComponent,
