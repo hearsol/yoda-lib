@@ -91,7 +91,7 @@
           <ng-container *ngFor="let tempRow of row.__yoda_row_templates">
             <tr [ngClass]="row.__yoda_row_class">
               <ng-container *ngFor="let tempCol of tempRow.columns">
-                <td [attr.colspan]="tempCol.colSpan">
+                <td [attr.colspan]="tempCol.colSpan" class="td-no">
                   <div *ngIf="tempCol.template">
                     <ng-container
                       *ngTemplateOutlet="tempCol.template; context:tempCol.templateContext">
