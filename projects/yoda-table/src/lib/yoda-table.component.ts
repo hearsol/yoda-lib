@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, TemplateRef } from '@angular/core';
 import { Observable, of, concat, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
@@ -45,14 +45,24 @@ export interface YodaTablePagination {
   startPage?: number;
 }
 
+export interface YodaTableTemplateCol {
+  colSpan: number;
+  template: TemplateRef<any>;
+  templateContext?: any;
+}
+export interface YodaTableTemplateRow {
+  columns: YodaTableTemplateCol[];
+}
+
 export interface YodaTableOptions {
   fields: YodaTableField[];
   data?: any[];
   pagination?: number | YodaTablePagination | 'custom';
   pageSize?: number;
   asyncPaging?: YodaTablePagingFunc;
-  onRowState?: (rowData: any, index: number) => YodaTableRowState;
-  onSelectRow?: (rowData: any, index: number) => void;
+  onRowState?: (rowData: any, index?: number) => YodaTableRowState;
+  onAdditionalRows?: (rowData: any, index?: number) => YodaTableTemplateRow[];
+  onSelectRow?: (rowData: any, index?: number) => void;
 }
 
 export interface YodaTableSortInfo {
@@ -68,12 +78,15 @@ export interface YodaTableSortInfo {
 })
 export class YodaTableComponent implements OnInit, OnChanges {
   @Input() reload: Observable<string>;
+  @Input() refresh: Observable<string>;
   @Input() pageChange: Observable<{page?: number, pageSize?: number}>;
   @Input() options: YodaTableOptions;
 
   refreshTableSubject = new Subject<any>();
+  refreshStateSubject = new Subject<any>();
 
   _reloadSubscription: any;
+  _refreshSubscription: any;
   _pageSubscription: any;
   pageSize = 15;
   currentPage = 1;
@@ -107,6 +120,11 @@ export class YodaTableComponent implements OnInit, OnChanges {
       .subscribe(() => {
         this.refreshTable();
       });
+    this.refreshStateSubject
+      .pipe(debounceTime(5))
+      .subscribe(() => {
+        this.updateRowStates();
+      });
   }
 
   randomDate(start: Date, end: Date): Date {
@@ -122,6 +140,17 @@ export class YodaTableComponent implements OnInit, OnChanges {
       if (this.reload) {
         this._reloadSubscription = this.reload.subscribe(res => {
           this.onPageChanges(this.currentPage);
+        });
+      }
+    }
+    if (changes['refresh']) {
+      if (this._refreshSubscription) {
+        this._refreshSubscription.unsubscribe();
+        this._refreshSubscription = null;
+      }
+      if (this.refresh) {
+        this._refreshSubscription = this.refresh.subscribe(res => {
+          this.onRefresh();
         });
       }
     }
@@ -360,6 +389,7 @@ export class YodaTableComponent implements OnInit, OnChanges {
         const rowIndex = '__yoda_index' in row ? row.__yoda_index : -1;
         row.__yoda_row_state = this.options.onRowState ? this.options.onRowState(row, rowIndex) : 'enabled';
         row.__yoda_row_class = this.buildRowClass(row.__yoda_row_state);
+        row.__yoda_row_templates = this.options.onAdditionalRows ? this.options.onAdditionalRows(row, rowIndex) : null;
         this.updateActionStates(row, rowIndex);
       }
     });
@@ -409,6 +439,11 @@ export class YodaTableComponent implements OnInit, OnChanges {
     this.currentPage = pageNum;
     this.refreshTableSubject.next();
   }
+
+  onRefresh() {
+    this.refreshStateSubject.next();
+  }
+
 
   onPaginationChanges(res: { page?: number, pageSize?: number }) {
     if (res.page) {

@@ -6,8 +6,7 @@
 
           <ng-container *ngIf="f.checkBox; else elseTemplate">
             <div class="check-wrap">
-              <input [id]="'trcb-'+idx" [(ngModel)]="_fielddata[idx].checked"
-              class="checkbox" type="checkbox" (change)="onChangeTitleCheck($event, f)">
+              <input [id]="'trcb-'+idx" [(ngModel)]="_fielddata[idx].checked" class="checkbox" type="checkbox" (change)="onChangeTitleCheck($event, f)">
               <label [for]="'trcb-'+idx"></label>
             </div>
           </ng-container>
@@ -42,53 +41,68 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let row of data; let rowIdx = index;" [ngClass]="row.__yoda_row_class" (click)="onSelectRow($event, row)">
-        <ng-container *ngFor="let field of options.fields; let idx = index;">
-          <td [ngClass]="_fielddata[idx].class">
+      <ng-container *ngFor="let row of data; let rowIdx = index;">
+        <tr [ngClass]="row.__yoda_row_class" (click)="onSelectRow($event, row)">
+          <ng-container *ngFor="let field of options.fields; let idx = index;">
+            <td [ngClass]="_fielddata[idx].class">
 
-            <ng-container *ngIf="field.actions; else checkFormatterTemplate">
-              <ng-container *ngFor="let action of field.actions; let actionIdx = index;">
-                <ng-container *ngIf="row.__yoda_action_state[action.id] !== 'hide'">
-                  <ng-container [ngSwitch]="action.type">
-                    <ng-container *ngSwitchCase="'button'">
-                      <button [ngClass]="row.__yoda_action_class[action.id]" [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true"
-                        (click)="onAction($event, action, row)">
-                        <span [innerHTML]="action.label | safeHtml"></span>
-                      </button>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'checkbox'">
-                      <div class="check-wrap" (click)="$event.stopPropagation();">
-                        <input class="checkbox" type="checkbox" (change)="onAction($event, action, row)"
-                          [(ngModel)]="row.__yoda_action_checked"  [id]="action.id+rowIdx"
-                          [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true">
-                        <label [for]="action.id+rowIdx"></label>
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'radio'">
-                      <div class="check-wrap" (click)="$event.stopPropagation();">
-                        <input class="radio" type="radio" [id]="action.id" (change)="onAction($event, action, row)"
-                        [(ngModel)]="row.__yoda_action_checked"
-                        [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true">
-                        <label><span [innerHTML]="action.label | safeHtml"></span></label>
-                      </div>
+              <ng-container *ngIf="field.actions; else checkFormatterTemplate">
+                <ng-container *ngFor="let action of field.actions; let actionIdx = index;">
+                  <ng-container *ngIf="row.__yoda_action_state[action.id] !== 'hide'">
+                    <ng-container [ngSwitch]="action.type">
+                      <ng-container *ngSwitchCase="'button'">
+                        <button [ngClass]="row.__yoda_action_class[action.id]" [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true"
+                          (click)="onAction($event, action, row)">
+                          <span [innerHTML]="action.label | safeHtml"></span>
+                        </button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'checkbox'">
+                        <div class="check-wrap" (click)="$event.stopPropagation();">
+                          <input class="checkbox" type="checkbox" (change)="onAction($event, action, row)" [(ngModel)]="row.__yoda_action_checked"
+                            [id]="action.id+rowIdx" [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true">
+                          <label [for]="action.id+rowIdx"></label>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'radio'">
+                        <div class="check-wrap" (click)="$event.stopPropagation();">
+                          <input class="radio" type="radio" [id]="action.id" (change)="onAction($event, action, row)"
+                            [(ngModel)]="row.__yoda_action_checked" [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true">
+                          <label><span [innerHTML]="action.label | safeHtml"></span></label>
+                        </div>
+                      </ng-container>
                     </ng-container>
                   </ng-container>
                 </ng-container>
               </ng-container>
-            </ng-container>
 
-            <ng-template #checkFormatterTemplate>
-              <ng-container *ngIf="field.formatter; else elseTemplate">
-                <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
-              </ng-container>
-              <ng-template #elseTemplate>
-                <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
+              <ng-template #checkFormatterTemplate>
+                <ng-container *ngIf="field.formatter; else elseTemplate">
+                  <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
+                </ng-template>
               </ng-template>
-            </ng-template>
 
-          </td>
+            </td>
+          </ng-container>
+        </tr>
+        <ng-container *ngIf="row.__yoda_row_templates">
+          <ng-container *ngFor="let tempRow of row.__yoda_row_templates">
+            <tr [ngClass]="row.__yoda_row_class">
+              <ng-container *ngFor="let tempCol of tempRow.columns">
+                <td [attr.colspan]="tempCol.colSpan">
+                  <div *ngIf="tempCol.template">
+                    <ng-container
+                      *ngTemplateOutlet="tempCol.template; context:tempCol.templateContext">
+                    </ng-container>
+                  </div>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-container>
         </ng-container>
-      </tr>
+      </ng-container>
     </tbody>
   </table>
 </div>

@@ -7,7 +7,10 @@ export const mockData: {
   gender: 'Male'| 'Female';
   price: string;
   active: boolean;
-  last_login: string }[] = [
+  last_login: string;
+  expand?: boolean;
+  img?: number;
+}[] = [
   // tslint:disable:max-line-length
   { 'avatar': 'https://robohash.org/quaeratminimaea.jpg?size=50x50&set=set1', 'id': 1, 'first_name': 'Chicky', 'last_name': 'Rhys', 'email': 'crhys0@ucoz.ru', 'gender': 'Male', 'price': '$63726.59', 'active': false, 'last_login': '2018-11-24T08:09:33Z' },
   { 'avatar': 'https://robohash.org/nequesuscipitvero.bmp?size=50x50&set=set1', 'id': 2, 'first_name': 'Rhodie', 'last_name': 'Aarons', 'email': 'raarons1@cdbaby.com', 'gender': 'Female', 'price': '$10330.53', 'active': true, 'last_login': '2018-06-15T17:38:45Z' },

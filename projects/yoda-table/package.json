@@ -1,13 +1,14 @@
 {
   "name": "@hsolpkg/yoda-table",
-  "dist-tags": { "latest": "0.1.1" },
+  "dist-tags": { "latest": "0.1.2" },
   "versions": [
+    "0.1.2",
     "0.1.1",
     "0.1.0",
     "0.0.3",
     "0.0.2"
   ],
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": "https://github.com/hearsol/yoda-lib",
   "peerDependencies": {
     "@angular/common": "^7.1.0",
@@ -22,7 +23,7 @@
     "moment": "^2.23.0",
     "xlsx": "^0.14.1"
   },
-  "author": "sparkjd HSOL inc. <spark@hsol.io>",
+  "author": "sparkjd HSOL inc.<spark@hsol.io> - designed by jadegreen.",
   "license": "MIT",
   "description": ""
 }

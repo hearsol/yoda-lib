@@ -4,12 +4,8 @@ import { YodaFloatService, ScrollTo } from './yoda-float.service';
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'yoda-float',
-  template: `
-    <div class="work layout-wrap" [hidden]="isHide()">
-      <ng-template #vc></ng-template>
-    </div>
-  `,
-  styles: ['./yoda-float.component.css']
+  templateUrl: './yoda-float.component.html',
+  styleUrls: ['./yoda-float.component.scss']
 })
 export class YodaFloatComponent implements AfterViewChecked {
   @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
