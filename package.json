@@ -9,13 +9,13 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "version:yoda-table": "cd projects/yoda-table && npm version patch -f",
-    "build:yoda-table": "npm run version:yoda-table && ng build yoda-table && npx scss-bundle -c scss-bundle.yoda-table.config.json",
+    "build:yoda-table": "ng build yoda-table && npx scss-bundle -c scss-bundle.yoda-table.config.json",
     "publish:yoda-table": "cd dist/yoda-table && npm publish --access public --tag latest",
     "version:yoda-float": "cd projects/yoda-float && npm version patch -f",
-    "build:yoda-float": "npm run version:yoda-float && ng build yoda-float",
+    "build:yoda-float": "ng build yoda-float",
     "publish:yoda-float": "cd dist/yoda-float && npm publish --access public --tag latest",
     "version:yoda-list": "cd projects/yoda-list && npm version patch -f",
-    "build:yoda-list": "npm run version:yoda-list && ng build yoda-list && npx scss-bundle -c scss-bundle.yoda-list.config.json",
+    "build:yoda-list": "ng build yoda-list && npx scss-bundle -c scss-bundle.yoda-list.config.json",
     "publish:yoda-list": "cd dist/yoda-list && npm publish --access public --tag latest"
   },
   "private": true,
@@ -38,7 +38,11 @@
     "rxjs": "^6.3.3",
     "tslib": "^1.9.0",
     "xlsx": "^0.14.1",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "@fortawesome/angular-fontawesome": "^0.3.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.12",
+    "@fortawesome/free-solid-svg-icons": "^5.6.3",
+    "@hsolpkg/yoda-table": "^0.1.9"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.11.0",

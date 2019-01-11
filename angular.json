@@ -28,8 +28,9 @@
             ],
             "styles": [
               "src/styles.scss",
-              "dist/yoda-table/dist/yoda-table.scss",
-              "dist/yoda-list/dist/yoda-list.scss"
+              "theme/theme-table.scss",
+              "theme/theme-list.scss",
+              "theme/theme-form.scss"
             ],
             "scripts": []
           },

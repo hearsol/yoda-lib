@@ -1,4 +1,4 @@
 {
-  "entry": "./projects/yoda-list/theme/theme.scss",
+  "entry": "./theme/theme-list.scss",
   "dest": "./dist/yoda-list/dist/yoda-list.scss"
 }

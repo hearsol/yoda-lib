@@ -74,7 +74,7 @@ export interface YodaTableSortInfo {
   // tslint:disable-next-line:component-selector
   selector: 'yoda-table',
   templateUrl: './yoda-table.component.html',
-  styleUrls: ['./yoda-table.component.scss']
+  styleUrls: []
 })
 export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input() reload: Observable<string>;

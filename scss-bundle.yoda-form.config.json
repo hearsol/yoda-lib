@@ -1,0 +1,4 @@
+{
+  "entry": "./theme/theme-form.scss",
+  "dest": "./dist/yoda-form/dist/yoda-form.scss"
+}

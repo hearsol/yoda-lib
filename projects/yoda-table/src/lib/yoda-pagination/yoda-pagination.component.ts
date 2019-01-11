@@ -4,7 +4,7 @@ import { Component, OnInit, Input, EventEmitter, Output, OnChanges, SimpleChange
   // tslint:disable-next-line:component-selector
   selector: 'yoda-pagination',
   templateUrl: './yoda-pagination.component.html',
-  styleUrls: ['./yoda-pagination.component.scss']
+  styleUrls: []
 })
 export class YodaPaginationComponent implements OnInit, OnChanges {
   @Output() pageChanges: EventEmitter<{page?: number, pageSize?: number}> = new EventEmitter();
