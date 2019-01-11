@@ -6,6 +6,7 @@ import { YodaTableModule } from 'projects/yoda-table/src/public_api';
 import { YodaTestComponent } from './yoda-test/yoda-test.component';
 import { YodaFloatModule, YodaFloatService } from 'projects/yoda-float/src/public_api';
 import { YodaFloatTestComponent } from './yoda-float-test/yoda-float-test.component';
+import { YodaListModule } from 'projects/yoda-list/src/public_api';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { YodaFloatTestComponent } from './yoda-float-test/yoda-float-test.compon
     BrowserModule,
     YodaTableModule,
     YodaFloatModule.forRoot(),
+    YodaListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -2,6 +2,22 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/yoda-list",
   "lib": {
-    "entryFile": "src/public_api.ts"
-  }
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "lodash": "lodash",
+      "@hsolpkg/yoda-table": "@hsolpkg/yoda-table",
+      "@ng-bootstrap/ng-bootstrap": "ngBootstrap",
+      "@fortawesome/free-solid-svg-icons": "freeSolidSvgIcons",
+      "@fortawesome/angular-fontawesome": "angularFontawesome"
+    }
+  },
+  "whitelistedNonPeerDependencies": [
+    "tslib",
+    "@ng-bootstrap/ng-bootstrap",
+    "@hsolpkg/yoda-table",
+    "bootstrap",
+    "@fortawesome/angular-fontawesome",
+    "@fortawesome/fontawesome-svg-core",
+    "@fortawesome/free-solid-svg-icons"
+  ]
 }

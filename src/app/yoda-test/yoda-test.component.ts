@@ -1,9 +1,11 @@
 import { Component, OnInit, ComponentRef, ViewChild, TemplateRef } from '@angular/core';
-import { mockData } from '../MOCK_DATA';
-import { of } from 'rxjs';
+import { mockData, testStates } from '../MOCK_DATA';
+import { of, Observable } from 'rxjs';
 import { YodaFloatService } from 'projects/yoda-float/src/public_api';
 import { YodaTableOptions, YodaTableField, YodaTablePage, YodaTableComponent } from 'projects/yoda-table/src/public_api';
 import { YodaTableTemplateCol, YodaTableTemplateRow } from '../../../projects/yoda-table/src/lib/yoda-table.component';
+import { YodaListOptions, YodaListComponent } from 'projects/yoda-list/src/public_api';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-yoda-test',
@@ -15,6 +17,13 @@ export class YodaTestComponent implements OnInit {
   @ViewChild('imgTemplate') imgTempRef: TemplateRef<any>;
 
   pageNum: number;
+
+  listOptions: YodaListOptions;
+  listRef: ComponentRef<YodaListComponent>;
+  searchText: string;
+
+  cancelReq = true;
+
   yodaTableOptions: YodaTableOptions;
   tableRef: ComponentRef<YodaTableComponent>;
   imgSrc = 'http://media.pixcove.com/I/5/8/Image-Editing-Textures-Backgrounds-Unleashed-Ebv-W-8490.jpg';
@@ -49,7 +58,7 @@ export class YodaTestComponent implements OnInit {
         color: 'success',
         onAction: (id: string, dataRow: any) => {
           dataRow.expand = true;
-          this.tableRef.instance.onRefresh();
+          this.listRef.instance.refreshState();
         },
         onState: (id: string, dataRow: any) => dataRow.expand ? 'hide' : 'enabled'
       },
@@ -60,7 +69,7 @@ export class YodaTestComponent implements OnInit {
         color: 'info',
         onAction: (id: string, dataRow: any) => {
           dataRow.expand = false;
-          this.tableRef.instance.onRefresh();
+          this.listRef.instance.refreshState();
         },
         onState: (id: string, dataRow: any) => dataRow.expand ? 'enabled' : 'hide'
       }
@@ -92,7 +101,7 @@ export class YodaTestComponent implements OnInit {
         const page: YodaTablePage = {
           total: mockData.length,
           data: mockData.slice(start, start + pageSize).map(data => {
-            data.expand = true;
+            data.expand = false;
             data.img = Math.floor(Math.random() * 1000);
             return data;
           })
@@ -101,9 +110,74 @@ export class YodaTestComponent implements OnInit {
       }
     };
 
+    this.listOptions = {
+      title: '리스트 테스트',
+      onSearch: (text: string) => {
+        this.searchText = text;
+        this.reloadTable();
+      },
+      disableExport: false,
+
+      filters: [
+        {
+          label: '담당자',
+          id: 'staff',
+          type: 'typeahead',
+          onTypeahead: (text$: Observable<string>) =>
+            text$.pipe(
+              debounceTime(200),
+              distinctUntilChanged(),
+              map(term => term.length < 2 ? []
+                : testStates.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+            ),
+          onFilter: (id: string, value: any) => {
+            console.log(id + ' filter ' + value);
+          },
+        },
+        {
+          label: 'testSelect',
+          id: 'select',
+          type: 'select',
+          options: [
+            { value: '0', text: '0' },
+            { value: '1', text: '1' },
+            { value: '2', text: '2' },
+          ],
+          onFilter: (id: string, value: any) => {
+            console.log(id + ' filter ' + value);
+          },
+          onState: (id: string) => 'disabled',
+        },
+        {
+          label: 'dateStart',
+          id: 'dateStart',
+          type: 'date',
+          value: new Date('2017-01-25'),
+          onFilter: (id: string, value: any) => {
+            console.log(id + ' filter ' + value);
+          },
+        }
+      ],
+      buttons: [{
+        label: '취소요청 수락',
+        id: 'acceptCancel',
+        color: 'danger',
+        onClick: _ => {
+        },
+        onState: _ => this.cancelReq ? 'enabled' : 'hide'
+      }
+      ],
+      tableOptions: this.yodaTableOptions
+    };
     setTimeout(() => {
-      this.tableRef = this.yodaFloatService.addComponent(YodaTableComponent);
-      this.tableRef.instance.setOptions(this.yodaTableOptions);
+      this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
+      this.listRef.instance.setOptions(this.listOptions);
     }, 500);
+  }
+
+  reloadTable() {
+    if (this.listRef && this.listRef.instance) {
+      this.listRef.instance.reloadTable();
+    }
   }
 }

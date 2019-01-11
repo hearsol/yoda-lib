@@ -28,7 +28,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "dist/yoda-table/dist/yoda-table.scss"
+              "dist/yoda-table/dist/yoda-table.scss",
+              "dist/yoda-list/dist/yoda-list.scss"
             ],
             "scripts": []
           },

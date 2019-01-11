@@ -1,0 +1,384 @@
+@import "./theme-variables.scss";
+
+input::placeholder,
+textarea::placeholder {
+  color: $bgray-400;
+}
+
+.se-title {
+  display: flex;
+  position: relative;
+  margin-bottom: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
+  width:100%;
+}
+
+.se-title:not(:first-of-type),
+.se-form-wrap:not(:first-of-type) .se-title {
+  margin-top: 30px;
+}
+
+.se-title h3 {
+  font-size: 13px;
+  background: $white !important;
+  margin: 0;
+  line-height: 24px;
+  align-self: center;
+  z-index: 1;
+  padding-right: 20px;
+}
+
+.se-title:before {
+  content: '';
+  position: absolute;
+  bottom: 50%;
+  border-bottom: 1px solid $bgray-200;
+  width: 100%;
+  z-index: 0;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: bold;
+  display: block;
+}
+
+.in-select,
+.in-input {
+  height: 36px;
+}
+
+.in-select,
+.in-input,
+.in-select-multi {
+  border: 1px solid $bgray-200;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 16px;
+  color: $bgray-800;
+  width: 100%;
+  outline: none;
+}
+
+.in-branch {
+  border-left: 1px solid $bgray-200;
+  border-right: 1px solid $bgray-200;
+  border-top: 1px solid $bgray-200;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  height: 36px;
+  padding-left: 8px;
+}
+
+.in-branch-multi {
+  border-left: 1px solid $bgray-200;
+  border-right: 1px solid $bgray-200;
+  border-bottom: 1px solid $bgray-200;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding-left: 5px;
+}
+
+.in-branch,
+.in-branch-multi {
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.se-form-serial {
+  display: flex;
+  flex-wrap: wrap
+}
+
+.se-form-serial .se-form-serial-item {
+  width: 50%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.se-form-serial .se-form-serial-item:nth-of-type(odd) {
+  padding-right: 5px;
+}
+
+.se-form-serial .se-form-serial-item:nth-of-type(even) {
+  padding-left: 5px;
+}
+
+.in-input:focus {
+  background: #FFFDE1;
+}
+
+.in-input:disabled {
+  background: $even;
+  color: $bgray;
+}
+
+.hr {
+  height: 20px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.hr:before {
+  content: '';
+  position: absolute;
+  bottom: 50%;
+  border-bottom: 1px dashed $bgray-200;
+  width: 100%;
+}
+
+.dropdown {
+  margin-bottom: 5px;
+}
+
+.product-list {
+  padding-top: 10px;
+}
+
+.product-hr {
+  margin-top: 30px;
+  border-top: 1px dashed #72E3D1;
+  position: relative;
+}
+
+.product-hr:after {
+  content: '\002702';
+  /*content: '§';*/
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0 3px;
+  background: $white;
+  color: #72E3D1;
+  font-size: 18px;
+  transform: translate(-50%, -50%);
+}
+
+.error-feedback {
+  font-size: 13px;
+  color: $red;
+  padding: 0;
+  display: none;
+}
+
+.in-input.error~.error-feedback {
+  display: block;
+}
+.input-group.error~.error-feedback {
+  display: block;
+}
+.input-group.error .in-input,
+.in-input.error {
+  border-color: $red;
+}
+
+.input-group-prepend {
+  text-align: center;
+}
+
+.input-group-text.left {
+  background: $bl-accent;
+  color: $white;
+}
+
+.input-group-text.right {
+  background: $rd-accent;
+  color: $white;
+}
+
+.input-group .in-input {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  margin-bottom: 0;
+  border-radius: 4px;
+  border: 1px solid $bgray-200;
+}
+
+.input-group-text {
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+  white-space: nowrap;
+  text-align: center;
+  background: $even;
+  border: 1px solid $bgray-200;
+  height: 36px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.input-group>.in-input:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group>.in-input:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.btn-option {
+  width: 100%;
+  background: $white !important;
+  border: 2px solid $bgray-600;
+  color: $bgray-600;
+  transition: color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out,
+    box-shadow .15s ease-in-out;
+}
+
+.btn-option:hover {
+  background: $bgray-600 !important;
+  color: $white;
+  border: 2px solid $bgray-600;
+}
+
+.btn-option.selected {
+  background: $bgray-600 !important;
+  color: $white;
+  border: 2px solid $bgray-600;
+}
+
+.btn-add,
+.btn-icon,
+.btn-option {
+  font-size: 16px;
+  min-height: 36px;
+  border-radius: 4px;
+  line-height: 160%;
+}
+
+.btn-group .btn-add+.btn-add {
+  margin-left: -2px !important;
+}
+
+.btn-group>.btn-group:not(:last-child)>.btn-add,
+.btn-group>.btn-add:not(:last-child):not(.dropdown-toggle) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-group>.btn-group:not(:first-child)>.btn-add,
+.btn-group>.btn-add:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.btn-add {
+  flex: 1;
+  background: $white !important;
+  border: 2px solid $os;
+  color: $os;
+  transition: color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out,
+    box-shadow .15s ease-in-out;
+}
+
+.btn-add:hover {
+  background: $os !important;
+  color: $white;
+  border: 2px solid $os;
+}
+
+.btn-add.selected {
+  background: $bgray-800 !important;
+  color: $white;
+  border: 2px solid $bgray-800;
+}
+
+.btn-add.left {
+  background: $bl-accent !important;
+  color: $white;
+  border: 2px solid $bl-accent;
+}
+
+.btn-add.right {
+  background: $rd-accent !important;
+  color: $white;
+  border: 2px solid $rd-accent;
+}
+
+.btn-icon {
+  padding: 0 10px;
+  text-align: center;
+  background: $white !important;
+  border: 0;
+  color: $bgray-800;
+}
+
+.se-form {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.fo-button {
+  font-size: 15px;
+  min-height: 36px;
+  border-radius: 4px;
+  line-height: 160%;
+  width: 100%;
+  align-self: flex-end;
+}
+
+.se-button {
+  display: flex;
+}
+
+.fo-button.primary {
+  background: $os;
+  border-color: $os;
+  color: $white;
+}
+
+.fo-button.secondary {
+  background: $bgray-600;
+  border-color: $bgray-600;
+  color: $white;
+}
+
+.fo-button.warning {
+  background: $orange;
+  border-color: $orange;
+  color: $white;
+}
+
+.fo-button.danger {
+  background: $red;
+  border-color: $red;
+  color: $white;
+}
+
+.fo-button.info {
+  background: $green;
+  border-color: $green;
+  color: $white;
+}
+
+.input-group {
+  margin-bottom: 0;
+}
+
+.form-row {
+  margin-bottom: 10px;
+}
+
+.template {
+  flex: none;
+  width:100%;
+}
+
+.template-img {
+  margin-left:5px;
+  margin-right:5px;
+}
+.template-img img {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+}

@@ -1,0 +1,87 @@
+<div class="unit-header">
+  <h2 class="title">{{options.title}} ({{totalSize}}건)
+    <span *ngIf="isLoading">
+      <fa-icon [icon]="syncIcon" [spin]="true"></fa-icon>
+    </span>
+  </h2>
+  <div role="search" class="unit-search" [hidden]="hideSearch">
+    <input #search type="search" title="검색" />
+    <button>
+      <fa-icon [icon]="searchIcon"></fa-icon>
+    </button>
+  </div>
+</div>
+
+<div class="unit-body-list">
+
+  <div class="filter-wrap" *ngIf="filters?.length>0">
+    <div class="form-row">
+
+      <ng-container [ngSwitch]="filter.type" *ngFor="let filter of filters">
+
+        <ng-container *ngSwitchCase="'select'">
+          <div class="col-2" *ngIf="filter.state!=='hide'">
+            <label class="label">{{filter.label}}</label>
+            <select class="in-select" [attr.disabled]="filter.state === 'disabled' ? true: null" (change)="onChangeFilter(filter, $event.target.value)">
+              <ng-container *ngIf="filter.asyncOptions; else staticOptionsTemplate">
+                <option *ngFor="let op of filter.asyncOptions | async" [selected]="filter?.value === op.value? true : null"
+                  [value]="op.value">{{op.text}}</option>
+              </ng-container>
+              <ng-template #staticOptionsTemplate>
+                <option *ngFor="let op of filter.options" [value]="op.value" [selected]="filter?.value === op.value? true : null">{{op.text}}</option>
+              </ng-template>
+            </select>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'date'">
+          <div class="col-2" *ngIf="filter.state!=='hide'">
+            <label class="label">{{filter.label}}</label>
+            <div class="input-group">
+              <input class="in-input" placeholder="yyyy-mm-dd" [name]="filter.label" [(ngModel)]="filter.value"
+                [disabled]="filter.state === 'disabled'" (dateSelect)="onChangeDateFilter(filter, $event)"
+                ngbDatepicker #d="ngbDatepicker">
+              <div class="input-group-prepend">
+                <button class="btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                  <fa-icon [icon]="calendarIcon"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'typeahead'">
+          <div class="col-2" *ngIf="filter.state!=='hide'">
+            <label class="label">{{filter.label}}</label>
+            <input type="text" class="in-input" [(ngModel)]="filter.value" [attr.disabled]="filter.state === 'disabled' ? true: null"
+              (selectItem)="onChangeFilter(filter, $event.item)" [ngbTypeahead]="filter.onTypeahead" />
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <div class="col-2" *ngIf="filter.state!=='hide'">
+            <label class="label">{{filter.label}}</label>
+            <input class="in-input" [type]="filter.type" [(ngModel)]="filter.value" [attr.disabled]="filter.state === 'disabled' ? true: null"
+              (input)="onChangeFilter(filter,$event.target.value)" />
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <br />
+  <yoda-table #yoda [options]="options.tableOptions" [pageChange]="pageChange" [reload]="_reloadTable" [refresh]="_refreshTable"></yoda-table>
+</div>
+
+<div class="unit-footer list">
+  <yoda-pagination [(page)]="currentPage" (pageChanges)="onPageChanges($event)" [maxSize]="5" [totalSize]="totalSize"
+    [pageSize]="pageSize" class="pagination"></yoda-pagination>
+  <div class="button-wrap">
+    <button *ngIf="!options?.disableExport" class="button secondary" (click)="onDownload()">엑셀다운로드</button>
+    <ng-container *ngFor="let action of actions">
+      <button *ngIf="action.state!=='hide'" [ngClass]="action.class" [attr.disabled]="action.state === 'disabled' ? true: null"
+        class="button primary" (click)="action.onClick(action.id)">
+        <span [innerHTML]="action.label | safeHtml"></span>
+      </button>
+    </ng-container>
+  </div>
+</div>
