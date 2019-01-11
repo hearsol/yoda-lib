@@ -2,7 +2,7 @@
     <div class="unit-header">
       <h2 class="title">{{options.title}}</h2>
       <span class="btn-close" (click)="_onClose()">
-        <i class="far fa-times"></i>
+        <fa-icon [icon]="closeIcon"></fa-icon>
       </span>
     </div>
     <div class="unit-body" *ngIf="form">
@@ -57,7 +57,7 @@
                         [name]="f.name" [formControlName]="f.name" ngbDatepicker #d="ngbDatepicker">
                       <div class="input-group-append">
                         <button class="input-group-text btn-outline-secondary calendar" (click)="d.toggle()" type="button">
-                          <i class="fas fa-calendar-alt"></i>
+                          <fa-icon [icon]="calendarIcon"></fa-icon>
                         </button>
                       </div>
                     </div>

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SafeHtmlPipe } from './safe-html.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { SafeHtmlPipe } from './safe-html.pipe';
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
+    FontAwesomeModule,
   ],
   entryComponents: [
     YodaFormComponent,

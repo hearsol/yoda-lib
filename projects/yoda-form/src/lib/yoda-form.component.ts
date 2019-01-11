@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone, Renderer, TemplateRef, AfterViewChecked } from '@angular/core';
 import { ValidationErrors, Validators, FormGroup, ValidatorFn, FormControl } from '@angular/forms';
+import { faTimes, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject } from 'rxjs';
 import { isInteger } from 'lodash';
@@ -124,6 +125,10 @@ interface FormRow {
 })
 export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('yodaFormElement') yodaFormElement: ElementRef;
+
+  closeIcon = faTimes;
+  calendarIcon = faCalendarAlt;
+
   data: any;
   _d: any;
   _refreshState: Subject<string> = new Subject<string>();
