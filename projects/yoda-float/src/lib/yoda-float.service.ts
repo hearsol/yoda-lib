@@ -10,7 +10,6 @@ export class YodaFloatService {
   factoryResolver: ComponentFactoryResolver;
   rootViewContainer: ViewContainerRef;
   scrollSubject = new Subject<any>();
-  initializedSubject = new BehaviorSubject<boolean>(false);
 
   constructor() {}
 
@@ -30,11 +29,6 @@ export class YodaFloatService {
   }
 
   initialized() {
-    this.initializedSubject.next(true);
-  }
-
-  isInitialized(): Observable<boolean> {
-    return this.initializedSubject.asObservable();
   }
 
   listen(): Observable<ScrollTo> {

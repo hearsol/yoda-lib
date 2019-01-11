@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ElementRef, AfterViewChecked, ComponentFactoryResolver } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, ElementRef, AfterViewChecked, ComponentFactoryResolver } from '@angular/core';
 import { YodaFloatService, ScrollTo } from './yoda-float.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector

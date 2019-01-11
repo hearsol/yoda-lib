@@ -8,16 +8,11 @@ import { YodaFloatService } from 'projects/yoda-float/src/public_api';
 })
 export class AppComponent implements OnInit {
   title = 'yoda-lib';
-  isInited = false;
+  isInited = true;
   constructor(private yodaFloatService: YodaFloatService) {
     console.log('started');
   }
 
   ngOnInit(): void {
-    this.yodaFloatService.isInitialized().subscribe(res => {
-      setTimeout(() => {
-        this.isInited = res;
-      });
-    });
   }
 }
