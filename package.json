@@ -1,13 +1,16 @@
 {
   "name": "yoda-lib",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4901",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "version:yoda-table": "cd projects/yoda-table & npm version patch -f",
+    "build:yoda-table": "npm run version:yoda-table & ng build yoda-table & npx scss-bundle -c scss-bundle.config.json",
+    "publish:yoda-table": "cd dist/yoda-table & npm publish --access public --tag latest"
   },
   "private": true,
   "dependencies": {
