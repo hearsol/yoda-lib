@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   title = 'yoda-lib';
   isInited = false;
   constructor(private yodaFloatService: YodaFloatService) {
-
+    console.log('started');
   }
 
   ngOnInit(): void {

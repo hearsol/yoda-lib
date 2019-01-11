@@ -20,6 +20,7 @@ export class YodaFloatService {
   }
 
   addComponent<T>(c: Type<T>): ComponentRef<T> {
+    console.log('create float');
     const factory = this.factoryResolver.resolveComponentFactory(c);
     const componentRef = this.rootViewContainer.createComponent(factory);
     if (componentRef.instance && 'scrollListner' in componentRef.instance) {

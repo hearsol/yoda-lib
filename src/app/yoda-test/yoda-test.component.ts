@@ -179,8 +179,12 @@ export class YodaTestComponent implements OnInit {
       ],
       tableOptions: this.yodaTableOptions
     };
-    this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
-    this.listRef.instance.setOptions(this.listOptions);
+    console.log('list inited');
+    setTimeout(() => {
+      console.log('add list component');
+      this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
+      this.listRef.instance.setOptions(this.listOptions);
+    }, 100);
   }
 
   reloadTable() {
@@ -334,9 +338,12 @@ export class YodaTestComponent implements OnInit {
         this.ref = null;
       }
     };
-
-    this.ref = this.yodaFloatService.addComponent(YodaFormComponent);
-    this.ref.instance.setOptions(this.options);
+    console.log('form inited');
+    setTimeout(() => {
+      console.log('add form component');
+      this.ref = this.yodaFloatService.addComponent(YodaFormComponent);
+      this.ref.instance.setOptions(this.options);
+    }, 100);
 
     setTimeout(() => {
       this.optionTestSubject.next([
