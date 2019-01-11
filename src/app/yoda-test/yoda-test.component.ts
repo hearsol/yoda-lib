@@ -14,6 +14,7 @@ export class YodaTestComponent implements OnInit {
   @ViewChild('testTemplate') testTempRef: TemplateRef<any>;
   @ViewChild('imgTemplate') imgTempRef: TemplateRef<any>;
 
+  pageNum: number;
   yodaTableOptions: YodaTableOptions;
   tableRef: ComponentRef<YodaTableComponent>;
   imgSrc = 'http://media.pixcove.com/I/5/8/Image-Editing-Textures-Backgrounds-Unleashed-Ebv-W-8490.jpg';
@@ -86,6 +87,7 @@ export class YodaTestComponent implements OnInit {
         return null;
       },
       asyncPaging: (pageNum: number, pageSize: number) => {
+        this.pageNum = pageNum;
         const start = (pageNum - 1) * pageSize;
         const page: YodaTablePage = {
           total: mockData.length,

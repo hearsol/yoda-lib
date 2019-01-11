@@ -1,0 +1,4 @@
+{
+  "entry": "./projects/yoda-table/src/lib/theme/data-table.scss",
+  "dest": "./dist/yoda-table/dist/yoda-table.scss"
+}

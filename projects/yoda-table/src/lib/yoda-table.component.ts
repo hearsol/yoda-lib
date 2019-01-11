@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges, TemplateRef } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, TemplateRef, OnDestroy } from '@angular/core';
 import { Observable, of, concat, Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 
 import * as momentImported from 'moment';
@@ -76,11 +76,12 @@ export interface YodaTableSortInfo {
   templateUrl: './yoda-table.component.html',
   styleUrls: ['./yoda-table.component.scss']
 })
-export class YodaTableComponent implements OnInit, OnChanges {
+export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input() reload: Observable<string>;
   @Input() refresh: Observable<string>;
   @Input() pageChange: Observable<{page?: number, pageSize?: number}>;
   @Input() options: YodaTableOptions;
+  private unsubscribe$ = new Subject();
 
   refreshTableSubject = new Subject<any>();
   refreshStateSubject = new Subject<any>();
@@ -116,15 +117,33 @@ export class YodaTableComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.refreshTableSubject
-      .pipe(debounceTime(5))
-      .subscribe(() => {
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(5)
+      ).subscribe(() => {
         this.refreshTable();
       });
     this.refreshStateSubject
-      .pipe(debounceTime(5))
-      .subscribe(() => {
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(5)
+      ).subscribe(() => {
         this.updateRowStates();
       });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+
+    if (this._reloadSubscription) {
+      this._reloadSubscription.unsubscribe();
+      this._reloadSubscription = null;
+    }
+    if (this._refreshSubscription) {
+      this._refreshSubscription.unsubscribe();
+      this._refreshSubscription = null;
+    }
   }
 
   randomDate(start: Date, end: Date): Date {
@@ -139,7 +158,7 @@ export class YodaTableComponent implements OnInit, OnChanges {
       }
       if (this.reload) {
         this._reloadSubscription = this.reload.subscribe(res => {
-          this.onPageChanges(this.currentPage);
+          this.onReload();
         });
       }
     }
@@ -226,7 +245,7 @@ export class YodaTableComponent implements OnInit, OnChanges {
 
     this.skipEnd = this.pageSize;
     if (this.options.asyncPaging) {
-      this.onPageChanges(this.currentPage);
+      this.onReload();
     } else {
       this._pData = this.options.data.map((d, i) => {
         if (d) {
@@ -238,7 +257,7 @@ export class YodaTableComponent implements OnInit, OnChanges {
       });
       // this.data = this._pData.slice(this.skipStart, this.skipEnd);
       this.totalSize = this._pData.length;
-      this.onPageChanges(this.currentPage);
+      this.onReload();
     }
   }
 
@@ -366,7 +385,7 @@ export class YodaTableComponent implements OnInit, OnChanges {
               break;
           }
         }
-        this.onPageChanges(this.currentPage);
+        this.onReload();
       }
     }
   }
@@ -437,6 +456,9 @@ export class YodaTableComponent implements OnInit, OnChanges {
 
   onPageChanges(pageNum: any) {
     this.currentPage = pageNum;
+    this.refreshTable();
+  }
+  onReload() {
     this.refreshTableSubject.next();
   }
 

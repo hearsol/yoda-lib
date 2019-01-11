@@ -27,7 +27,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "dist/yoda-table/dist/yoda-table.scss"
             ],
             "scripts": []
           },
