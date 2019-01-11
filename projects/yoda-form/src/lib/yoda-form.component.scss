@@ -1,0 +1,19 @@
+.custom-file-label {
+  display: flex;
+  flex-direction: row;
+
+  span {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      padding-right: 20px;
+  }
+}
+
+.custom-file-input ~ .custom-file-label::after {
+  content: "파일선택";
+}
+
+textarea {
+  height: 120px;
+}

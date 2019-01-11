@@ -1,8 +1,12 @@
-<div>{{pageNum}}</div>
 <ng-template #testTemplate>
   <div><em>template</em> working!!!</div>
   <div>템플릿 동작!!!</div>
 </ng-template>
 <ng-template #imgTemplate>
-  <div class="template-img"  ><img width="64" [src]="imgSrc"></div>
+  <div class="template-img"><img width="64" [src]="imgSrc"></div>
+</ng-template>
+
+
+<ng-template #imgsTemplate>
+  <div *ngFor="let img of imgSrcs" class="template-img"><img [src]="img"></div>
 </ng-template>

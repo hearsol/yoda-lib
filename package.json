@@ -8,15 +8,27 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "install:all": "npm run install:yoda-table && npm run install:yoda-float && npm run install:yoda-list",
+
+    "install:yoda-table": "cd projects/yoda-table && npm install",
     "version:yoda-table": "cd projects/yoda-table && npm version patch -f",
     "build:yoda-table": "ng build yoda-table && npx scss-bundle -c scss-bundle.yoda-table.config.json",
     "publish:yoda-table": "cd dist/yoda-table && npm publish --access public --tag latest",
+
+    "install:yoda-float": "cd projects/yoda-float && npm install",
     "version:yoda-float": "cd projects/yoda-float && npm version patch -f",
     "build:yoda-float": "ng build yoda-float",
     "publish:yoda-float": "cd dist/yoda-float && npm publish --access public --tag latest",
+
+    "install:yoda-list": "cd projects/yoda-list && npm install",
     "version:yoda-list": "cd projects/yoda-list && npm version patch -f",
     "build:yoda-list": "ng build yoda-list && npx scss-bundle -c scss-bundle.yoda-list.config.json",
-    "publish:yoda-list": "cd dist/yoda-list && npm publish --access public --tag latest"
+    "publish:yoda-list": "cd dist/yoda-list && npm publish --access public --tag latest",
+
+    "install:yoda-form": "cd projects/yoda-form && npm install",
+    "version:yoda-form": "cd projects/yoda-form && npm version patch -f",
+    "build:yoda-form": "ng build yoda-form && npx scss-bundle -c scss-bundle.yoda-form.config.json",
+    "publish:yoda-form": "cd dist/yoda-form && npm publish --access public --tag latest"
   },
   "private": true,
   "dependencies": {

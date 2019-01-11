@@ -2,6 +2,15 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/yoda-form",
   "lib": {
-    "entryFile": "src/public_api.ts"
-  }
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "lodash": "lodash",
+      "@ng-bootstrap/ng-bootstrap": "ngBootstrap"
+    }
+  },
+  "whitelistedNonPeerDependencies": [
+    "tslib",
+    "@ng-bootstrap/ng-bootstrap",
+    "bootstrap"
+  ]
 }

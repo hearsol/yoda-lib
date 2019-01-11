@@ -1,5 +1,5 @@
 import { Injectable, ComponentFactoryResolver, ViewContainerRef, Type, ComponentRef } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
 export type ScrollTo = 'toRight' | 'toLeft' | 'toBottom' | 'toTop';
 
@@ -9,7 +9,8 @@ export type ScrollTo = 'toRight' | 'toLeft' | 'toBottom' | 'toTop';
 export class YodaFloatService {
   factoryResolver: ComponentFactoryResolver;
   rootViewContainer: ViewContainerRef;
-  scrollSubject = new Subject<ScrollTo>();
+  scrollSubject = new Subject<any>();
+  initializedSubject = new BehaviorSubject<boolean>(false);
 
   constructor() {}
 
@@ -21,7 +22,18 @@ export class YodaFloatService {
   addComponent<T>(c: Type<T>): ComponentRef<T> {
     const factory = this.factoryResolver.resolveComponentFactory(c);
     const componentRef = this.rootViewContainer.createComponent(factory);
+    if (componentRef.instance && 'scrollListner' in componentRef.instance) {
+      (componentRef.instance as any).scrollListner = this.scrollSubject;
+    }
     return componentRef;
+  }
+
+  initialized() {
+    this.initializedSubject.next(true);
+  }
+
+  isInitialized(): Observable<boolean> {
+    return this.initializedSubject.asObservable();
   }
 
   listen(): Observable<ScrollTo> {

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, ElementRef, AfterViewChecked, ComponentFactoryResolver } from '@angular/core';
 import { YodaFloatService, ScrollTo } from './yoda-float.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -9,9 +10,9 @@ import { YodaFloatService, ScrollTo } from './yoda-float.service';
 })
 export class YodaFloatComponent implements AfterViewChecked {
   @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
+  @ViewChild('osScroller') osScroller: ElementRef;
 
   constructor(
-    private osScroller: ElementRef,
     private fr: ComponentFactoryResolver,
     private yodaFloatService: YodaFloatService) {
     this.yodaFloatService.listen().subscribe(to => this.scroll(to));
@@ -19,6 +20,7 @@ export class YodaFloatComponent implements AfterViewChecked {
 
   ngAfterViewChecked() {
     this.yodaFloatService.setRootViewContainerRef(this.fr, this.vc);
+    this.yodaFloatService.initialized();
   }
 
   isHide() {

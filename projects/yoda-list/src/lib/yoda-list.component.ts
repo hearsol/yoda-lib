@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { YodaTableOptions, YodaTableSortInfo, YodaTablePage, YodaTablePagingFunc, YodaTableComponent } from '@hsolpkg/yoda-table';
 import { Subject, fromEvent, Observable } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -106,7 +106,7 @@ export class YodaListComponent implements AfterViewInit, OnDestroy {
 
   index = 0;
   index2 = 0;
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this._refreshStateSubscription = this._refreshState
       .pipe(debounceTime(5))
       .subscribe(_ => {
@@ -127,15 +127,17 @@ export class YodaListComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    fromEvent(this.search.nativeElement, 'input').pipe(
-      map((event: Event) => (<HTMLInputElement>event.target).value),
-      debounceTime(200),
-      distinctUntilChanged()
-    ).subscribe(text => {
-      this.searchText = text;
-      if (this.options && this.options.onSearch) {
-        this.options.onSearch(this.searchText);
-      }
+    setTimeout(() => {
+      fromEvent(this.search.nativeElement, 'input').pipe(
+        map((event: Event) => (<HTMLInputElement>event.target).value),
+        debounceTime(200),
+        distinctUntilChanged()
+      ).subscribe(text => {
+        this.searchText = text;
+        if (this.options && this.options.onSearch) {
+          this.options.onSearch(this.searchText);
+        }
+      });
     });
   }
 
@@ -167,6 +169,7 @@ export class YodaListComponent implements AfterViewInit, OnDestroy {
         map((data: YodaTablePage) => {
           this.totalSize = data.total;
           this.isLoading = false;
+          this.cdr.detectChanges();
           return data;
         })
       );

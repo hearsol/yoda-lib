@@ -1,0 +1,187 @@
+<div role="data-input" class="unit add" *ngIf="options">
+    <div class="unit-header">
+      <h2 class="title">{{options.title}}</h2>
+      <span class="btn-close" (click)="_onClose()">
+        <i class="far fa-times"></i>
+      </span>
+    </div>
+    <div class="unit-body" *ngIf="form">
+      <form [formGroup]="form" #yodaFormElement>
+
+        <div class="se-form-wrap" *ngFor="let row of formRows">
+          <div [ngClass]="row.rowClass" [hidden]="_isHiddenRow(row)">
+            <ng-container *ngFor="let f of row.columns">
+              <ng-container [ngSwitch]="f.type">
+                <ng-container *ngSwitchCase="'subtitle'">
+                  <div class="se-title" [hidden]="f.state==='hide'">
+                    <h3 [innerHTML]="f.title | safeHtml"></h3>
+                  </div>
+                </ng-container>
+
+                <div class="template" *ngSwitchCase="'template'" [hidden]="f.state==='hide'">
+                  <ng-container *ngTemplateOutlet="f.template; context:f.templateContext"></ng-container>
+                </div>
+                <ng-container *ngSwitchCase="'select'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+                    <select class="in-select" [class.error]="f.errors?true: null" [formControlName]="f.name">
+                      <ng-container *ngIf="f.asyncOptions; else staticOptionsTemplate">
+                        <option *ngFor="let op of f.asyncOptions | async" [value]="op.value">{{op.text}}</option>
+                      </ng-container>
+                      <ng-template #staticOptionsTemplate>
+                        <option *ngFor="let op of f.options" [value]="op.value">{{op.text}}</option>
+                      </ng-template>
+                    </select>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'search-list'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+
+                    <input [id]="f._id" type="text" class="in-branch" [placeholder]="f.placeholder" [formControlName]="f.name + 'search'">
+                    <select class="in-branch-multi" multiple size="10" [formControlName]="f.name">
+                      <option *ngFor="let op of f._search | async" [value]="op.value">{{op.text}}</option>
+                    </select>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'date'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+
+                    <div class="input-group" [class.error]="f.errors?true: null">
+                      <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" placeholder="yyyy-mm-dd"
+                        [name]="f.name" [formControlName]="f.name" ngbDatepicker #d="ngbDatepicker">
+                      <div class="input-group-append">
+                        <button class="input-group-text btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                          <i class="fas fa-calendar-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'textarea'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+
+                    <textarea class="in-input" [class.error]="f.errors?true: null" [formControlName]="f.name"
+                      [placeholder]="f.placeholder" [required]="f.required ? true: null"></textarea>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'typeahead'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+                    <div class="input-group" [class.error]="f.errors?true: null">
+                      <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
+                      <input [id]="f._id" type="text" class="in-input" [formControlName]="f.name" [placeholder]="f.placeholder"
+                        [ngbTypeahead]="f.onTypeahead" />
+                      <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
+                    </div>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'decimal'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+                    <div class="input-group" [class.error]="f.errors?true: null">
+                      <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
+
+                      <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" type="text"
+                        [formControlName]="f.name" (blur)="transformDecimal(f, $event)" (focus)="toNumeric($event)"
+                        (click)="toNumeric($event)" [placeholder]="f.placeholder" [required]="f.required ? true: null" />
+                      <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
+
+                    </div>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'button'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" class="se-button"  [hidden]="f.state==='hide'">
+                    <button *ngIf="f.state!=='hide'" [ngClass]="f.class" [attr.disabled]="f.state === 'disabled' ? true: null"
+                      (click)="f.onClick(f.name, _d)" class="fo-button">
+                      <span [innerHTML]="f.title | safeHtml"></span>
+                    </button>
+                  </div>
+
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'file'">
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
+                        (change)="_onFileChange(f, $event)" [placeholder]="f.placeholder" [required]="f.required ? true: null">
+                      <label class="custom-file-label" [for]="f._id">
+                        <span>{{_indexObject(_d, f.name)?.name}}</span>
+                      </label>
+                    </div>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'file-multiple'">
+                    <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                      <label class="label">{{f.title}}</label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
+                          multiple
+                          (change)="_onFileChange(f, $event)" [required]="f.required ? true: null">
+                        <label class="custom-file-label" [for]="f._id">
+                            <span *ngIf="_indexObject(_d, f.name)?.length">{{_indexObject(_d, f.name)?.length}}개의 파일</span>
+                            <span *ngIf="!_indexObject(_d, f.name)?.length">{{f.placeholder}}</span>
+                          </label>
+                      </div>
+                      <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                    </div>
+                  </ng-container>
+
+                <ng-container *ngSwitchDefault>
+                  <div [ngClass]="f.colClass" [class.error]="f.errors?true: null"  [hidden]="f.state==='hide'">
+                    <label class="label">{{f.title}}</label>
+                    <div class="input-group" [class.error]="f.errors?true: null">
+                      <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
+                      <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" [type]="f.type"
+                        [formControlName]="f.name" [placeholder]="f.placeholder" [required]="f.required ? true: null" />
+                      <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
+                    </div>
+                    <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+                  </div>
+                </ng-container>
+
+                <ng-template #prependTemplate>
+                  <div class="input-group-prepend">
+                    <button class="input-group-text" type="button" *ngIf="f.prependButton.state!=='hide'" [ngClass]="f.prependButton.class"
+                      (click)="f.prependButton.onClick(_d)" [attr.disabled]="f.prependButton.state === 'disabled' ? true: null">
+                      <span [innerHTML]="f.prependButton.title | safeHtml"></span>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template #appendTemplate>
+                  <div class="input-group-append">
+                    <button class="input-group-text" type="button" *ngIf="f.appendButton.state!=='hide'" [ngClass]="f.appendButton.class"
+                      (click)="f.appendButton.onClick(_d)" [attr.disabled]="f.appendButton.state === 'disabled' ? true: null">
+                      <span [innerHTML]="f.appendButton.title | safeHtml"></span>
+                    </button>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="unit-footer" *ngIf="form">
+      <button class="button blc primary" (click)="_onSave()" [disabled]="form.pristine||form.invalid">
+        <span>{{options.saveButtonText || '저장'}}</span>
+      </button>
+    </div>
+  </div>

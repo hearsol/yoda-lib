@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges, TemplateRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, TemplateRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Observable, of, concat, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
@@ -111,7 +111,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
 
   showPagination = true;
   testData: any;
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     // this._buildTestData();
   }
 
@@ -420,9 +420,11 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       sortInfo = [this.fieldSortInfo];
     }
     this.options.asyncPaging(this.currentPage, this.pageSize, sortInfo).subscribe(res => {
-      this.data = res.data;
-      this.totalSize = res.total;
-      this.updateRowStates();
+      setTimeout(() => {
+        this.data = res.data;
+        this.totalSize = res.total;
+        this.updateRowStates();
+      });
     });
   }
 
