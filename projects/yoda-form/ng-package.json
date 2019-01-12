@@ -5,12 +5,17 @@
     "entryFile": "src/public_api.ts",
     "umdModuleIds": {
       "lodash": "lodash",
-      "@ng-bootstrap/ng-bootstrap": "ngBootstrap"
+      "@ng-bootstrap/ng-bootstrap": "ngBootstrap",
+      "@fortawesome/free-solid-svg-icons": "freeSolidSvgIcons",
+      "@fortawesome/angular-fontawesome": "angularFontawesome"
     }
   },
   "whitelistedNonPeerDependencies": [
     "tslib",
     "@ng-bootstrap/ng-bootstrap",
-    "bootstrap"
+    "bootstrap",
+    "@fortawesome/angular-fontawesome",
+    "@fortawesome/fontawesome-svg-core",
+    "@fortawesome/free-solid-svg-icons"
   ]
 }

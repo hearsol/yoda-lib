@@ -28,7 +28,12 @@
     "install:yoda-form": "cd projects/yoda-form && npm install",
     "version:yoda-form": "cd projects/yoda-form && npm version patch -f",
     "build:yoda-form": "ng build yoda-form && npx scss-bundle -c scss-bundle.yoda-form.config.json",
-    "publish:yoda-form": "cd dist/yoda-form && npm publish --access public --tag latest"
+    "publish:yoda-form": "cd dist/yoda-form && npm publish --access public --tag latest",
+
+    "batch:yoda-form": "npm run version:yoda-form && npm run build:yoda-form && npm run publish:yoda-form",
+    "batch:yoda-table": "npm run version:yoda-table && npm run build:yoda-table && npm run publish:yoda-table",
+    "batch:yoda-float": "npm run version:yoda-float && npm run build:yoda-float && npm run publish:yoda-float",
+    "batch:yoda-list": "npm run version:yoda-list && npm run build:yoda-list && npm run publish:yoda-list"
   },
   "private": true,
   "dependencies": {
