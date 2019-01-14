@@ -108,6 +108,6 @@
 </div>
 
 <div class="pagination-wrap" *ngIf="options&&showPagination">
-  <yoda-pagination class="unit-footer" [(page)]="currentPage" (pageChanges)="onPaginationChanges($event)" [maxSize]="5"
+  <yoda-pagination class="unit-footer" [page]="currentPage" (pageChanges)="onPaginationChanges($event)" [maxSize]="5"
     [totalSize]="totalSize" [pageSize]="pageSize"></yoda-pagination>
 </div>

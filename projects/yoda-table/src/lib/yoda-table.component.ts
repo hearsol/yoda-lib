@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges, TemplateRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Observable, of, concat, Subject } from 'rxjs';
+import { Observable, of, concat, Subject, merge } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 
@@ -86,6 +86,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   refreshTableSubject = new Subject<any>();
   refreshStateSubject = new Subject<any>();
 
+  _pageChangeSubject = new Subject<{ page?: number, pageSize?: number }>();
+
   _reloadSubscription: any;
   _refreshSubscription: any;
   _pageSubscription: any;
@@ -112,21 +114,21 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   showPagination = true;
   testData: any;
   constructor(private cdr: ChangeDetectorRef) {
-    // this._buildTestData();
+    this.initPageSubscription();
   }
 
   ngOnInit(): void {
     this.refreshTableSubject
       .pipe(
-        takeUntil(this.unsubscribe$),
-        debounceTime(5)
+        debounceTime(5),
+        takeUntil(this.unsubscribe$)
       ).subscribe(() => {
         this.refreshTable();
       });
     this.refreshStateSubject
       .pipe(
-        takeUntil(this.unsubscribe$),
-        debounceTime(5)
+        debounceTime(5),
+        takeUntil(this.unsubscribe$)
       ).subscribe(() => {
         this.updateRowStates();
       });
@@ -144,6 +146,10 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       this._refreshSubscription.unsubscribe();
       this._refreshSubscription = null;
     }
+    if (this._pageSubscription) {
+      this._pageSubscription.unsubscribe();
+      this._pageSubscription = null;
+    }
   }
 
   randomDate(start: Date, end: Date): Date {
@@ -158,7 +164,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (this.reload) {
         this._reloadSubscription = this.reload.subscribe(res => {
-          this.onReload();
+          this.reloadTable();
         });
       }
     }
@@ -169,26 +175,35 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (this.refresh) {
         this._refreshSubscription = this.refresh.subscribe(res => {
-          this.onRefresh();
+          this.refreshState();
         });
       }
     }
     if (changes['pageChange']) {
-      if (this._pageSubscription) {
-        this._pageSubscription.unsubscribe();
-        this._pageSubscription = null;
-      }
-      if (this.pageChange) {
-        this._pageSubscription = this.pageChange.subscribe(res => {
-          this.onPaginationChanges(res);
-        });
-      }
+      this.initPageSubscription();
     }
     if (changes['options']) {
       this.initTable();
     }
   }
 
+  initPageSubscription() {
+  if (this._pageSubscription) {
+    this._pageSubscription.unsubscribe();
+    this._pageSubscription = null;
+  }
+  const subject = this.pageChange ? merge(this._pageChangeSubject, this.pageChange) : this._pageChangeSubject;
+    this._pageSubscription = subject.subscribe(res => {
+      if (res.page) {
+        this.currentPage = res.page;
+      }
+      if (res.pageSize) {
+        this.pageSize = res.pageSize;
+      }
+      this.onPageChanges(this.currentPage);
+    });
+
+  }
   setOptions(options: YodaTableOptions) {
     this.options = options;
     this.initTable();
@@ -245,7 +260,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
 
     this.skipEnd = this.pageSize;
     if (this.options.asyncPaging) {
-      this.onReload();
+      this.reloadTable();
     } else {
       this._pData = this.options.data.map((d, i) => {
         if (d) {
@@ -257,7 +272,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       });
       // this.data = this._pData.slice(this.skipStart, this.skipEnd);
       this.totalSize = this._pData.length;
-      this.onReload();
+      this.reloadTable();
     }
   }
 
@@ -385,7 +400,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
               break;
           }
         }
-        this.onReload();
+        this.reloadTable();
       }
     }
   }
@@ -460,23 +475,17 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     this.currentPage = pageNum;
     this.refreshTable();
   }
-  onReload() {
+
+  reloadTable() {
     this.refreshTableSubject.next();
   }
 
-  onRefresh() {
+  refreshState() {
     this.refreshStateSubject.next();
   }
 
-
   onPaginationChanges(res: { page?: number, pageSize?: number }) {
-    if (res.page) {
-      this.currentPage = res.page;
-    }
-    if (res.pageSize) {
-      this.pageSize = res.pageSize;
-    }
-    this.onPageChanges(this.currentPage);
+    this._pageChangeSubject.next(res);
   }
 
   onChangeTitleCheck(ev: any, field: YodaTableField) {

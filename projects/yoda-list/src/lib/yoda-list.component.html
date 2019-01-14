@@ -73,7 +73,7 @@
 </div>
 
 <div class="unit-footer list">
-  <yoda-pagination [(page)]="currentPage" (pageChanges)="onPageChanges($event)" [maxSize]="5" [totalSize]="totalSize"
+  <yoda-pagination [page]="currentPage" (pageChanges)="onPageChanges($event)" [maxSize]="5" [totalSize]="totalSize"
     [pageSize]="pageSize" class="pagination"></yoda-pagination>
   <div class="button-wrap">
     <button *ngIf="!options?.disableExport" class="button secondary" (click)="onDownload()">엑셀다운로드</button>

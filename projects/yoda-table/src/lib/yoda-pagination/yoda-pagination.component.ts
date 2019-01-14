@@ -8,7 +8,6 @@ import { Component, OnInit, Input, EventEmitter, Output, OnChanges, SimpleChange
 })
 export class YodaPaginationComponent implements OnInit, OnChanges {
   @Output() pageChanges: EventEmitter<{page?: number, pageSize?: number}> = new EventEmitter();
-  @Output() pageChange = new EventEmitter();
 
   @Input() totalSize: number;
   @Input() pageSize: number;
@@ -32,7 +31,7 @@ export class YodaPaginationComponent implements OnInit, OnChanges {
 
   onPageChanges(pageNum: number) {
     this.pageChanges.emit({page: pageNum});
-    this.pageChange.emit(this.page);
+    // this.pageChange.emit(this.page);
   }
   onPageSize(pageSize: number) {
     this.pageSize = Number(pageSize);

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { YodaFloatService } from 'projects/yoda-float/src/public_api';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +10,17 @@ import { YodaFloatService } from 'projects/yoda-float/src/public_api';
 })
 export class AppComponent implements OnInit {
   title = 'yoda-lib';
-  isInited = true;
+  isInited = new Subject<boolean>();
   constructor(private yodaFloatService: YodaFloatService) {
-    console.log('started');
+    this.yodaFloatService.isInitialized().pipe(
+      takeUntil(this.isInited)
+    ).subscribe(res => {
+      if (res) {
+        setTimeout(() => {
+          this.isInited.next(true);
+        });
+      }
+    });
   }
 
   ngOnInit(): void {

@@ -3,7 +3,7 @@ import { mockData, testStates } from '../MOCK_DATA';
 import { of, Observable, Subject } from 'rxjs';
 import { YodaFloatService } from 'projects/yoda-float/src/public_api';
 import { YodaTableOptions, YodaTableField, YodaTablePage, YodaTableComponent } from 'projects/yoda-table/src/public_api';
-import { YodaTableTemplateCol, YodaTableTemplateRow } from '../../../projects/yoda-table/src/lib/yoda-table.component';
+import { YodaTableTemplateCol, YodaTableTemplateRow } from 'projects/yoda-table/src/lib/yoda-table.component';
 import { YodaListOptions, YodaListComponent } from 'projects/yoda-list/src/public_api';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { YodaFormComponent, YodaFormOptions } from 'projects/yoda-form/src/public_api';
@@ -108,9 +108,21 @@ export class YodaTestComponent implements OnInit {
       asyncPaging: (pageNum: number, pageSize: number) => {
         this.pageNum = pageNum;
         const start = (pageNum - 1) * pageSize;
+        let filteredData = mockData;
+        if (this.searchText) {
+          const searchText = this.searchText.toLowerCase().trim();
+          filteredData = mockData.filter(data =>
+            ['first_name', 'last_name', 'email'].reduce((prev, it) => {
+              if (prev) {
+                return prev;
+              }
+              return data[it] && (data[it].toLowerCase().indexOf(searchText) >= 0);
+            }, false)
+          );
+        }
         const page: YodaTablePage = {
-          total: mockData.length,
-          data: mockData.slice(start, start + pageSize).map(data => {
+          total: filteredData.length,
+          data: filteredData.slice(start, start + pageSize).map(data => {
             data.expand = false;
             data.img = Math.floor(Math.random() * 1000);
             return data;
@@ -179,12 +191,8 @@ export class YodaTestComponent implements OnInit {
       ],
       tableOptions: this.yodaTableOptions
     };
-    console.log('list inited');
-    setTimeout(() => {
-      console.log('add list component');
-      this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
-      this.listRef.instance.setOptions(this.listOptions);
-    }, 100);
+    this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
+    this.listRef.instance.setOptions(this.listOptions);
   }
 
   reloadTable() {
@@ -339,11 +347,11 @@ export class YodaTestComponent implements OnInit {
       }
     };
     console.log('form inited');
-    setTimeout(() => {
+    // setTimeout(() => {
       console.log('add form component');
       this.ref = this.yodaFloatService.addComponent(YodaFormComponent);
       this.ref.instance.setOptions(this.options);
-    }, 100);
+    // }, 100);
 
     setTimeout(() => {
       this.optionTestSubject.next([
