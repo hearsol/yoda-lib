@@ -1,23 +1,32 @@
-import { Component, OnInit, ComponentRef, ViewChild, TemplateRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component, OnInit, ComponentRef, ViewChild, TemplateRef,
+  OnChanges, SimpleChanges, AfterViewInit, ElementRef
+} from '@angular/core';
 import {
   YodaTableOptions, YodaTableComponent, YodaTableField, YodaTableTemplateCol,
   YodaTableTemplateRow, YodaTablePage
 } from 'projects/yoda-table/src/public_api';
 import { YodaFloatService } from 'projects/yoda-float/src/public_api';
 import { mockData } from '../MOCK_DATA';
-import { of } from 'rxjs';
+import { of, Subject, fromEvent } from 'rxjs';
+import { delay, map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-yoda-float-test',
   templateUrl: './yoda-float-test.component.html',
   styleUrls: ['./yoda-float-test.component.scss']
 })
-export class YodaFloatTestComponent implements OnInit, OnChanges {
-  @Input() search: string;
+export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit {
+  @ViewChild('search') search: ElementRef;
   @ViewChild('testTemplate') testTempRef: TemplateRef<any>;
   @ViewChild('imgTemplate') imgTempRef: TemplateRef<any>;
   @ViewChild('imgsTemplate') imgsTempRef: TemplateRef<any>;
   yodaTableOptions: YodaTableOptions;
+
+  searchStr: string;
+  reloadTable = new Subject<string>();
+  refreshTable = new Subject<string>();
+
   tableRef: ComponentRef<YodaTableComponent>;
   pageNum: number;
   imgSrcs: any[] = [];
@@ -29,10 +38,20 @@ export class YodaFloatTestComponent implements OnInit, OnChanges {
     this.initTable();
   }
 
+  ngAfterViewInit() {
+    fromEvent(this.search.nativeElement, 'input').pipe(
+      map((event: Event) => (<HTMLInputElement>event.target).value),
+      debounceTime(200),
+      distinctUntilChanged()
+    ).subscribe(text => {
+      this.searchStr = text;
+      this.reloadTable.next();
+    });
+  }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['search']) {
-      this.tableRef.instance.reloadTable();
-    }
+    // if (changes['search']) {
+      // this.tableRef.instance.reloadTable();
+    // }
   }
 
   initTable() {
@@ -55,31 +74,63 @@ export class YodaFloatTestComponent implements OnInit, OnChanges {
       name: 'actions',
       actions: [{
         type: 'button',
-        label: '확장',
+        label: 'Expand',
         id: 'expand',
         color: 'success',
         onAction: (id: string, dataRow: any) => {
           dataRow.expand = true;
-          this.tableRef.instance.refreshState();
+          this.refreshTable.next();
+          // this.tableRef.instance.refreshState();
         },
         onState: (id: string, dataRow: any) => dataRow.expand ? 'hide' : 'enabled'
       },
       {
         type: 'button',
-        label: '축소',
+        label: 'Collpase',
         id: 'collapse',
         color: 'info',
         onAction: (id: string, dataRow: any) => {
           dataRow.expand = false;
-          this.tableRef.instance.refreshState();
+          this.refreshTable.next();
+          // this.tableRef.instance.refreshState();
         },
         onState: (id: string, dataRow: any) => dataRow.expand ? 'enabled' : 'hide'
       }
       ]
     });
+    fields.push({
+      title: 'Select',
+      name: '',
+      checkBox: true,
+      actions: [
+        {
+          type: 'checkbox',
+          id: 'sel',
+          onAction: (id: string, dataRow: any, index: number, checked?: boolean) => {}
+        }
+      ]
+    });
     this.yodaTableOptions = {
       fields: fields,
       pageSize: 5,
+      fieldGroups: [{
+        title: 'Act Logs',
+        name: 'actlogs',
+        startChild: 'active',
+        length: 3
+      },
+      {
+        title: 'Fullname',
+        name: 'fullname',
+        startChild: 'first_name',
+        length: 2
+      }, {
+        title: 'Personal Info',
+        name: 'personal',
+        startChild: 'id',
+        length: 4
+      }
+      ],
       onAdditionalRows: (rowData: any) => {
         const col: YodaTableTemplateCol = {
           colSpan: 5,
@@ -101,8 +152,8 @@ export class YodaFloatTestComponent implements OnInit, OnChanges {
         this.pageNum = pageNum;
         const start = (pageNum - 1) * pageSize;
         let filteredData = mockData;
-        if (this.search) {
-          const searchText = this.search.toLowerCase().trim();
+        if (this.searchStr) {
+          const searchText = this.searchStr.toLowerCase().trim();
           filteredData = mockData.filter(data =>
             ['first_name', 'last_name', 'email'].reduce((prev, it) => {
               if (prev) {
@@ -120,12 +171,14 @@ export class YodaFloatTestComponent implements OnInit, OnChanges {
             return data;
           })
         };
-        return of(page);
+        return of(page).pipe(
+          delay(200)
+        );
       }
     };
 
-    this.tableRef = this.yodaFloatService.addComponent(YodaTableComponent);
-    this.tableRef.instance.setOptions(this.yodaTableOptions);
+    // this.tableRef = this.yodaFloatService.addComponent(YodaTableComponent);
+    // this.tableRef.instance.setOptions(this.yodaTableOptions);
   }
 
 }

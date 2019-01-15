@@ -88,6 +88,12 @@ export class YodaTestComponent implements OnInit {
     this.yodaTableOptions = {
       fields: fields,
       pageSize: 5,
+      fieldGroups: [{
+        title: 'Name',
+        name: 'fullname',
+        startChild: 'first_name',
+        length: 2
+      }],
       onAdditionalRows: (rowData: any) => {
         const col: YodaTableTemplateCol = {
           colSpan: 5,

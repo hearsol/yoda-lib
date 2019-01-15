@@ -5,8 +5,19 @@
 <ng-template #imgTemplate>
   <div class="template-img"><img width="64" [src]="imgSrc"></div>
 </ng-template>
-
-
 <ng-template #imgsTemplate>
   <div *ngFor="let img of imgSrcs" class="template-img"><img [src]="img"></div>
 </ng-template>
+
+
+<div class="unit">
+  <div class="form-wrap">
+    <div class="form-row">
+      <div class="col-3">
+        <label for="seKyeword" class="label">검색</label>
+        <input id="seKyeword"class="form-control" #search type="search" title="검색" />
+      </div>
+    </div>
+  </div>
+  <yoda-table [options]="yodaTableOptions" [reload]="reloadTable" [refresh]="refreshTable"></yoda-table>
+</div>

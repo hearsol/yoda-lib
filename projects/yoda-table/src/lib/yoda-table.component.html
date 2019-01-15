@@ -1,12 +1,12 @@
 <div class="data-tbl-wrap">
   <table class="data-tbl" *ngIf="options">
     <thead>
-      <tr>
-        <th *ngFor="let f of options.fields; let idx = index;">
+      <tr *ngFor="let header of _headers">
+        <th *ngFor="let hItem of header.headers; let idx = index;" [attr.colspan]="hItem.colspan" [attr.rowspan]="hItem.rowspan">
 
-          <ng-container *ngIf="f.checkBox; else elseTemplate">
+          <ng-container *ngIf="hItem.field.checkBox; else elseTemplate">
             <div class="check-wrap">
-              <input [id]="'trcb-'+idx" [(ngModel)]="_fielddata[idx].checked" class="checkbox" type="checkbox" (change)="onChangeTitleCheck($event, f)">
+              <input [id]="'trcb-'+idx" [(ngModel)]="_fielddata[hItem.colIdx].checked" class="checkbox" type="checkbox" (change)="onChangeTitleCheck($event, hItem.field)">
               <label [for]="'trcb-'+idx"></label>
             </div>
           </ng-container>
@@ -14,23 +14,23 @@
           <ng-template #elseTemplate>
             <span [ngSwitch]="_fielddata[idx].sortDir">
               <span *ngSwitchCase="'none'">
-                {{f.title}}
+                {{hItem.title}}
               </span>
               <a *ngSwitchCase="'default'" (click)="changeSort(idx)">
                 <span class="sort">
-                  <span [innerHTML]="f.title | safeHtml"></span>
+                  <span [innerHTML]="hItem.title | safeHtml"></span>
                   <i class="fas fa-sort"></i>
                 </span>
               </a>
               <a *ngSwitchCase="'asc'" (click)="changeSort(idx)">
                 <span class="sort">
-                  <span [innerHTML]="f.title | safeHtml"></span>
+                  <span [innerHTML]="hItem.title | safeHtml"></span>
                   <i class="fas fa-sort-down"></i>
                 </span>
               </a>
               <a *ngSwitchCase="'desc'" (click)="changeSort(idx)">
                 <span class="sort">
-                  <span [innerHTML]="f.title | safeHtml"></span>
+                  <span [innerHTML]="hItem.title | safeHtml"></span>
                   <i class="fas fa-sort-up"></i>
                 </span>
               </a>
@@ -39,6 +39,7 @@
 
         </th>
       </tr>
+
     </thead>
     <tbody>
       <ng-container *ngFor="let row of data; let rowIdx = index;">

@@ -20,6 +20,13 @@ export interface YodaTableAction {
   onAction: (id: string, dataRow: any, index?: number, checked?: boolean) => void;
   onState?: YodaTableActionStateFunc;
 }
+export interface YodaTableFieldGroup {
+  title: string;
+  name: string;
+  startChild: string;
+  length: number;
+}
+
 
 export interface YodaTableField {
   title: string;
@@ -56,6 +63,7 @@ export interface YodaTableTemplateRow {
 
 export interface YodaTableOptions {
   fields: YodaTableField[];
+  fieldGroups?: YodaTableFieldGroup[];
   data?: any[];
   pagination?: number | YodaTablePagination | 'custom';
   pageSize?: number;
@@ -68,6 +76,35 @@ export interface YodaTableOptions {
 export interface YodaTableSortInfo {
   name: string;
   dir: 'asc' | 'desc';
+}
+
+interface TableField {
+  title: string;
+  name: string;
+  class: any;
+  formatter: (value: any, row?: any) => string;
+  sortDir: 'none' | 'default' | 'asc' | 'desc';
+  checked: boolean;
+
+  checkBox: boolean;
+  sortable: boolean;
+  sortCompare: (a: any, b: any) => number;
+  align: 'left' | 'right' | 'center';
+  actions: YodaTableAction[];
+}
+
+interface TableHeaderItem {
+  colIdx: number;
+  title: string;
+  name: string;
+  colspan: number;
+  rowspan: number;
+  isGroup: boolean;
+  field: TableField | YodaTableFieldGroup;
+}
+
+interface TableHeader {
+  headers: TableHeaderItem[];
 }
 
 @Component({
@@ -99,13 +136,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
 
   fieldSortInfo: YodaTableSortInfo;
 
-  _fielddata: {
-    name: string;
-    class: any;
-    formatter: (value: any, row?: any) => string;
-    sortDir: 'none' | 'default' | 'asc' | 'desc';
-    checked?: boolean;
-  }[] = [];
+  _fielddata: TableField[] = [];
+  _headers: TableHeader[] = [];
 
   _actionStateList: YodaTableAction [] = [];
   data: any[] = [];
@@ -115,9 +147,6 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   testData: any;
   constructor(private cdr: ChangeDetectorRef) {
     this.initPageSubscription();
-  }
-
-  ngOnInit(): void {
     this.refreshTableSubject
       .pipe(
         debounceTime(5),
@@ -132,6 +161,9 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       ).subscribe(() => {
         this.updateRowStates();
       });
+  }
+
+  ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
@@ -188,11 +220,11 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   initPageSubscription() {
-  if (this._pageSubscription) {
-    this._pageSubscription.unsubscribe();
-    this._pageSubscription = null;
-  }
-  const subject = this.pageChange ? merge(this._pageChangeSubject, this.pageChange) : this._pageChangeSubject;
+    if (this._pageSubscription) {
+      this._pageSubscription.unsubscribe();
+      this._pageSubscription = null;
+    }
+    const subject = this.pageChange ? merge(this._pageChangeSubject, this.pageChange) : this._pageChangeSubject;
     this._pageSubscription = subject.subscribe(res => {
       if (res.page) {
         this.currentPage = res.page;
@@ -202,8 +234,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.onPageChanges(this.currentPage);
     });
-
   }
+
   setOptions(options: YodaTableOptions) {
     this.options = options;
     this.initTable();
@@ -230,13 +262,117 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
         this._actionStateList = this._actionStateList.concat(f.actions);
       }
       return {
+        title: f.title,
         formatter: formatter,
         name: f.name,
         class: this.buildClass(f),
         sortDir: sortDir,
-        checked: false
+        checked: false,
+        checkBox: f.checkBox,
+        sortable: f.sortable,
+        sortCompare: f.sortCompare,
+        align: f.align,
+        actions: f.actions ? f.actions.slice() : null
       };
     });
+
+    this._headers = [{
+      headers: this._fielddata.map((f, idx) => {
+        const h: TableHeaderItem = {
+          isGroup: false,
+          colIdx: idx,
+          title: f.title,
+          name: f.name,
+          colspan: 1,
+          rowspan: 1,
+          field: f
+        };
+        return h;
+      })
+    }];
+
+    if (this.options.fieldGroups) {
+      const findHeaderIdx = (g: YodaTableFieldGroup) => {
+        const startHeaderIdx = this._headers.findIndex(val => val.headers.findIndex(v => v.name === g.startChild) >= 0);
+        let headerIdx = startHeaderIdx;
+        const startColIdx = this._headers[headerIdx].headers.findIndex(h => h.name === g.startChild);
+        while (headerIdx < this._headers.length - 1) {
+          if (this._headers[headerIdx + 1].headers.findIndex(v => v.colIdx >= startColIdx && v.colIdx <= startColIdx + g.length) >= 0) {
+            headerIdx++;
+          } else {
+            break;
+          }
+        }
+        return { startHeaderIdx: startHeaderIdx, headerIdx: headerIdx, colIdx: startColIdx };
+      };
+      const makeRoomHeader = (g: YodaTableFieldGroup) => {
+        const { startHeaderIdx, headerIdx, colIdx } = findHeaderIdx(g);
+        if (headerIdx >= 0) { // insert header
+          let newColIdx = 0;
+          if (this._headers.length === (headerIdx + 1)) {
+            this._headers.push({
+              headers: []
+            });
+          } else {
+            newColIdx = this._headers[headerIdx + 1].headers.findIndex((h, idx) => {
+              if (idx === this._headers[headerIdx + 1].headers.length - 1) {
+                return true;
+              }
+              return h.colIdx >= colIdx;
+            });
+            if (newColIdx < 0) {
+              newColIdx = 0;
+            }
+          }
+          const startIdx = colIdx;
+          const endIdx = colIdx + g.length - 1;
+          const newItems = [];
+          let newItem: TableHeaderItem[] = [{
+            colIdx: colIdx,
+            title: g.title,
+            name: g.name,
+            colspan: g.length,
+            rowspan: 1,
+            field: g,
+            isGroup: true,
+          }];
+          for (let row = startHeaderIdx; row <= headerIdx; row++) {
+            let colLen = 0;
+            let start = -1;
+            this._headers[row].headers.forEach((item, idx) => {
+              if (item.colIdx >= startIdx && item.colIdx <= endIdx) {
+                if (start === -1) {
+                  start = idx;
+                } else {
+                  colLen = idx - start + 1;
+                }
+              }
+            });
+            newItem = this._headers[row].headers.splice(start, colLen, ...newItem);
+          }
+          this._headers[headerIdx + 1].headers.splice(newColIdx, 0, ...newItem);
+        }
+      };
+      const procGroup = (g: YodaTableFieldGroup) => {
+        makeRoomHeader(g);
+      };
+      this.options.fieldGroups.map((g) => procGroup(g));
+      const checkRowspan = (item: TableHeaderItem, rowIdx: number) => {
+        let rowSpan = 1;
+        if (!item.isGroup) {
+          rowSpan = this._headers.length - rowIdx;
+        }
+        item.rowspan = rowSpan;
+      };
+      this._headers.forEach((header, rowIdx) => {
+        if ((this._headers.length - rowIdx) > 1) {
+          header.headers.forEach(item => checkRowspan(item, rowIdx));
+        }
+      });
+      console.log(this._headers);
+    } else {
+
+    }
 
     this.currentPage = 1;
     this.showPagination = true;
