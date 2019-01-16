@@ -46,7 +46,7 @@ $green: #28a745;
 .data-tbl thead th {
   padding: 0.5rem 1rem 0.5rem;
   border-right: 1px solid $tbl-th-line;
-  border-bottom: 1px solid $tbl-line;
+  border-bottom: 1px solid $tbl-th-line;
   background: $tbl-th;
   text-align: center;
   color: $text-th;
