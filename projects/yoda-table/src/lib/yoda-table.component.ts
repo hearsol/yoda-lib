@@ -11,7 +11,7 @@ import * as XLSX from 'xlsx';
 type AOA = Array<Array<any>>;
 export type YodaTableActionState = 'enabled' | 'disabled' | 'hide';
 export type YodaTableRowState = 'enabled' | 'completed' | 'selected' | 'disabled' | 'canceled';
-export type YodaTableActionStateFunc = (id: string, dataRow: any, index?: number) => YodaTableActionState;
+export type YodaTableActionStateFunc = (id: string, dataRow: any, rowInfo?: YodaTableRowInfo) => YodaTableActionState;
 export interface YodaTableAction {
   type: 'button' | 'checkbox' | 'radio';
   label?: string;
@@ -61,6 +61,13 @@ export interface YodaTableTemplateRow {
   columns: YodaTableTemplateCol[];
 }
 
+export interface YodaTableRowInfo {
+  index?: number;
+  rowIndex: number;
+  isLast: boolean;
+  isFirst: boolean;
+}
+
 export interface YodaTableOptions {
   fields: YodaTableField[];
   fieldGroups?: YodaTableFieldGroup[];
@@ -68,9 +75,9 @@ export interface YodaTableOptions {
   pagination?: number | YodaTablePagination | 'custom';
   pageSize?: number;
   asyncPaging?: YodaTablePagingFunc;
-  onRowState?: (rowData: any, index?: number) => YodaTableRowState;
-  onAdditionalRows?: (rowData: any, index?: number) => YodaTableTemplateRow[];
-  onSelectRow?: (rowData: any, index?: number) => void;
+  onRowState?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableRowState;
+  onAdditionalRows?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableTemplateRow[];
+  onSelectRow?: (rowData: any, rowInfo?: YodaTableRowInfo) => void;
 }
 
 export interface YodaTableSortInfo {
@@ -541,12 +548,12 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  updateActionStates(row: any, index: number) {
+  updateActionStates(row: any, rowInfo: YodaTableRowInfo) {
     row.__yoda_action_state = {};
     row.__yoda_action_class = {};
     row.__yoda_action_checked = false;
     this._actionStateList.forEach(action => {
-      const state = action.onState ? action.onState(action.id, row, index) : 'enabled';
+      const state = action.onState ? action.onState(action.id, row, rowInfo) : 'enabled';
       row.__yoda_action_state[action.id] = state;
       row.__yoda_action_class[action.id] = this.buildActionClass(action, state);
     });
@@ -554,13 +561,20 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
 
   updateRowStates() {
     this._fielddata.forEach(f => f.checked = false);
-    this.data.forEach(row => {
+    this.data.forEach((row, idx) => {
       if (row) {
-        const rowIndex = '__yoda_index' in row ? row.__yoda_index : -1;
-        row.__yoda_row_state = this.options.onRowState ? this.options.onRowState(row, rowIndex) : 'enabled';
+        const dataIndex = '__yoda_index' in row ? row.__yoda_index : -1;
+        row.__yoda_row_info = {
+          index: dataIndex,
+          rowIndex: idx,
+          isFirst: idx === 0,
+          isLast: idx === (this.data.length - 1)
+        } as YodaTableRowInfo;
+        row.__yoda_row_state = this.options.onRowState ? this.options.onRowState(row, row.__yoda_row_info) : 'enabled';
         row.__yoda_row_class = this.buildRowClass(row.__yoda_row_state);
-        row.__yoda_row_templates = this.options.onAdditionalRows ? this.options.onAdditionalRows(row, rowIndex) : null;
-        this.updateActionStates(row, rowIndex);
+
+        row.__yoda_row_templates = this.options.onAdditionalRows ? this.options.onAdditionalRows(row, row.__yoda_row_info) : null;
+        this.updateActionStates(row, row.__yoda_row_info);
       }
     });
   }
@@ -663,9 +677,9 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   onSelectRow(ev: any, dataRow: any) {
     if (this.options.onSelectRow) {
       if ('__yoda_index' in dataRow) {
-        this.options.onSelectRow(dataRow, dataRow.__yoda_index);
+        this.options.onSelectRow(dataRow, dataRow.__yoda_row_info);
       } else {
-        this.options.onSelectRow(dataRow, -1);
+        this.options.onSelectRow(dataRow, dataRow.__yoda_row_info);
       }
     }
   }

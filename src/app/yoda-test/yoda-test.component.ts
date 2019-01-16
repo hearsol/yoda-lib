@@ -3,7 +3,7 @@ import { mockData, testStates } from '../MOCK_DATA';
 import { of, Observable, Subject } from 'rxjs';
 import { YodaFloatService } from 'projects/yoda-float/src/public_api';
 import { YodaTableOptions, YodaTableField, YodaTablePage, YodaTableComponent } from 'projects/yoda-table/src/public_api';
-import { YodaTableTemplateCol, YodaTableTemplateRow } from 'projects/yoda-table/src/lib/yoda-table.component';
+import { YodaTableTemplateCol, YodaTableTemplateRow, YodaTableRowInfo } from 'projects/yoda-table/src/lib/yoda-table.component';
 import { YodaListOptions, YodaListComponent } from 'projects/yoda-list/src/public_api';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { YodaFormComponent, YodaFormOptions } from 'projects/yoda-form/src/public_api';
@@ -18,6 +18,8 @@ export class YodaTestComponent implements OnInit {
   @ViewChild('testTemplate') testTempRef: TemplateRef<any>;
   @ViewChild('imgTemplate') imgTempRef: TemplateRef<any>;
   @ViewChild('imgsTemplate') imgsTempRef: TemplateRef<any>;
+  @ViewChild('lastLineTemplate') lastTempRef: TemplateRef<any>;
+  @ViewChild('lastLineTemplate2') last2TempRef: TemplateRef<any>;
 
   pageNum: number;
   imgSrcs: any[] = [];
@@ -63,7 +65,7 @@ export class YodaTestComponent implements OnInit {
       name: 'actions',
       actions: [{
         type: 'button',
-        label: '확장',
+        label: 'expand',
         id: 'expand',
         color: 'success',
         onAction: (id: string, dataRow: any) => {
@@ -74,7 +76,7 @@ export class YodaTestComponent implements OnInit {
       },
       {
         type: 'button',
-        label: '축소',
+        label: 'collapse',
         id: 'collapse',
         color: 'info',
         onAction: (id: string, dataRow: any) => {
@@ -94,7 +96,16 @@ export class YodaTestComponent implements OnInit {
         startChild: 'first_name',
         length: 2
       }],
-      onAdditionalRows: (rowData: any) => {
+      onAdditionalRows: (rowData: any, rowInfo: YodaTableRowInfo) => {
+
+        const lastCol1: YodaTableTemplateCol = {
+          colSpan: 8,
+          template: this.lastTempRef
+        };
+        const lastCol2: YodaTableTemplateCol = {
+          colSpan: 2,
+          template: this.last2TempRef
+        };
         const col: YodaTableTemplateCol = {
           colSpan: 5,
           template: this.testTempRef,
@@ -106,10 +117,21 @@ export class YodaTestComponent implements OnInit {
         const row: YodaTableTemplateRow = {
           columns: [col, col2]
         };
+        const lastRow: YodaTableTemplateRow = {
+          columns: [lastCol1, lastCol2]
+        };
+        let rows = null;
         if (rowData.expand) {
-          return [row, row];
+          rows = [row];
         }
-        return null;
+
+        if (rowInfo.isLast) {
+          if (!rows) {
+            rows = [];
+          }
+          rows.push(lastRow);
+        }
+        return rows;
       },
       asyncPaging: (pageNum: number, pageSize: number) => {
         this.pageNum = pageNum;

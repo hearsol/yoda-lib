@@ -10,3 +10,12 @@
 <ng-template #imgsTemplate>
   <div *ngFor="let img of imgSrcs" class="template-img"><img [src]="img"></div>
 </ng-template>
+
+<ng-template #lastLineTemplate>
+  <div><em>template</em> Total</div>
+  <div></div>
+</ng-template>
+<ng-template #lastLineTemplate2>
+  <div style="text-align: right">{{1050000 | currency}}</div>
+  <div></div>
+</ng-template>
