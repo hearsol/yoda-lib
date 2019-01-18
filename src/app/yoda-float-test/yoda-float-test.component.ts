@@ -87,9 +87,9 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       name: 'actions',
       actions: [{
         type: 'button',
-        label: 'Expand',
+        label: '<i class="fas fa-caret-right i-btn"></i>',
         id: 'expand',
-        color: 'success',
+        color: 'info',
         onAction: (id: string, dataRow: any) => {
           dataRow.expand = true;
           this.refreshTable.next();
@@ -99,7 +99,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       },
       {
         type: 'button',
-        label: 'Collpase',
+        label: '<i class="fas fa-caret-down i-btn"></i>',
         id: 'collapse',
         color: 'info',
         onAction: (id: string, dataRow: any) => {

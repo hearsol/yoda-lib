@@ -464,7 +464,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   private buildActionClass(action: YodaTableAction, state: YodaTableActionState) {
     const cls = {};
     if (action.type === 'button') {
-      cls['btn-sm'] = true;
+      cls['tbl-btn'] = true;
     }
     if (action.color) {
       cls[action.color] = true;
