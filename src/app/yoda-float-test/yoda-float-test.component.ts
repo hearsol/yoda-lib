@@ -110,6 +110,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       }
       ]
     });
+    /*
     this.additionFields.push({
       title: 'Select',
       name: '',
@@ -122,26 +123,27 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
         }
       ]
     });
+    */
     this.yodaTableOptions = {
       fields: this.fields.concat(this.additionFields),
       pageSize: 5,
       tinyTable: true,
-      fieldGroups: [{
+      fieldGroups: [
+        {
+          title: 'test',
+          name: 'testgroup',
+          startChild: 'email',
+          length: 2
+        }, {
         title: 'Act Logs',
         name: 'actlogs',
         startChild: 'price',
-        length: 3
-      },
-      {
+        length: 4
+      }, {
         title: 'Fullname',
         name: 'fullname',
         startChild: 'first_name',
         length: 2
-      }, {
-        title: 'Personal Info',
-        name: 'personal',
-        startChild: 'id',
-        length: 4
       }
       ],
       onAdditionalRows: (rowData: any) => {

@@ -350,7 +350,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       const findHeaderIdx = (g: YodaTableFieldGroup) => {
         const startHeaderIdx = this._headers.findIndex(val => val.headers.findIndex(v => v.name === g.startChild) >= 0);
         let headerIdx = startHeaderIdx;
-        const startColIdx = this._headers[headerIdx].headers.findIndex(h => h.name === g.startChild);
+        const startIdx = this._headers[headerIdx].headers.findIndex(h => h.name === g.startChild);
+        const startColIdx = this._headers[headerIdx].headers[startIdx].colIdx;
         while (headerIdx < this._headers.length - 1) {
           if (this._headers[headerIdx + 1].headers.findIndex(v => v.colIdx >= startColIdx && v.colIdx <= startColIdx + g.length) >= 0) {
             headerIdx++;
@@ -369,19 +370,24 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
               headers: []
             });
           } else {
+            let lastFound = false;
             newColIdx = this._headers[headerIdx + 1].headers.findIndex((h, idx) => {
               if (idx === this._headers[headerIdx + 1].headers.length - 1) {
+                if (h.colIdx < colIdx) {
+                  lastFound = true;
+                }
                 return true;
               }
               return h.colIdx >= colIdx;
             });
-            if (newColIdx < 0) {
+            if (lastFound) {
+              newColIdx = this._headers[headerIdx + 1].headers.length;
+            } else if (newColIdx < 0) {
               newColIdx = 0;
             }
           }
           const startIdx = colIdx;
           const endIdx = colIdx + g.length - 1;
-          const newItems = [];
           let newItem: TableHeaderItem[] = [{
             colIdx: colIdx,
             title: g.title,
@@ -393,16 +399,19 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
           }];
           for (let row = startHeaderIdx; row <= headerIdx; row++) {
             let colLen = 0;
+            let end = -1;
             let start = -1;
+            let startColIdx;
             this._headers[row].headers.forEach((item, idx) => {
-              if (item.colIdx >= startIdx && item.colIdx <= endIdx) {
+              if (item.colIdx >= startIdx && idx <= endIdx) {
+                end = item.colIdx;
                 if (start === -1) {
                   start = idx;
-                } else {
-                  colLen = idx - start + 1;
+                  startColIdx = item.colIdx;
                 }
               }
             });
+            colLen = end - startColIdx + 1;
             newItem = this._headers[row].headers.splice(start, colLen, ...newItem);
           }
           this._headers[headerIdx + 1].headers.splice(newColIdx, 0, ...newItem);
