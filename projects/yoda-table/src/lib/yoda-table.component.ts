@@ -75,6 +75,7 @@ export interface YodaTableOptions {
   pagination?: number | YodaTablePagination | 'custom';
   pageSize?: number;
   asyncPaging?: YodaTablePagingFunc;
+  tinyTable?: boolean;
   onRowState?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableRowState;
   onAdditionalRows?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableTemplateRow[];
   onSelectRow?: (rowData: any, rowInfo?: YodaTableRowInfo) => void;
@@ -133,6 +134,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   public _headers: TableHeader[] = [];
   public _data: any[] = [];
   public showPagination = true;
+  public tableClass: any;
 
   private unsubscribe$ = new Subject();
 
@@ -242,6 +244,15 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     this.initTable();
   }
 
+  private buildTableClass() {
+    this.tableClass = {
+      'data-tbl': true
+    };
+    if (this.options && this.options.tinyTable) {
+      this.tableClass.tiny = true;
+    }
+  }
+
   private initTable() {
     this._data = [];
     this.totalSize = 0;
@@ -249,7 +260,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.options) {
       return;
     }
-
+    this.buildTableClass();
     this.refreshFields(this.options.fields, this.options.fieldGroups);
 
     this.currentPage = 1;
@@ -416,7 +427,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private indexObject(obj: any, is: any): any {
+  indexObject(obj: any, is: any): any {
     if (obj) {
       if (typeof is === 'string') {
         return this.indexObject(obj, is.split('.'));
@@ -487,7 +498,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private changeSort(index: number) {
+  changeSort(index: number) {
     // clear sort info and toggle sort
     this._fielddata.forEach((f, i) => {
       if (i === index) {

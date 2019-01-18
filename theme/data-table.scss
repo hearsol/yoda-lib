@@ -43,8 +43,22 @@ $green: #28a745;
   font-size: 13px;
 }
 
+.data-tbl thead th,
+.data-tbl tbody td,
+.data-tbl tfoot td {
+  padding: .5rem 1rem .5rem;
+}
+
+.data-tbl.tiny thead th {
+  padding: .1rem;
+}
+
+.data-tbl.tiny tbody td,
+.data-tbl.tiny tfoot td {
+  padding: .2rem .3rem;
+}
+
 .data-tbl thead th {
-  padding: 0.5rem 1rem 0.5rem;
   border-right: 1px solid $tbl-th-line;
   border-bottom: 1px solid $tbl-th-line;
   background: $tbl-th;
@@ -57,14 +71,12 @@ $green: #28a745;
 }
 
 .data-tbl tbody td {
-  padding: 0.5rem 1rem 0.5rem;
   border-bottom: 1px solid $tbl-line;
   border-right: 1px solid $tbl-line;
   color: $text-td;
 }
 
 .data-tbl tfoot td {
-  padding: 0.5rem 1rem 0.5rem;
   text-align: center;
   border-right: 1px solid $tbl-line;
   border-top: 2px solid $tbl-line;
@@ -182,7 +194,7 @@ $green: #28a745;
 
 .data-tbl button[class^=btn] {
   font-size: 11px;
-  padding: 0.125rem 0.3125rem;
+  padding: .1rem .2rem;
   border-radius: 2px;
   margin: 0 4px;
   cursor: pointer;
@@ -300,7 +312,7 @@ $green: #28a745;
 
 .badge {
   display: inline-block;
-  padding: .25em .4em;
+  padding: .25rem .4rem;
   font-size: 75%;
   font-weight: 700;
   line-height: 1;

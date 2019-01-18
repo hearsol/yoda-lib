@@ -74,7 +74,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       switch (key) {
         case 'avatar':
           field.formatter = (value: any, row: any) => {
-            return `<img src="https://picsum.photos/64?image=${row.img}">`;
+            return `<img src="https://picsum.photos/64?image=${row.img}" height="1px">`;
           };
           break;
       }
@@ -125,6 +125,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
     this.yodaTableOptions = {
       fields: this.fields.concat(this.additionFields),
       pageSize: 5,
+      tinyTable: true,
       fieldGroups: [{
         title: 'Act Logs',
         name: 'actlogs',

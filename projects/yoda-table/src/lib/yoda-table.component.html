@@ -1,5 +1,5 @@
 <div class="data-tbl-wrap">
-  <table class="data-tbl" *ngIf="options">
+  <table *ngIf="options" [ngClass]="tableClass">
     <thead>
       <tr *ngFor="let header of _headers">
         <th *ngFor="let hItem of header.headers; let idx = index;" [attr.colspan]="hItem.colspan" [attr.rowspan]="hItem.rowspan">
