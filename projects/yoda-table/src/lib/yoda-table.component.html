@@ -48,7 +48,14 @@
           <ng-container *ngFor="let field of _fielddata; let idx = index;">
             <td [ngClass]="field.class">
 
-              <ng-container *ngIf="field.actions; else checkFormatterTemplate">
+              <ng-container *ngIf="field.formatter; else elseTemplate">
+                <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
+              </ng-container>
+              <ng-template #elseTemplate>
+                <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
+              </ng-template>
+
+              <ng-container *ngIf="field.actions">
                 <ng-container *ngFor="let action of field.actions; let actionIdx = index;">
                   <ng-container *ngIf="row.__yoda_action_state[action.id] !== 'hide'">
                     <ng-container [ngSwitch]="action.type">
@@ -76,15 +83,6 @@
                   </ng-container>
                 </ng-container>
               </ng-container>
-
-              <ng-template #checkFormatterTemplate>
-                <ng-container *ngIf="field.formatter; else elseTemplate">
-                  <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
-                </ng-container>
-                <ng-template #elseTemplate>
-                  <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
-                </ng-template>
-              </ng-template>
 
             </td>
           </ng-container>

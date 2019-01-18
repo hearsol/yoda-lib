@@ -85,6 +85,10 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
     this.additionFields.push({
       title: 'action',
       name: 'actions',
+      align: 'center',
+      formatter: (value: any) => {
+        return 'test Label';
+      },
       actions: [{
         type: 'button',
         label: '<i class="fas fa-caret-right i-btn"></i>',
