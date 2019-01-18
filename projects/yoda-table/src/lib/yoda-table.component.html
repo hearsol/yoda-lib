@@ -6,7 +6,8 @@
 
           <ng-container *ngIf="hItem.field.checkBox; else elseTemplate">
             <div class="check-wrap">
-              <input [id]="'trcb-'+idx" [(ngModel)]="_fielddata[hItem.colIdx].checked" class="checkbox" type="checkbox" (change)="onChangeTitleCheck($event, hItem.field)">
+              <input [id]="'trcb-'+idx" [(ngModel)]="_fielddata[hItem.colIdx].checked" class="checkbox" type="checkbox"
+                (change)="onChangeTitleCheck($event, hItem.field)">
               <label [for]="'trcb-'+idx"></label>
             </div>
           </ng-container>
@@ -91,15 +92,20 @@
         <ng-container *ngIf="row.__yoda_row_templates">
           <ng-container *ngFor="let tempRow of row.__yoda_row_templates">
             <tr [ngClass]="row.__yoda_row_class">
-              <ng-container *ngFor="let tempCol of tempRow.columns">
-                <td [attr.colspan]="tempCol.colSpan" class="td-no">
-                  <div *ngIf="tempCol.template">
-                    <ng-container
-                      *ngTemplateOutlet="tempCol.template; context:tempCol.templateContext">
-                    </ng-container>
-                  </div>
-                </td>
+              <ng-container *ngIf="tempRow.template; else elseColumnTemplate">
+                <ng-container *ngTemplateOutlet="tempRow.template; context:tempRow.templateContext">
+                </ng-container>
               </ng-container>
+              <ng-template #elseColumnTemplate>
+                <ng-container *ngFor="let tempCol of tempRow.columns">
+                  <td [attr.colspan]="tempCol.colSpan" class="td-no">
+                    <div *ngIf="tempCol.template">
+                      <ng-container *ngTemplateOutlet="tempCol.template; context:tempCol.templateContext">
+                      </ng-container>
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-template>
             </tr>
           </ng-container>
         </ng-container>

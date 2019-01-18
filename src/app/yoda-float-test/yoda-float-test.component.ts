@@ -21,6 +21,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
   @ViewChild('testTemplate') testTempRef: TemplateRef<any>;
   @ViewChild('imgTemplate') imgTempRef: TemplateRef<any>;
   @ViewChild('imgsTemplate') imgsTempRef: TemplateRef<any>;
+  @ViewChild('rowTemplate') rowTempRef: TemplateRef<any>;
   @ViewChild('table') yodaTableRef: YodaTableComponent;
   yodaTableOptions: YodaTableOptions;
   fields: YodaTableField[];
@@ -127,7 +128,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
     this.yodaTableOptions = {
       fields: this.fields.concat(this.additionFields),
       pageSize: 5,
-      tinyTable: true,
+      tinyTable: false,
       fieldGroups: [
         {
           title: 'test',
@@ -158,8 +159,11 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
         const row: YodaTableTemplateRow = {
           columns: [col, col2]
         };
+        const rowTemp: YodaTableTemplateRow = {
+          template: this.rowTempRef
+        };
         if (rowData.expand) {
-          return [row, row];
+          return [row, rowTemp];
         }
         return null;
       },

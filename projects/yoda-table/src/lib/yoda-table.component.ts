@@ -58,7 +58,9 @@ export interface YodaTableTemplateCol {
   templateContext?: any;
 }
 export interface YodaTableTemplateRow {
-  columns: YodaTableTemplateCol[];
+  columns?: YodaTableTemplateCol[];
+  template?: TemplateRef<any>;
+  templateContext?: any;
 }
 
 export interface YodaTableRowInfo {

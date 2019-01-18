@@ -9,13 +9,23 @@
   <div *ngFor="let img of imgSrcs" class="template-img"><img [src]="img"></div>
 </ng-template>
 
-
+<ng-template #rowTemplate>
+  <td colspan="4">
+    testCol
+  </td>
+  <td colspan="4">
+    testCol2
+  </td>
+  <td colspan="2">
+    testCol3
+  </td>
+</ng-template>
 <div class="unit">
   <div class="form-wrap">
     <div class="form-row">
       <div class="col-3">
         <label for="seKyeword" class="label">검색</label>
-        <input id="seKyeword"class="form-control" #search type="search" title="검색" />
+        <input id="seKyeword" class="form-control" #search type="search" title="검색" />
       </div>
       <div class="col-3">
         <button (click)="click()">field test</button>
