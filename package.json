@@ -9,27 +9,22 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "install:all": "npm run install:yoda-table && npm run install:yoda-float && npm run install:yoda-list",
-
     "install:yoda-table": "cd projects/yoda-table && npm install",
     "version:yoda-table": "cd projects/yoda-table && npm version patch -f",
     "build:yoda-table": "ng build yoda-table && npx scss-bundle -c scss-bundle.yoda-table.config.json",
     "publish:yoda-table": "cd dist/yoda-table && npm publish --access public --tag latest",
-
     "install:yoda-float": "cd projects/yoda-float && npm install",
     "version:yoda-float": "cd projects/yoda-float && npm version patch -f",
     "build:yoda-float": "ng build yoda-float",
     "publish:yoda-float": "cd dist/yoda-float && npm publish --access public --tag latest",
-
     "install:yoda-list": "cd projects/yoda-list && npm install",
     "version:yoda-list": "cd projects/yoda-list && npm version patch -f",
     "build:yoda-list": "ng build yoda-list && npx scss-bundle -c scss-bundle.yoda-list.config.json",
     "publish:yoda-list": "cd dist/yoda-list && npm publish --access public --tag latest",
-
     "install:yoda-form": "cd projects/yoda-form && npm install",
     "version:yoda-form": "cd projects/yoda-form && npm version patch -f",
     "build:yoda-form": "ng build yoda-form && npx scss-bundle -c scss-bundle.yoda-form.config.json",
     "publish:yoda-form": "cd dist/yoda-form && npm publish --access public --tag latest",
-
     "batch:yoda-form": "npm run version:yoda-form && npm run build:yoda-form && npm run publish:yoda-form",
     "batch:yoda-table": "npm run version:yoda-table && npm run build:yoda-table && npm run publish:yoda-table",
     "batch:yoda-float": "npm run version:yoda-float && npm run build:yoda-float && npm run publish:yoda-float",
@@ -45,6 +40,10 @@
     "@angular/platform-browser": "~7.2.0",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.1.0",
+    "@fortawesome/angular-fontawesome": "^0.3.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.12",
+    "@fortawesome/free-solid-svg-icons": "^5.6.3",
+    "@hsolpkg/yoda-table": "^0.1.15",
     "@ng-bootstrap/ng-bootstrap": "^4.0.1",
     "@types/file-saver": "^2.0.0",
     "bootstrap": "^4.2.1",
@@ -55,11 +54,7 @@
     "rxjs": "^6.3.3",
     "tslib": "^1.9.0",
     "xlsx": "^0.14.1",
-    "zone.js": "~0.8.26",
-    "@fortawesome/angular-fontawesome": "^0.3.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.12",
-    "@fortawesome/free-solid-svg-icons": "^5.6.3",
-    "@hsolpkg/yoda-table": "^0.1.9"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.11.0",

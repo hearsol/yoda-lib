@@ -17,7 +17,10 @@
         <label for="seKyeword" class="label">검색</label>
         <input id="seKyeword"class="form-control" #search type="search" title="검색" />
       </div>
+      <div class="col-3">
+        <button (click)="click()">field test</button>
+      </div>
     </div>
   </div>
-  <yoda-table [options]="yodaTableOptions" [reload]="reloadTable" [refresh]="refreshTable"></yoda-table>
+  <yoda-table #table [options]="yodaTableOptions" [reload]="reloadTable" [refresh]="refreshTable"></yoda-table>
 </div>

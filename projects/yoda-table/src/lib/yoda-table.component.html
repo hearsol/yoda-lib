@@ -42,10 +42,10 @@
 
     </thead>
     <tbody>
-      <ng-container *ngFor="let row of data; let rowIdx = index;">
+      <ng-container *ngFor="let row of _data; let rowIdx = index;">
         <tr [ngClass]="row.__yoda_row_class" (click)="onSelectRow($event, row)">
-          <ng-container *ngFor="let field of options.fields; let idx = index;">
-            <td [ngClass]="_fielddata[idx].class">
+          <ng-container *ngFor="let field of _fielddata; let idx = index;">
+            <td [ngClass]="field.class">
 
               <ng-container *ngIf="field.actions; else checkFormatterTemplate">
                 <ng-container *ngFor="let action of field.actions; let actionIdx = index;">

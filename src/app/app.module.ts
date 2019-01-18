@@ -9,6 +9,8 @@ import { YodaFloatTestComponent } from './yoda-float-test/yoda-float-test.compon
 import { YodaListModule } from 'projects/yoda-list/src/public_api';
 import { YodaFormModule } from 'projects/yoda-form/src/public_api';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,8 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [
     BrowserModule,
     ReactiveFormsModule,
+    NgbModule,
+    FontAwesomeModule,
     YodaTableModule,
     YodaFloatModule.forRoot(),
     YodaListModule,

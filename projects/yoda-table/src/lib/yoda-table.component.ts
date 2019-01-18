@@ -125,33 +125,31 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input() refresh: Observable<string>;
   @Input() pageChange: Observable<{page?: number, pageSize?: number}>;
   @Input() options: YodaTableOptions;
+  public pageSize = 15;
+  public currentPage = 1;
+  public totalSize = 0;
+
+  public _fielddata: TableField[] = [];
+  public _headers: TableHeader[] = [];
+  public _data: any[] = [];
+  public showPagination = true;
+
   private unsubscribe$ = new Subject();
 
-  refreshTableSubject = new Subject<any>();
-  refreshStateSubject = new Subject<any>();
+  private refreshTableSubject = new Subject<any>();
+  private refreshStateSubject = new Subject<any>();
 
-  _pageChangeSubject = new Subject<{ page?: number, pageSize?: number }>();
+  private _pageChangeSubject = new Subject<{ page?: number, pageSize?: number }>();
 
-  _reloadSubscription: any;
-  _refreshSubscription: any;
-  _pageSubscription: any;
-  pageSize = 15;
-  currentPage = 1;
-  totalSize = 0;
-  skipStart = 0;
-  skipEnd = 0;
+  private _reloadSubscription: any;
+  private _refreshSubscription: any;
+  private _pageSubscription: any;
+  private _skipStart = 0;
+  private _skipEnd = 0;
+  private fieldSortInfo: YodaTableSortInfo;
+  private _actionStateList: YodaTableAction [] = [];
+  private _pData: any[] = [];
 
-  fieldSortInfo: YodaTableSortInfo;
-
-  _fielddata: TableField[] = [];
-  _headers: TableHeader[] = [];
-
-  _actionStateList: YodaTableAction [] = [];
-  data: any[] = [];
-  _pData: any[] = [];
-
-  showPagination = true;
-  testData: any;
   constructor(private cdr: ChangeDetectorRef) {
     this.initPageSubscription();
     this.refreshTableSubject
@@ -191,10 +189,6 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  randomDate(start: Date, end: Date): Date {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['reload']) {
       if (this._reloadSubscription) {
@@ -226,7 +220,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  initPageSubscription() {
+  private initPageSubscription() {
     if (this._pageSubscription) {
       this._pageSubscription.unsubscribe();
       this._pageSubscription = null;
@@ -248,15 +242,57 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     this.initTable();
   }
 
-  initTable() {
-    this.data = [];
+  private initTable() {
+    this._data = [];
     this.totalSize = 0;
 
     if (!this.options) {
       return;
     }
+
+    this.refreshFields(this.options.fields, this.options.fieldGroups);
+
+    this.currentPage = 1;
+    this.showPagination = true;
+    if (this.options.pagination) {
+      if (typeof this.options.pagination === 'number') {
+        this.pageSize = this.options.pagination;
+      } else if (this.options.pagination === 'custom' ) {
+        this.showPagination = false;
+      } else {
+        if (this.options.pagination.pageSize) {
+          this.pageSize = this.options.pagination.pageSize;
+        }
+        if (this.options.pagination.startPage) {
+          this.currentPage = this.options.pagination.startPage;
+        }
+      }
+    }
+    if (this.options.pageSize) {
+      this.pageSize = this.options.pageSize;
+    }
+
+    this._skipEnd = this.pageSize;
+    if (this.options.asyncPaging) {
+      this.reloadTable();
+    } else {
+      this._pData = this.options.data.map((d, i) => {
+        if (d) {
+          d.__yoda_index = i;
+        } else {
+          d = { __yoda_index: i };
+        }
+        return d;
+      });
+      // this.data = this._pData.slice(this.skipStart, this.skipEnd);
+      this.totalSize = this._pData.length;
+      this.reloadTable();
+    }
+  }
+
+  refreshFields(fields: YodaTableField[], fieldGroups?: YodaTableFieldGroup[]) {
     this._actionStateList = [];
-    this._fielddata = this.options.fields.map(f => {
+    this._fielddata = fields.map(f => {
       let sortDir: 'none' | 'default' | 'asc' | 'desc' = 'none';
       if (f.sortable) {
         sortDir = 'default';
@@ -298,7 +334,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       })
     }];
 
-    if (this.options.fieldGroups) {
+    const _fieldGroups = fieldGroups || this.options.fieldGroups;
+    if (_fieldGroups) {
       const findHeaderIdx = (g: YodaTableFieldGroup) => {
         const startHeaderIdx = this._headers.findIndex(val => val.headers.findIndex(v => v.name === g.startChild) >= 0);
         let headerIdx = startHeaderIdx;
@@ -363,7 +400,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       const procGroup = (g: YodaTableFieldGroup) => {
         makeRoomHeader(g);
       };
-      this.options.fieldGroups.map((g) => procGroup(g));
+      _fieldGroups.map((g) => procGroup(g));
       const checkRowspan = (item: TableHeaderItem, rowIdx: number) => {
         let rowSpan = 1;
         if (!item.isGroup) {
@@ -376,50 +413,10 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
           header.headers.forEach(item => checkRowspan(item, rowIdx));
         }
       });
-      console.log(this._headers);
-    } else {
-
-    }
-
-    this.currentPage = 1;
-    this.showPagination = true;
-    if (this.options.pagination) {
-      if (typeof this.options.pagination === 'number') {
-        this.pageSize = this.options.pagination;
-      } else if (this.options.pagination === 'custom' ) {
-        this.showPagination = false;
-      } else {
-        if (this.options.pagination.pageSize) {
-          this.pageSize = this.options.pagination.pageSize;
-        }
-        if (this.options.pagination.startPage) {
-          this.currentPage = this.options.pagination.startPage;
-        }
-      }
-    }
-    if (this.options.pageSize) {
-      this.pageSize = this.options.pageSize;
-    }
-
-    this.skipEnd = this.pageSize;
-    if (this.options.asyncPaging) {
-      this.reloadTable();
-    } else {
-      this._pData = this.options.data.map((d, i) => {
-        if (d) {
-          d.__yoda_index = i;
-        } else {
-          d = { __yoda_index: i };
-        }
-        return d;
-      });
-      // this.data = this._pData.slice(this.skipStart, this.skipEnd);
-      this.totalSize = this._pData.length;
-      this.reloadTable();
     }
   }
 
-  indexObject(obj: any, is: any): any {
+  private indexObject(obj: any, is: any): any {
     if (obj) {
       if (typeof is === 'string') {
         return this.indexObject(obj, is.split('.'));
@@ -434,7 +431,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
-  buildClass(field: YodaTableField): any {
+  private buildClass(field: YodaTableField): any {
     const cls = {};
     if (field.align) {
       cls[`text-${field.align}`] = true;
@@ -442,7 +439,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     return cls;
   }
 
-  buildActionClass(action: YodaTableAction, state: YodaTableActionState) {
+  private buildActionClass(action: YodaTableAction, state: YodaTableActionState) {
     const cls = {};
     if (action.type === 'button') {
       cls['btn-sm'] = true;
@@ -453,7 +450,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     return cls;
   }
 
-  buildRowClass(state: YodaTableRowState): any {
+  private buildRowClass(state: YodaTableRowState): any {
     const cls = {};
     switch (state) {
       case 'disabled':
@@ -472,14 +469,14 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     return cls;
   }
 
-  comma(num: number): string {
+  private comma(num: number): string {
     if (num === null || num === undefined) {
       return '';
     }
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  buildSortInfo() {
+  private buildSortInfo() {
     this.fieldSortInfo = null;
     const sort_field = this._fielddata.findIndex(f => f.sortDir === 'asc' || f.sortDir === 'desc');
     if (sort_field >= 0) {
@@ -490,7 +487,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  changeSort(index: number) {
+  private changeSort(index: number) {
     // clear sort info and toggle sort
     this._fielddata.forEach((f, i) => {
       if (i === index) {
@@ -508,16 +505,16 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       const cmpFuncDate = (a: Date, b: Date): number => (a.getTime() < b.getTime()) ? -1 : ((a.getTime() > b.getTime()) ? 1 : 0);
       const cmpFuncBoolean = (a: boolean, b: boolean): number => (a < b) ? -1 : ((a > b) ? 1 : 0);
 
-      if (this.data && this.data.length > 0) {
+      if (this._data && this._data.length > 0) {
         let cmpFunc: any;
         const fieldName = this._fielddata[index].name;
         if (this.options.fields[index].sortCompare) {
             cmpFunc = this.options.fields[index].sortCompare;
         } else {
-          if (this.data[0][fieldName] instanceof Date) {
+          if (this._data[0][fieldName] instanceof Date) {
             cmpFunc = cmpFuncDate;
           } else {
-            switch (typeof this.data[0][fieldName]) {
+            switch (typeof this._data[0][fieldName]) {
               case 'number':
                   cmpFunc = cmpFuncNumber;
                 break;
@@ -548,7 +545,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  updateActionStates(row: any, rowInfo: YodaTableRowInfo) {
+  private updateActionStates(row: any, rowInfo: YodaTableRowInfo) {
     row.__yoda_action_state = {};
     row.__yoda_action_class = {};
     row.__yoda_action_checked = false;
@@ -559,16 +556,16 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  updateRowStates() {
+  private updateRowStates() {
     this._fielddata.forEach(f => f.checked = false);
-    this.data.forEach((row, idx) => {
+    this._data.forEach((row, idx) => {
       if (row) {
         const dataIndex = '__yoda_index' in row ? row.__yoda_index : -1;
         row.__yoda_row_info = {
           index: dataIndex,
           rowIndex: idx,
           isFirst: idx === 0,
-          isLast: idx === (this.data.length - 1)
+          isLast: idx === (this._data.length - 1)
         } as YodaTableRowInfo;
         row.__yoda_row_state = this.options.onRowState ? this.options.onRowState(row, row.__yoda_row_info) : 'enabled';
         row.__yoda_row_class = this.buildRowClass(row.__yoda_row_state);
@@ -579,32 +576,32 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  asyncFetch() {
+  private asyncFetch() {
     let sortInfo;
     if (this.fieldSortInfo) {
       sortInfo = [this.fieldSortInfo];
     }
     this.options.asyncPaging(this.currentPage, this.pageSize, sortInfo).subscribe(res => {
       setTimeout(() => {
-        this.data = res.data;
+        this._data = res.data;
         this.totalSize = res.total;
         this.updateRowStates();
       });
     });
   }
 
-  refreshTable() {
+  private refreshTable() {
     if (this.options.asyncPaging) {
       this.asyncFetch();
     } else {
-      this.skipStart = (this.currentPage - 1) * this.pageSize;
-      this.skipEnd = this.skipStart + this.pageSize;
-      this.data = this._pData.slice(this.skipStart, this.skipEnd);
+      this._skipStart = (this.currentPage - 1) * this.pageSize;
+      this._skipEnd = this._skipStart + this.pageSize;
+      this._data = this._pData.slice(this._skipStart, this._skipEnd);
       this.updateRowStates();
     }
   }
 
-  fetchExportData(page: number, size: number): Observable<YodaTablePage> {
+  private fetchExportData(page: number, size: number): Observable<YodaTablePage> {
     if (this.options.asyncPaging) {
       let sortInfo;
       if (this.fieldSortInfo) {
@@ -644,7 +641,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     if (field.actions && Array.isArray(field.actions)) {
       field.actions.forEach(action => {
         if (action.type === 'checkbox') {
-          this.data.forEach(row => {
+          this._data.forEach(row => {
             row.__yoda_action_checked = checked;
             if ('__yoda_index' in row) {
               action.onAction(action.id, row, row.__yoda_index, checked);
@@ -735,7 +732,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  s2ab(s: string): ArrayBuffer {
+  private s2ab(s: string): ArrayBuffer {
     const buf = new ArrayBuffer(s.length);
     const view = new Uint8Array(buf);
     for (let i = 0; i !== s.length; ++i) {
@@ -745,7 +742,7 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     return buf;
   }
 
-  _saveExcelFile(prefix: string, ws: XLSX.WorkSheet): void {
+  private _saveExcelFile(prefix: string, ws: XLSX.WorkSheet): void {
     const wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'binary' };
     const fileName = prefix + moment().format('YYMMDD') + '.xlsx';
 

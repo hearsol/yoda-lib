@@ -21,8 +21,11 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
   @ViewChild('testTemplate') testTempRef: TemplateRef<any>;
   @ViewChild('imgTemplate') imgTempRef: TemplateRef<any>;
   @ViewChild('imgsTemplate') imgsTempRef: TemplateRef<any>;
+  @ViewChild('table') yodaTableRef: YodaTableComponent;
   yodaTableOptions: YodaTableOptions;
-
+  fields: YodaTableField[];
+  additionFields: YodaTableField[];
+  isAddField = true;
   searchStr: string;
   reloadTable = new Subject<string>();
   refreshTable = new Subject<string>();
@@ -54,8 +57,16 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
     // }
   }
 
+  click() {
+    this.isAddField = !this.isAddField;
+    if (this.isAddField) {
+      this.yodaTableRef.refreshFields(this.fields.concat(this.additionFields));
+    } else {
+      this.yodaTableRef.refreshFields(this.fields);
+    }
+  }
   initTable() {
-    const fields = Object.keys(mockData[0]).map(key => {
+    this.fields = Object.keys(mockData[0]).map(key => {
       const field: YodaTableField = {
         title: key,
         name: key
@@ -69,7 +80,8 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       }
       return field;
     });
-    fields.push({
+    this.additionFields = [];
+    this.additionFields.push({
       title: 'action',
       name: 'actions',
       actions: [{
@@ -98,7 +110,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       }
       ]
     });
-    fields.push({
+    this.additionFields.push({
       title: 'Select',
       name: '',
       checkBox: true,
@@ -111,12 +123,12 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       ]
     });
     this.yodaTableOptions = {
-      fields: fields,
+      fields: this.fields.concat(this.additionFields),
       pageSize: 5,
       fieldGroups: [{
         title: 'Act Logs',
         name: 'actlogs',
-        startChild: 'active',
+        startChild: 'price',
         length: 3
       },
       {

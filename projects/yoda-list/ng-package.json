@@ -5,7 +5,6 @@
     "entryFile": "src/public_api.ts",
     "umdModuleIds": {
       "lodash": "lodash",
-      "@hsolpkg/yoda-table": "@hsolpkg/yoda-table",
       "@ng-bootstrap/ng-bootstrap": "ngBootstrap",
       "@fortawesome/free-solid-svg-icons": "freeSolidSvgIcons",
       "@fortawesome/angular-fontawesome": "angularFontawesome"
@@ -14,7 +13,6 @@
   "whitelistedNonPeerDependencies": [
     "tslib",
     "@ng-bootstrap/ng-bootstrap",
-    "@hsolpkg/yoda-table",
     "bootstrap",
     "@fortawesome/angular-fontawesome",
     "@fortawesome/fontawesome-svg-core",
