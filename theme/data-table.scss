@@ -31,6 +31,10 @@ $space:#37495F;
   overflow-x: auto;
 }
 
+.data-tbl-wrap-for-sticky {
+  width: 100%;
+}
+
 .data-tbl {
   border-collapse: separate;
   border-spacing: 0;
@@ -354,4 +358,10 @@ $space:#37495F;
 .badge-right {
   color: $white;
   background-color: $right;
+}
+
+.fixed-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }

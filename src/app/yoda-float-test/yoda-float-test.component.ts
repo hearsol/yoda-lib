@@ -133,6 +133,7 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       fields: this.fields.concat(this.additionFields),
       pageSize: 5,
       tinyTable: false,
+      fixedHeader: true,
       fieldGroups: [
         {
           title: 'test',

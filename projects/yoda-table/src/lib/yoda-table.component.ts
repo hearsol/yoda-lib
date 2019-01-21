@@ -80,6 +80,9 @@ export interface YodaTableOptions {
   pageSize?: number;
   asyncPaging?: YodaTablePagingFunc;
   tinyTable?: boolean;
+  fixedHeader?: boolean;
+  tableClass?: any;
+  headerClass?: any;
   onRowState?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableRowState;
   onAdditionalRows?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableTemplateRow[];
   onSelectRow?: (rowData: any, rowInfo?: YodaTableRowInfo) => void;
@@ -139,7 +142,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   public _data: any[] = [];
   public showPagination = true;
   public tableClass: any;
-
+  public headerClass: any;
+  public tableWrapClass: any;
   private unsubscribe$ = new Subject();
 
   private refreshTableSubject = new Subject<any>();
@@ -248,14 +252,45 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     this.initTable();
   }
 
+  getHeaderStyle(rowIdx: number) {
+    if (this.options && this.options.fixedHeader) {
+      return { 'top': rowIdx * 36 + 'px' };
+    }
+    return null;
+  }
+
   private buildTableClass() {
-    this.tableClass = {
-      'data-tbl': true
-    };
+    this.tableClass = this.options.tableClass ? this.parseClass(this.options.tableClass) : {};
+    this.tableClass['data-tbl'] = true;
     if (this.options && this.options.tinyTable) {
       this.tableClass.tiny = true;
     }
+    this.tableWrapClass = this.options.fixedHeader ?
+      {
+        'data-tbl-wrap-for-sticky': true
+      } : {
+        'data-tbl-wrap': true
+      };
+    this.headerClass = this.options.headerClass ? this.parseClass(this.options.headerClass) : {};
+    if (this.options.fixedHeader) {
+      this.headerClass['fixed-header-row'] = true;
+    }
   }
+
+  private parseClass(opt: any) {
+    const cls: any = {};
+    if (opt) {
+      if (Array.isArray(opt) && opt.length > 0) {
+        opt.forEach(key => cls[key] = true);
+      } else if (typeof opt === 'object' && Object.keys(opt).length > 0) {
+        Object.keys(opt).forEach(key => cls[key] = true);
+      } else if (typeof opt === 'string') {
+        cls[opt] = true;
+      }
+    }
+    return cls;
+  }
+
 
   private initTable() {
     this._data = [];
@@ -357,7 +392,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
         const startIdx = this._headers[headerIdx].headers.findIndex(h => h.name === g.startChild);
         const startColIdx = this._headers[headerIdx].headers[startIdx].colIdx;
         while (headerIdx < this._headers.length - 1) {
-          if (this._headers[headerIdx + 1].headers.findIndex(v => v.colIdx >= startColIdx && v.colIdx <= startColIdx + g.length) >= 0) {
+          if (this._headers[headerIdx + 1].headers.findIndex(v =>
+            v.colIdx >= startColIdx && v.colIdx <= startColIdx + (g.length - 1)) >= 0) {
             headerIdx++;
           } else {
             break;
@@ -392,15 +428,17 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
           }
           const startIdx = colIdx;
           const endIdx = colIdx + g.length - 1;
-          let newItem: TableHeaderItem[] = [{
-            colIdx: colIdx,
-            title: g.title,
-            name: g.name,
-            colspan: g.length,
-            rowspan: 1,
-            field: g,
-            isGroup: true,
-          }];
+          let newItem: TableHeaderItem[] = Array.from({ length: g.length }, (e, idx) => {
+            return {
+              colIdx: colIdx + idx,
+              title: g.title,
+              name: g.name,
+              colspan: 1,
+              rowspan: 1,
+              field: g,
+              isGroup: true,
+            };
+          });
           for (let row = startHeaderIdx; row <= headerIdx; row++) {
             let colLen = 0;
             let end = -1;
@@ -425,16 +463,38 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
         makeRoomHeader(g);
       };
       _fieldGroups.map((g) => procGroup(g));
-      const checkRowspan = (item: TableHeaderItem, rowIdx: number) => {
+      const checkRowSpan = (item: TableHeaderItem, rowIdx: number) => {
         let rowSpan = 1;
         if (!item.isGroup) {
           rowSpan = this._headers.length - rowIdx;
         }
         item.rowspan = rowSpan;
       };
+      this._headers = this._headers.map(header => {
+        const len = header.headers.length;
+        const newHeader: TableHeaderItem[] = [];
+        for (let c = 0; c < len; c++) {
+          const name = header.headers[c].name;
+          let count = 1;
+          while (c + count < len && name === header.headers[c + count].name) {
+            count++;
+          }
+          if (count > 1) {
+            const newItem = header.headers[c];
+            newItem.colspan = count;
+            newHeader.push(newItem);
+            c += count - 1;
+          } else {
+            newHeader.push(header.headers[c]);
+          }
+        }
+        return {
+          headers: newHeader
+        };
+      });
       this._headers.forEach((header, rowIdx) => {
         if ((this._headers.length - rowIdx) > 1) {
-          header.headers.forEach(item => checkRowspan(item, rowIdx));
+          header.headers.forEach(item => checkRowSpan(item, rowIdx));
         }
       });
     }
@@ -456,38 +516,20 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
 
 
   private buildClass(field: YodaTableField): any {
-    const cls = {};
+    const cls = field.class ? this.parseClass(field.class) : {};
     if (field.align) {
       cls[`text-${field.align}`] = true;
-    }
-    if (field.class) {
-      if (Array.isArray(field.class) && field.class.length > 0) {
-        field.class.forEach(key => cls[key] = true);
-      } else if (typeof field.class === 'object' && Object.keys(field.class).length > 0) {
-        Object.keys(field.class).forEach(key => cls[key] = true);
-      } else if (typeof field.class === 'string') {
-        cls[field.class] = true;
-      }
     }
     return cls;
   }
 
   private buildActionClass(action: YodaTableAction, state: YodaTableActionState) {
-    const cls = {};
+    const cls = action.class ? this.parseClass(action.class) : {};
     if (action.type === 'button') {
       cls['tbl-btn'] = true;
     }
     if (action.color) {
       cls[action.color] = true;
-    }
-    if (action.class) {
-      if (Array.isArray(action.class) && action.class.length > 0) {
-        action.class.forEach(key => cls[key] = true);
-      } else if (typeof action.class === 'object' && Object.keys(action.class).length > 0) {
-        Object.keys(action.class).forEach(key => cls[key] = true);
-      } else if (typeof action.class === 'string') {
-        cls[action.class] = true;
-      }
     }
     return cls;
   }

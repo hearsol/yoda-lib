@@ -1,8 +1,8 @@
-<div class="data-tbl-wrap">
+<div [ngClass]="tableWrapClass">
   <table *ngIf="options" [ngClass]="tableClass">
     <thead>
-      <tr *ngFor="let header of _headers">
-        <th *ngFor="let hItem of header.headers; let idx = index;" [attr.colspan]="hItem.colspan" [attr.rowspan]="hItem.rowspan">
+      <tr *ngFor="let header of _headers; let rowIdx = index;">
+        <th [ngClass]="headerClass" [ngStyle]="getHeaderStyle(rowIdx)" *ngFor="let hItem of header.headers; let idx = index;" [attr.colspan]="hItem.colspan" [attr.rowspan]="hItem.rowspan">
 
           <ng-container *ngIf="hItem.field.checkBox; else elseTemplate">
             <div class="check-wrap">
