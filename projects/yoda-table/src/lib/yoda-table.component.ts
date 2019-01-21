@@ -16,6 +16,7 @@ export interface YodaTableAction {
   type: 'button' | 'checkbox' | 'radio';
   label?: string;
   id: string;
+  class?: any;
   color?: 'success' | 'info' | 'danger'; //  | 'primary' | 'secondary' | 'warning';
   onAction: (id: string, dataRow: any, index?: number, checked?: boolean) => void;
   onState?: YodaTableActionStateFunc;
@@ -468,6 +469,15 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (action.color) {
       cls[action.color] = true;
+    }
+    if (action.class) {
+      if (typeof action.class === 'object' && Object.keys(action.class).length > 0) {
+        Object.keys(action.class).forEach(key => cls[key] = true);
+      } else if (typeof action.class === 'string') {
+        cls[action.class] = true;
+      } else if (Array.isArray(action.class) && action.class.length > 0) {
+        action.class.forEach(key => cls[key] = true);
+      }
     }
     return cls;
   }
