@@ -471,12 +471,12 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       cls[action.color] = true;
     }
     if (action.class) {
-      if (typeof action.class === 'object' && Object.keys(action.class).length > 0) {
+      if (Array.isArray(action.class) && action.class.length > 0) {
+        action.class.forEach(key => cls[key] = true);
+      } else if (typeof action.class === 'object' && Object.keys(action.class).length > 0) {
         Object.keys(action.class).forEach(key => cls[key] = true);
       } else if (typeof action.class === 'string') {
         cls[action.class] = true;
-      } else if (Array.isArray(action.class) && action.class.length > 0) {
-        action.class.forEach(key => cls[key] = true);
       }
     }
     return cls;
