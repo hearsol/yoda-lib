@@ -37,6 +37,7 @@ export interface YodaTableField {
   sortable?: boolean;
   sortCompare?: (a: any, b: any) => number;
   align?: 'left' | 'right' | 'center';
+  class?: any;
   actions?: YodaTableAction[];
 }
 
@@ -458,6 +459,15 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     const cls = {};
     if (field.align) {
       cls[`text-${field.align}`] = true;
+    }
+    if (field.class) {
+      if (Array.isArray(field.class) && field.class.length > 0) {
+        field.class.forEach(key => cls[key] = true);
+      } else if (typeof field.class === 'object' && Object.keys(field.class).length > 0) {
+        Object.keys(field.class).forEach(key => cls[key] = true);
+      } else if (typeof field.class === 'string') {
+        cls[field.class] = true;
+      }
     }
     return cls;
   }
