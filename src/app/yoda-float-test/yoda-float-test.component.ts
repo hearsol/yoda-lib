@@ -66,6 +66,44 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       this.yodaTableRef.refreshFields(this.fields);
     }
   }
+  toColumnName(num: number) {
+    let ret = '';
+    for (let a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
+      ret = String.fromCharCode(Number((num % b) / a) + 65) + ret;
+    }
+    return ret;
+  }
+  export() {
+    if (this.yodaTableRef) {
+      this.yodaTableRef.exportExcel('test', {
+        additonalRow: (rowData: any, isLast: boolean) => {
+          if (isLast) {
+            const data = [
+              this.fields.map((field, idx) => {
+                if (field.name === 'avatar') {
+                  return 'Total';
+                }
+                if (field.name === 'price') {
+                  const ltrIdx = this.toColumnName(idx + 1);
+                  const range = `${ltrIdx}2:${ltrIdx}${mockData.length + 1}`;
+                  return { f: `SUM(${range})`, z: '$#,##0.00;[Red]-$#,##0.00' };
+                }
+                return '';
+              })
+            ];
+            return data;
+          }
+        },
+        postProcess: (ws: any) => {
+          ws['!merges'] = [
+            { s: { c: 0, r: mockData.length + 1 }, e: { c: 5, r: mockData.length + 1 } },
+            { s: { c: 7, r: mockData.length + 1 }, e: { c: 9, r: mockData.length + 1 } }
+          ];
+          return ws;
+        }
+      });
+    }
+  }
   initTable() {
     this.fields = Object.keys(mockData[0]).map(key => {
       const field: YodaTableField = {
@@ -74,8 +112,28 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
       };
       switch (key) {
         case 'avatar':
-          field.formatter = (value: any, row: any) => {
+          field.formatter = (value: any, row: any, isExport: boolean) => {
+            if (isExport) {
+              return row.img;
+            }
             return `<img src="https://picsum.photos/64?image=${row.img}" height="1px">`;
+          };
+          break;
+        case 'price':
+          field.align = 'right';
+          field.formatter = (value: any, row: any, isExport: boolean) => {
+            if (isExport) {
+              return { v: parseFloat(value.substr(1)), t: 'n', z: '$#,##0.00;[Red]-$#,##0.00' };
+            }
+            return value;
+          };
+          break;
+        case 'last_login':
+          field.formatter = (value: any, row: any, isExport: boolean) => {
+            if (isExport) {
+              return new Date(value);
+            }
+            return value;
           };
           break;
       }

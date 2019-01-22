@@ -774,33 +774,61 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  exportExcel(prefix: string) {
+  exportExcel(prefix: string, exportOpt?: {
+    fields?: YodaTableField[],
+    additonalRow?: (rowData: any, isLast: boolean) => any[],
+    postProcess?: (ws: XLSX.WorkSheet) => XLSX.WorkSheet,
+    data?: any[]
+  }) {
     let data: AOA = [[]];
-    data = [this.options.fields.map(f => f.title)];
-
+    let _fields = this.options.fields;
+    if (exportOpt && exportOpt.fields) {
+      _fields = exportOpt.fields;
+    }
+    data = [_fields.map(f => {
+      return {
+        v: f.title,
+        t: 's',
+        s: {
+          alignment: { horizontal: 'center' },
+          font: { bold: true }
+        }
+      };
+    })];
     let length = this.totalSize;
-
+    let totalSize = this.totalSize;
     const size = 500;
-    let page = 1;
     let observList: Observable<YodaTablePage>;
-    while (length > 0) {
-      const observ = this.fetchExportData(page, size);
-      if (observList) {
-        concat(observList, observ);
-      } else {
-        observList = observ;
+
+    if (exportOpt && exportOpt.data) {
+      length = exportOpt.data.length;
+      totalSize = length;
+      observList = of({
+        data: exportOpt.data,
+        total: length
+      });
+    } else {
+      let page = 1;
+      while (length > 0) {
+        const observ = this.fetchExportData(page, size);
+        if (observList) {
+          observList = concat(observList, observ);
+        } else {
+          observList = observ;
+        }
+        page++;
+        length -= size;
       }
-      page++;
-      length -= size;
     }
 
+    let count = 0;
     observList.subscribe(res => {
       const rowLen = res.data.length;
-      for (let i = 0; i < rowLen; i++) {
+      for (let i = 0; i < rowLen; i++, count++) {
         const row = [];
         const rowData = res.data[i];
-        for (let j = 0; j < this.options.fields.length; j++) {
-          const f = this.options.fields[j];
+        for (let j = 0; j < _fields.length; j++) {
+          const f = _fields[j];
           const v: any = f.formatter ?
             f.formatter(this.indexObject(rowData, f.name), rowData, true) :
             this.indexObject(rowData, f.name);
@@ -816,12 +844,21 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
         data.push(row);
+        if (exportOpt && exportOpt.additonalRow) {
+          const addRowData = exportOpt.additonalRow(rowData, count === (totalSize - 1));
+          if (addRowData) {
+            data = data.concat(addRowData);
+          }
+        }
       }
     }, err => {
-        throw Error(err);
-      }, () => {
-        const ws = XLSX.utils.aoa_to_sheet(data);
-        this._saveExcelFile(prefix, ws);
+      throw Error(err);
+    }, () => {
+      let ws = XLSX.utils.aoa_to_sheet(data);
+      if (exportOpt && exportOpt.postProcess) {
+        ws = exportOpt.postProcess(ws);
+      }
+      this._saveExcelFile(prefix, ws);
     });
   }
 
