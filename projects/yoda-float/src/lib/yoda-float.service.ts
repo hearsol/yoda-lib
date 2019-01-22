@@ -10,6 +10,7 @@ export class YodaFloatService {
   factoryResolver: ComponentFactoryResolver;
   rootViewContainer: ViewContainerRef;
   scrollSubject = new Subject<any>();
+  refreshSubject = new Subject<any>();
   initializedSubject = new BehaviorSubject<boolean>(false);
 
   constructor() {}
@@ -25,6 +26,7 @@ export class YodaFloatService {
     if (componentRef.instance && 'scrollListner' in componentRef.instance) {
       (componentRef.instance as any).scrollListner = this.scrollSubject;
     }
+    this.refreshSubject.next();
     return componentRef;
   }
 
@@ -38,6 +40,10 @@ export class YodaFloatService {
 
   listen(): Observable<ScrollTo> {
     return this.scrollSubject.asObservable();
+  }
+
+  onRefresh(): Observable<any> {
+    return this.refreshSubject.asObservable();
   }
 
   scroll(to: ScrollTo): any {

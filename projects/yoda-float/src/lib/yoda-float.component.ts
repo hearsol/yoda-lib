@@ -15,6 +15,9 @@ export class YodaFloatComponent implements AfterViewChecked {
     private fr: ComponentFactoryResolver,
     private yodaFloatService: YodaFloatService) {
     this.yodaFloatService.listen().subscribe(to => this.scroll(to));
+    this.yodaFloatService.onRefresh().subscribe(() => {
+      this.refresh();
+    });
   }
 
   ngAfterViewChecked() {
@@ -24,6 +27,9 @@ export class YodaFloatComponent implements AfterViewChecked {
 
   isHide() {
     return this.vc.length === 0;
+  }
+
+  refresh() {
   }
 
   scroll(to: ScrollTo): void {
