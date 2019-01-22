@@ -33,7 +33,7 @@ export interface YodaTableField {
   title: string;
   name: string;
   checkBox?: boolean;
-  formatter?: (value: any, row?: any, isExport?: boolean) => string;
+  formatter?: (value: any, row?: any, isExport?: boolean) => string | any;
   sortable?: boolean;
   sortCompare?: (a: any, b: any) => number;
   align?: 'left' | 'right' | 'center';
@@ -81,6 +81,7 @@ export interface YodaTableOptions {
   asyncPaging?: YodaTablePagingFunc;
   tinyTable?: boolean;
   fixedHeader?: boolean;
+  fixedHeaderTop?: number;
   tableClass?: any;
   headerClass?: any;
   onRowState?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableRowState;
@@ -97,7 +98,7 @@ interface TableField {
   title: string;
   name: string;
   class: any;
-  formatter: (value: any, row?: any) => string;
+  formatter: (value: any, row?: any) => string | any;
   sortDir: 'none' | 'default' | 'asc' | 'desc';
   checked: boolean;
 
@@ -254,7 +255,15 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
 
   getHeaderStyle(rowIdx: number) {
     if (this.options && this.options.fixedHeader) {
-      return { 'top': rowIdx * 36 + 'px' };
+      let top = 0;
+      if (this.options.fixedHeaderTop) {
+        top = this.options.fixedHeaderTop;
+      }
+      if (this.options.tinyTable) {
+        return { 'top': top + rowIdx * 22 + 'px' };
+      } else {
+        return { 'top': top + rowIdx * 36 + 'px' };
+      }
     }
     return null;
   }
