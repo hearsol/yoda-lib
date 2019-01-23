@@ -121,7 +121,7 @@
                       <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
                         (change)="_onFileChange(f, $event)" [placeholder]="f.placeholder" [required]="f.required ? true: null">
                       <label class="custom-file-label" [for]="f._id">
-                        <span>{{_indexObject(_d, f.name)?.name}}</span>
+                        <span *ngIf="f.files">{{f.files.name}}</span>
                       </label>
                     </div>
                     <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
@@ -136,8 +136,8 @@
                           multiple
                           (change)="_onFileChange(f, $event)" [required]="f.required ? true: null">
                         <label class="custom-file-label" [for]="f._id">
-                            <span *ngIf="_indexObject(_d, f.name)?.length">{{_indexObject(_d, f.name)?.length}}개의 파일</span>
-                            <span *ngIf="!_indexObject(_d, f.name)?.length">{{f.placeholder}}</span>
+                            <span *ngIf="f.files">{{f.files.length}}개의 파일</span>
+                            <span *ngIf="!f.files">{{f.placeholder}}</span>
                           </label>
                       </div>
                       <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>

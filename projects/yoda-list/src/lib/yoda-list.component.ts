@@ -1,7 +1,7 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { YodaTableOptions, YodaTableSortInfo, YodaTablePage, YodaTablePagingFunc, YodaTableComponent } from '@hsolpkg/yoda-table';
-import { Subject, fromEvent, Observable } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject, fromEvent, Observable, BehaviorSubject } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
 import { faCalendarAlt, faSync, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { isInteger } from 'lodash';
@@ -76,7 +76,7 @@ export interface YodaListOptions {
   templateUrl: './yoda-list.component.html',
   styleUrls: []
 })
-export class YodaListComponent implements AfterViewInit, OnDestroy {
+export class YodaListComponent implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild('yoda') yoda: YodaTableComponent;
   @ViewChild('search') search: ElementRef;
 
@@ -94,7 +94,9 @@ export class YodaListComponent implements AfterViewInit, OnDestroy {
   totalSize: number;
 
   searchText: string;
-  isLoading = false;
+  isLoading: boolean;
+  isInited$ = new Subject<boolean>();
+  isInited = false;
   hideSearch = false;
 
   options: YodaListOptions;
@@ -106,6 +108,10 @@ export class YodaListComponent implements AfterViewInit, OnDestroy {
 
   index = 0;
   index2 = 0;
+
+  private _initializeSub: any;
+  private _initializeSubscript: any;
+
   constructor(private cdr: ChangeDetectorRef) {
     this._refreshStateSubscription = this._refreshState
       .pipe(debounceTime(5))
@@ -118,11 +124,23 @@ export class YodaListComponent implements AfterViewInit, OnDestroy {
           action.state = action.onState ? action.onState(action.id) : 'enabled';
         });
       });
+
+    this._initializeSubscript = this.isInited$.subscribe(res => {
+      setTimeout(() => this.isInited = res);
+    });
   }
 
+  ngOnInit(): void {
+    if (!this.isInited) {
+      this.isInited$.next(true);
+    }
+  }
   ngOnDestroy(): void {
     if (this._refreshStateSubscription) {
       this._refreshStateSubscription.unsubscribe();
+    }
+    if (this._initializeSubscript) {
+      this._initializeSubscript.unsubscribe();
     }
   }
 
@@ -154,31 +172,49 @@ export class YodaListComponent implements AfterViewInit, OnDestroy {
 
   setOptions(options: YodaListOptions) {
     this.options = options;
-    this.tableOptions = this.options.tableOptions;
-    this.tableAsyncFunc = this.options.tableOptions.asyncPaging;
-    this.tableOptions.pagination = 'custom';
-    if (!this.options.onSearch) {
-      this.hideSearch = true;
+    if (this.isInited) {
+      this.initList();
+    } else {
+      this._initializeSub = this.isInited$.pipe(
+        tap(res => {
+          if (res) {
+            this.initList();
+            this._initializeSub.unsubscribe();
+            this._initializeSub = null;
+          }
+        }),
+      ).subscribe();
     }
-    if (options.pageSize) {
-      this.pageSize = options.pageSize;
-    }
-    this.tableOptions.asyncPaging = (pageNum: number, pageSize: number, sortInfo: YodaTableSortInfo[]) => {
-      this.isLoading = true;
-      return this.tableAsyncFunc(pageNum, pageSize, sortInfo).pipe(
-        map((data: YodaTablePage) => {
-          this.totalSize = data.total;
-          this.isLoading = false;
-          this.cdr.detectChanges();
-          return data;
-        })
-      );
-    };
-    if (this.options.buttons) {
-      this.actions = this._getListActionButtons(this.options.buttons);
-    }
-    if (this.options.filters) {
-      this.filters = this._getListFilters(this.options.filters);
+  }
+
+  initList() {
+    if (this.options) {
+      this.tableOptions = this.options.tableOptions;
+      this.tableAsyncFunc = this.options.tableOptions.asyncPaging;
+      this.tableOptions.pagination = 'custom';
+      if (!this.options.onSearch) {
+        this.hideSearch = true;
+      }
+      if (this.options.pageSize || this.tableOptions.pageSize) {
+        this.pageSize = this.options.pageSize || this.tableOptions.pageSize;
+      }
+      this.tableOptions.asyncPaging = (pageNum: number, pageSize: number, sortInfo: YodaTableSortInfo[]) => {
+        this.isLoading = true;
+        return this.tableAsyncFunc(pageNum, pageSize, sortInfo).pipe(
+          map((data: YodaTablePage) => {
+            this.totalSize = data.total;
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            return data;
+          })
+        );
+      };
+      if (this.options.buttons) {
+        this.actions = this._getListActionButtons(this.options.buttons);
+      }
+      if (this.options.filters) {
+        this.filters = this._getListFilters(this.options.filters);
+      }
     }
   }
 

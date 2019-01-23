@@ -1,6 +1,7 @@
 <div class="unit-header">
-  <h2 class="title">{{options.title}} ({{totalSize}}건)
-    <span *ngIf="isLoading">
+  <h2 class="title">{{options?.title}}
+    <span *ngIf="tableOptions">({{totalSize}}건)</span>
+    <span *ngIf="isInited && isLoading">
       <fa-icon [icon]="syncIcon" [spin]="true"></fa-icon>
     </span>
   </h2>
@@ -69,11 +70,11 @@
   </div>
 
   <br />
-  <yoda-table #yoda [options]="options.tableOptions" [pageChange]="pageChange" [reload]="_reloadTable" [refresh]="_refreshTable"></yoda-table>
+  <yoda-table *ngIf="tableOptions" #yoda [options]="tableOptions" [pageChange]="pageChange" [reload]="_reloadTable" [refresh]="_refreshTable"></yoda-table>
 </div>
 
 <div class="unit-footer list">
-  <yoda-pagination [page]="currentPage" (pageChanges)="onPageChanges($event)" [maxSize]="5" [totalSize]="totalSize"
+  <yoda-pagination *ngIf="tableOptions" [page]="currentPage" (pageChanges)="onPageChanges($event)" [maxSize]="5" [totalSize]="totalSize"
     [pageSize]="pageSize" class="pagination"></yoda-pagination>
   <div class="button-wrap">
     <button *ngIf="!options?.disableExport" class="button secondary" (click)="onDownload()">엑셀다운로드</button>

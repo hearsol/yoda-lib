@@ -5,7 +5,7 @@ import { YodaFloatService } from 'projects/yoda-float/src/public_api';
 import { YodaTableOptions, YodaTableField, YodaTablePage, YodaTableComponent } from 'projects/yoda-table/src/public_api';
 import { YodaTableTemplateCol, YodaTableTemplateRow, YodaTableRowInfo } from 'projects/yoda-table/src/lib/yoda-table.component';
 import { YodaListOptions, YodaListComponent } from 'projects/yoda-list/src/public_api';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, delay } from 'rxjs/operators';
 import { YodaFormComponent, YodaFormOptions } from 'projects/yoda-form/src/public_api';
 import { Validators } from '@angular/forms';
 
@@ -156,7 +156,9 @@ export class YodaTestComponent implements OnInit {
             return data;
           })
         };
-        return of(page);
+        return of(page).pipe(
+          delay(200)
+        );
       }
     };
 
@@ -219,8 +221,8 @@ export class YodaTestComponent implements OnInit {
       ],
       tableOptions: this.yodaTableOptions
     };
-    this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
-    this.listRef.instance.setOptions(this.listOptions);
+    // this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
+    // this.listRef.instance.setOptions(this.listOptions);
   }
 
   reloadTable() {
@@ -368,6 +370,9 @@ export class YodaTestComponent implements OnInit {
         },
 
       ],
+      onValueChanged: (value) => {
+        console.log(value);
+      },
       onAction: (action: string, data: any) => {
         console.log(data);
         this.ref.destroy();

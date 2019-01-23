@@ -101,6 +101,7 @@ interface FormField {
   template: TemplateRef<any>;
   templateContext: any;
   onError: (name: string, errors: ValidationErrors) => string;
+  files?: any;
 }
 
 interface FormActionButton {
@@ -176,14 +177,14 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    setTimeout(() => {
-      if (this.needScroll) {
+    if (this.needScroll) {
+      setTimeout(() => {
         this.needScroll = false;
         if (this.scrollListner) {
           this.scrollListner.next('toRight');
         }
-      }
-    });
+      });
+    }
   }
   ngOnInit() { }
 
@@ -515,10 +516,12 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.formControls[form.name].patchValue(
           ev.target.files
         );
+        form.files = ev.target.files;
       } else {
         this.formControls[form.name].patchValue(
           ev.target.files[0]
         );
+        form.files = ev.target.files[0];
       }
     }
   }
