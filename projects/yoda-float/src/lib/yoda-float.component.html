@@ -1,6 +1,7 @@
 <div class="work-board" [hidden]="isHide()">
-  <div class="work">
-    <div class="layout-wrap" #osScroller>
+  <div class="work" #osScroller>
+    <div class="layout-wrap">
+      <ng-content></ng-content>
       <ng-template #vc></ng-template>
     </div>
   </div>

@@ -221,8 +221,8 @@ export class YodaTestComponent implements OnInit {
       ],
       tableOptions: this.yodaTableOptions
     };
-    // this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
-    // this.listRef.instance.setOptions(this.listOptions);
+    this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
+    this.listRef.instance.setOptions(this.listOptions);
   }
 
   reloadTable() {

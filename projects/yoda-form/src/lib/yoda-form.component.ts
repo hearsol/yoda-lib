@@ -1,4 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone, Renderer, TemplateRef, AfterViewChecked } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, ViewChild,
+  ElementRef, NgZone, Renderer, TemplateRef, AfterViewChecked
+} from '@angular/core';
 import { ValidationErrors, Validators, FormGroup, ValidatorFn, FormControl } from '@angular/forms';
 import { faTimes, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';

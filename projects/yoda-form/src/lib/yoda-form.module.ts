@@ -12,7 +12,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     YodaFormComponent
   ],
   imports: [
-    CommonModule,
+  CommonModule,
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
@@ -21,6 +21,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   entryComponents: [
     YodaFormComponent,
   ],
-  exports: [YodaFormComponent]
+  exports: [YodaFormComponent],
+  providers: [
+  ]
 })
 export class YodaFormModule { }
