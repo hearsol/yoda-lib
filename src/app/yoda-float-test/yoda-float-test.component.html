@@ -1,5 +1,5 @@
-<ng-template #testTemplate>
-  <div><em>template</em> working!!!</div>
+<ng-template #testTemplate let-context="context">
+  <div><em>template</em> {{context.email}}</div>
   <div>템플릿 동작!!!</div>
 </ng-template>
 <ng-template #imgTemplate>

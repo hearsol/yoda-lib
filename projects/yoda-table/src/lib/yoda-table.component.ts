@@ -28,6 +28,10 @@ export interface YodaTableFieldGroup {
   length: number;
 }
 
+export interface YodaTableTemplateField {
+  template: TemplateRef<any>;
+  templateContext?: any;
+}
 
 export interface YodaTableField {
   title: string;
@@ -39,6 +43,7 @@ export interface YodaTableField {
   align?: 'left' | 'right' | 'center';
   class?: any;
   actions?: YodaTableAction[];
+  template?: (value: any, row?: any) => YodaTableTemplateField;
 }
 
 
@@ -107,6 +112,7 @@ interface TableField {
   sortCompare: (a: any, b: any) => number;
   align: 'left' | 'right' | 'center';
   actions: YodaTableAction[];
+  template: (value: any, row?: any) => YodaTableTemplateField;
 }
 
 interface TableHeaderItem {
@@ -374,7 +380,8 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
         sortable: f.sortable,
         sortCompare: f.sortCompare,
         align: f.align,
-        actions: f.actions ? f.actions.slice() : null
+        actions: f.actions ? f.actions.slice() : null,
+        template: f.template,
       };
     });
 
@@ -665,6 +672,11 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
 
         row.__yoda_row_templates = this.options.onAdditionalRows ? this.options.onAdditionalRows(row, row.__yoda_row_info) : null;
         this.updateActionStates(row, row.__yoda_row_info);
+
+        row.__yoda_field_template = {};
+        this._fielddata.forEach((f, fieldIdx) => {
+          row.__yoda_field_template[fieldIdx] = f.template ? f.template(this.indexObject(row, f.name), row) : null;
+        });
       }
     });
   }

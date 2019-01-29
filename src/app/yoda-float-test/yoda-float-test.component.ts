@@ -111,6 +111,14 @@ export class YodaFloatTestComponent implements OnInit, OnChanges, AfterViewInit 
         name: key
       };
       switch (key) {
+        case 'email':
+          field.template = (value: any, row: any) => {
+            return {
+              template: this.testTempRef,
+              templateContext: { context: { email: value } }
+            };
+          };
+          break;
         case 'avatar':
           field.formatter = (value: any, row: any, isExport: boolean) => {
             if (isExport) {

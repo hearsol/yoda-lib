@@ -2,7 +2,8 @@
   <table *ngIf="options" [ngClass]="tableClass">
     <thead>
       <tr *ngFor="let header of _headers; let rowIdx = index;">
-        <th [ngClass]="headerClass" [ngStyle]="getHeaderStyle(rowIdx)" *ngFor="let hItem of header.headers; let idx = index;" [attr.colspan]="hItem.colspan" [attr.rowspan]="hItem.rowspan">
+        <th [ngClass]="headerClass" [ngStyle]="getHeaderStyle(rowIdx)" *ngFor="let hItem of header.headers; let idx = index;"
+          [attr.colspan]="hItem.colspan" [attr.rowspan]="hItem.rowspan">
 
           <ng-container *ngIf="hItem.field.checkBox; else elseTemplate">
             <div class="check-wrap">
@@ -48,11 +49,17 @@
           <ng-container *ngFor="let field of _fielddata; let idx = index;">
             <td [ngClass]="field.class">
 
-              <ng-container *ngIf="field.formatter; else elseTemplate">
-                <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
+              <ng-container *ngIf="row.__yoda_field_template[idx]?.template; else elseNoTemplate">
+                <ng-container *ngTemplateOutlet="row.__yoda_field_template[idx].template; context:row.__yoda_field_template[idx].templateContext">
+                </ng-container>
               </ng-container>
-              <ng-template #elseTemplate>
-                <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
+              <ng-template #elseNoTemplate>
+                <ng-container *ngIf="field.formatter; else elseTemplate">
+                  <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
+                </ng-template>
               </ng-template>
 
               <ng-container *ngIf="field.actions">

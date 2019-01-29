@@ -52,6 +52,11 @@ export class YodaTestComponent implements OnInit {
         name: key
       };
       switch (key) {
+        case 'email':
+          field.template = (value: any, row: any) => {
+            return { template: this.testTempRef };
+          };
+          break;
         case 'avatar':
           field.formatter = (value: any, row: any) => {
             return `<img src="https://picsum.photos/64?image=${row.img}">`;
