@@ -17,7 +17,7 @@ export interface YodaTableAction {
   label?: string;
   id: string;
   class?: any;
-  color?: 'success' | 'info' | 'danger'; //  | 'primary' | 'secondary' | 'warning';
+  color?: 'success' | 'info' | 'danger' | 'primary' | 'secondary' | 'warning';
   onAction: (id: string, dataRow: any, index?: number, checked?: boolean) => void;
   onState?: YodaTableActionStateFunc;
 }

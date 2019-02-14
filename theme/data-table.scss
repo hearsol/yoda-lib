@@ -1,5 +1,4 @@
 @import "./theme-variables";
-
 $tbl:#CDD5E4;
 $tbl-line:#dfe8f1;
 $tbl-even:#f9f9f9;
@@ -311,29 +310,6 @@ $space:#37495F;
   margin:0;
   padding:0 3px;
 }
-
-.tbl-btn.warning {
-  background: $orange;
-  border-color: $orange;
-  color: $white;
-}
-
-.tbl-btn.danger {
-  background: $red;
-  border-color: $red;
-  color: $white;
-}
-.tbl-btn.success {
-  background: $green;
-  border-color: $green;
-  color: $white;
-}
-.tbl-btn.info {
-  background: $cyan;
-  border-color: $cyan;
-  color: $white;
-}
-
 .check {
   width:50px!important;
 }

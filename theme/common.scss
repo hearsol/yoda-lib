@@ -1,0 +1,36 @@
+@import "./theme-variables";
+
+button.blc {
+  width: 100%;
+}
+
+button.primary {
+  background-color: $os;
+  color: $white;
+  border-color: $os;
+}
+button.secondary {
+  background-color: $bgray;
+  color: $white;
+  border-color: $bgray;
+}
+button.warning {
+  background: $orange;
+  border-color: $orange;
+  color: $white;
+}
+button.danger {
+  background: $red;
+  border-color: $red;
+  color: $white;
+}
+button.success {
+  background: $green;
+  border-color: $green;
+  color: $white;
+}
+button.info {
+  background: $cyan;
+  border-color: $cyan;
+  color: $white;
+}

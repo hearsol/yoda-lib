@@ -1,5 +1,6 @@
 @import "./theme-variables.scss";
 @import "./data-add.scss";
+@import "./common.scss";
 .search-ing-wrap {
   position: absolute;
   top: 50%;
@@ -142,28 +143,6 @@
 .unit-footer .button:hover,
 .unit-footer .button-blc:hover {
   box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
-}
-
-button.blc {
-  width: 100%;
-}
-
-button.primary {
-  background-color: $os;
-  color: $white;
-  border-color: $os;
-}
-
-button.danger {
-  border-color: $red;
-  background-color: $red;
-  color: $white;
-}
-
-button.secondary {
-  background-color: $bgray;
-  color: $white;
-  border-color: $bgray;
 }
 
 button:disabled {
