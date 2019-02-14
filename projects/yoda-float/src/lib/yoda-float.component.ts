@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef, ElementRef, ComponentFactoryResolver, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, ElementRef, ComponentFactoryResolver, AfterViewInit, Input } from '@angular/core';
 import { YodaFloatService, ScrollTo } from './yoda-float.service';
 
 @Component({
@@ -8,6 +8,7 @@ import { YodaFloatService, ScrollTo } from './yoda-float.service';
   styleUrls: ['./yoda-float.component.scss']
 })
 export class YodaFloatComponent implements AfterViewInit {
+  @Input() useLocalScroll: boolean;
   @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
   @ViewChild('osScroller') osScroller: ElementRef;
   isInited = false;
@@ -36,25 +37,35 @@ export class YodaFloatComponent implements AfterViewInit {
   }
 
   scroll(to: ScrollTo): void {
+    let scrollingElement;
+    if (this.useLocalScroll) {
+      scrollingElement = this.osScroller.nativeElement;
+    } else {
+      scrollingElement = document.scrollingElement || document.documentElement;
+    }
+    if (!scrollingElement) {
+      return;
+    }
+
     switch (to) {
       case 'toLeft':
         try {
-          this.osScroller.nativeElement.scrollLeft = 0;
+          scrollingElement.scrollLeft = 0;
         } catch (err) { }
         break;
       case 'toRight':
         try {
-          this.osScroller.nativeElement.scrollLeft = this.osScroller.nativeElement.scrollWidth;
+          scrollingElement.scrollLeft = scrollingElement.scrollWidth;
         } catch (err) { }
         break;
       case 'toBottom':
         try {
-          this.osScroller.nativeElement.scrollTop = this.osScroller.nativeElement.scrollHeight;
+          scrollingElement.scrollTop = scrollingElement.scrollHeight;
         } catch (err) { }
         break;
       case 'toTop':
         try {
-          this.osScroller.nativeElement.scrollTop = 0;
+          scrollingElement.scrollTop = 0;
         } catch (err) { }
         break;
     }

@@ -1,6 +1,6 @@
 <div [ngClass]="tableWrapClass">
   <table *ngIf="options" [ngClass]="tableClass">
-    <thead>
+    <thead *ngIf="!options.hideHeaders">
       <tr *ngFor="let header of _headers; let rowIdx = index;">
         <th [ngClass]="headerClass" [ngStyle]="getHeaderStyle(rowIdx)" *ngFor="let hItem of header.headers; let idx = index;"
           [attr.colspan]="hItem.colspan" [attr.rowspan]="hItem.rowspan">

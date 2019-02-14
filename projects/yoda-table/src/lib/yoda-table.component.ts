@@ -87,6 +87,7 @@ export interface YodaTableOptions {
   tinyTable?: boolean;
   fixedHeader?: boolean;
   fixedHeaderTop?: number;
+  hideHeaders?: boolean;
   tableClass?: any;
   headerClass?: any;
   onRowState?: (rowData: any, rowInfo?: YodaTableRowInfo) => YodaTableRowState;
