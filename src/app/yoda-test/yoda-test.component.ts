@@ -162,7 +162,7 @@ export class YodaTestComponent implements OnInit {
           })
         };
         return of(page).pipe(
-          delay(200)
+          delay(800)
         );
       }
     };
