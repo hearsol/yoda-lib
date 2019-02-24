@@ -20,9 +20,9 @@ export class YodaFloatService {
     this.rootViewContainer = viewContainerRef;
   }
 
-  addComponent<T>(c: Type<T>): ComponentRef<T> {
+  addComponent<T>(c: Type<T>, index?: number): ComponentRef<T> {
     const factory = this.factoryResolver.resolveComponentFactory(c);
-    const componentRef = this.rootViewContainer.createComponent(factory);
+    const componentRef = this.rootViewContainer.createComponent(factory, index);
     if (componentRef.instance && 'scrollListner' in componentRef.instance) {
       (componentRef.instance as any).scrollListner = this.scrollSubject;
     }
