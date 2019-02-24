@@ -65,6 +65,11 @@
         </ng-container>
       </ng-container>
     </div>
+
+    <div class="form-row" *ngIf="_template">
+      <ng-container *ngTemplateOutlet="_template.template; context:_template.templateContext"></ng-container>
+    </div>
+
   </div>
 
   <br />

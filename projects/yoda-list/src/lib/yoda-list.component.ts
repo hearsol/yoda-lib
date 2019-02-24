@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef, OnInit, TemplateRef } from '@angular/core';
 import { YodaTableOptions, YodaTableSortInfo, YodaTablePage, YodaTablePagingFunc, YodaTableComponent } from '@hsolpkg/yoda-table';
 import { Subject, fromEvent, Observable, BehaviorSubject } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
@@ -58,6 +58,10 @@ interface ListAction {
   onState?: YodaListActionStateFunc;
 }
 
+export interface YodaListemplate {
+  template?: TemplateRef<any>;
+  templateContext?: any;
+}
 
 export interface YodaListOptions {
   title: string;
@@ -67,6 +71,7 @@ export interface YodaListOptions {
   exportFilePrefix?: string;
   onSearch?: (text: string) => void;
   filters?: YodaListFilter[];
+  template?: () => YodaListemplate;
   buttons?: YodaListActionButton[];
 }
 
@@ -108,6 +113,7 @@ export class YodaListComponent implements AfterViewInit, OnDestroy, OnInit {
 
   index = 0;
   index2 = 0;
+  _template: YodaListemplate;
 
   private _initializeSub: any;
   private _initializeSubscript: any;
@@ -123,6 +129,7 @@ export class YodaListComponent implements AfterViewInit, OnDestroy, OnInit {
         this.filters.forEach(action => {
           action.state = action.onState ? action.onState(action.id) : 'enabled';
         });
+        this._template = this.options.template ? this.options.template() : null;
       });
 
     this._initializeSubscript = this.isInited$.subscribe(res => {
