@@ -362,7 +362,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   _indexObject(obj: any, is: any, value?: any): any {
-    const regex = /(?<=\[).+?(?=\])/;
+    const regex = /\[(.*?)\]/;
     if (obj) {
       if (typeof is === 'string') {
         return this._indexObject(obj, is.split('.'), value);
@@ -374,7 +374,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
         const ar = regex.exec(is[0]);
         let _is = is[0];
         if (ar && ar.length > 0) {
-          _is = ar[0];
+          _is = ar[1];
         }
         if (is.length === 1 && value !== undefined) {
           return obj[_is] = value;
@@ -394,7 +394,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   protected _indexObjectHasKey(obj: any, is: any): boolean {
-    const regex = /(?<=\[).+?(?=\])/;
+    const regex = /\[(.*?)\]/g;
 
     if (obj && is) {
       if (typeof is === 'string') {
@@ -403,7 +403,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
         const ar = regex.exec(is[0]);
         let _is = is[0];
         if (ar && ar.length > 0) {
-          _is = ar[0];
+          _is = ar[1];
         }
         if (is.length === 1) {
           return _is in obj;
