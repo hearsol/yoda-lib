@@ -1,5 +1,6 @@
 import { Injectable, ComponentFactoryResolver, ViewContainerRef, Type, ComponentRef } from '@angular/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { YodaFloatShipComponent } from './yoda-float-ship/yoda-float-ship.component';
 
 export type ScrollTo = 'toRight' | 'toLeft' | 'toBottom' | 'toTop';
 
@@ -13,21 +14,18 @@ export class YodaFloatService {
   refreshSubject = new Subject<any>();
   initializedSubject = new BehaviorSubject<boolean>(false);
 
-  constructor() {}
+  constructor() { }
 
   setRootViewContainerRef(fr: ComponentFactoryResolver, viewContainerRef: ViewContainerRef) {
     this.factoryResolver = fr;
     this.rootViewContainer = viewContainerRef;
   }
 
-  addComponent<T>(c: Type<T>, index?: number): ComponentRef<T> {
-    const factory = this.factoryResolver.resolveComponentFactory(c);
-    const componentRef = this.rootViewContainer.createComponent(factory, index);
-    if (componentRef.instance && 'scrollListner' in componentRef.instance) {
-      (componentRef.instance as any).scrollListner = this.scrollSubject;
-    }
+  addComponent<T>(c: Type<T>, index?: number): YodaFloatShipComponent<T> {
+    const factory = this.factoryResolver.resolveComponentFactory(YodaFloatShipComponent);
+    const shipComponentRef = this.rootViewContainer.createComponent(factory, index);
     this.refreshSubject.next();
-    return componentRef;
+    return shipComponentRef.instance.init(shipComponentRef, c) as YodaFloatShipComponent<T>;
   }
 
   initialized() {
