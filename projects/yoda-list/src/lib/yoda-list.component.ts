@@ -77,7 +77,7 @@ export interface YodaListOptions {
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'yoda-list.unit.list',
+  selector: 'yoda-list',
   templateUrl: './yoda-list.component.html',
   styleUrls: []
 })
@@ -309,7 +309,7 @@ export class YodaListComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   protected _fromNativeDate(date: Date): NgbDateStruct {
-    return {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate()};
+    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
   }
 
   protected _toNativeDate(date: NgbDateStruct): Date {

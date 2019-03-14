@@ -1,5 +1,7 @@
 import { Component, ViewChild, ViewContainerRef, ElementRef, ComponentFactoryResolver, AfterViewInit, Input } from '@angular/core';
 import { YodaFloatService, ScrollTo } from './yoda-float.service';
+import { YodaFloatShipComponent } from './yoda-float-ship/yoda-float-ship.component';
+import { ComponentFactory } from '@angular/core/src/render3';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -9,9 +11,10 @@ import { YodaFloatService, ScrollTo } from './yoda-float.service';
 })
 export class YodaFloatComponent implements AfterViewInit {
   @Input() useLocalScroll: boolean;
-  @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
+  @ViewChild('vc', { read: ViewContainerRef }) vc: ViewContainerRef;
   @ViewChild('osScroller') osScroller: ElementRef;
   isInited = false;
+  factory: ComponentFactory<any>;
   constructor(
     private fr: ComponentFactoryResolver,
     private yodaFloatService: YodaFloatService) {
@@ -23,7 +26,8 @@ export class YodaFloatComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     if (!this.isInited) {
-      this.yodaFloatService.setRootViewContainerRef(this.fr, this.vc);
+      this.factory = this.fr.resolveComponentFactory(YodaFloatShipComponent) as ComponentFactory<any>;
+      this.yodaFloatService.setRootViewContainerRef(this.factory, this.vc);
       this.yodaFloatService.initialized();
       this.isInited = true;
     }

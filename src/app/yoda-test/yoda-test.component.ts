@@ -1,7 +1,7 @@
 import { Component, OnInit, ComponentRef, ViewChild, TemplateRef } from '@angular/core';
 import { mockData, testStates } from '../MOCK_DATA';
 import { of, Observable, Subject } from 'rxjs';
-import { YodaFloatService } from 'projects/yoda-float/src/public_api';
+import { YodaFloatService, YodaFloatRef } from 'projects/yoda-float/src/public_api';
 import { YodaTableOptions, YodaTableField, YodaTablePage, YodaTableComponent } from 'projects/yoda-table/src/public_api';
 import { YodaTableTemplateCol, YodaTableTemplateRow, YodaTableRowInfo } from 'projects/yoda-table/src/lib/yoda-table.component';
 import { YodaListOptions, YodaListComponent } from 'projects/yoda-list/src/public_api';
@@ -24,11 +24,11 @@ export class YodaTestComponent implements OnInit {
   pageNum: number;
   imgSrcs: any[] = [];
 
-  ref: ComponentRef<YodaFormComponent>;
+  ref: YodaFloatRef<YodaFormComponent>;
   options: YodaFormOptions;
 
   listOptions: YodaListOptions;
-  listRef: ComponentRef<YodaListComponent>;
+  listRef: YodaFloatRef<YodaListComponent>;
   searchText: string;
   num: number;
   optionTestSubject = new Subject<{ value: any, text: string }[]>();
@@ -36,7 +36,7 @@ export class YodaTestComponent implements OnInit {
   cancelReq = true;
 
   yodaTableOptions: YodaTableOptions;
-  tableRef: ComponentRef<YodaTableComponent>;
+  tableRef: YodaFloatRef<YodaTableComponent>;
   imgSrc = 'http://media.pixcove.com/I/5/8/Image-Editing-Textures-Backgrounds-Unleashed-Ebv-W-8490.jpg';
   constructor(private yodaFloatService: YodaFloatService) { }
 
@@ -226,7 +226,7 @@ export class YodaTestComponent implements OnInit {
       ],
       tableOptions: this.yodaTableOptions
     };
-    this.listRef = this.yodaFloatService.addComponent(YodaListComponent);
+    this.listRef = this.yodaFloatService.addComponent(YodaListComponent, { size: 'large' });
     this.listRef.instance.setOptions(this.listOptions);
   }
 
@@ -386,9 +386,9 @@ export class YodaTestComponent implements OnInit {
     };
     console.log('form inited');
     // setTimeout(() => {
-      console.log('add form component');
-      this.ref = this.yodaFloatService.addComponent(YodaFormComponent);
-      this.ref.instance.setOptions(this.options);
+    console.log('add form component');
+    this.ref = this.yodaFloatService.addComponent(YodaFormComponent);
+    this.ref.instance.setOptions(this.options);
     // }, 100);
 
     setTimeout(() => {

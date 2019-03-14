@@ -1,6 +1,11 @@
-import { Injectable, ComponentFactoryResolver, ViewContainerRef, Type, ComponentRef } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, ViewContainerRef, Type, ComponentRef, ComponentFactory } from '@angular/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { YodaFloatShipComponent } from './yoda-float-ship/yoda-float-ship.component';
+
+export interface YodaFloatRef<T> {
+  instance: T;
+  ref: ComponentRef<T>;
+  destroy(): void;
+}
 
 export type ScrollTo = 'toRight' | 'toLeft' | 'toBottom' | 'toTop';
 
@@ -8,7 +13,7 @@ export type ScrollTo = 'toRight' | 'toLeft' | 'toBottom' | 'toTop';
   providedIn: 'root'
 })
 export class YodaFloatService {
-  factoryResolver: ComponentFactoryResolver;
+  factory: ComponentFactory<any>;
   rootViewContainer: ViewContainerRef;
   scrollSubject = new Subject<any>();
   refreshSubject = new Subject<any>();
@@ -16,16 +21,19 @@ export class YodaFloatService {
 
   constructor() { }
 
-  setRootViewContainerRef(fr: ComponentFactoryResolver, viewContainerRef: ViewContainerRef) {
-    this.factoryResolver = fr;
+  setRootViewContainerRef(factory: ComponentFactory<any>, viewContainerRef: ViewContainerRef) {
+    this.factory = factory;
     this.rootViewContainer = viewContainerRef;
   }
 
-  addComponent<T>(c: Type<T>, index?: number): YodaFloatShipComponent<T> {
-    const factory = this.factoryResolver.resolveComponentFactory(YodaFloatShipComponent);
-    const shipComponentRef = this.rootViewContainer.createComponent(factory, index);
+  addComponent<T>(c: Type<T>, options?: {
+    index?: number;
+    size?: string | number;
+  }): YodaFloatRef<T> {
+    const shipComponentRef = this.rootViewContainer.createComponent(this.factory, options ? options.index : undefined);
     this.refreshSubject.next();
-    return shipComponentRef.instance.init(shipComponentRef, c) as YodaFloatShipComponent<T>;
+    const size = options ? options.size : undefined;
+    return shipComponentRef.instance.init(shipComponentRef, c, size) as any as YodaFloatRef<T>;
   }
 
   initialized() {
