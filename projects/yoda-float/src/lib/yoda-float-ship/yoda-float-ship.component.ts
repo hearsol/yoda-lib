@@ -48,7 +48,7 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit
     this.selfRef = selfRef;
     this.ref = this.vc.createComponent(factory);
     this.instance = this.ref.instance;
-    this.renderer2.addClass(selfRef.location.nativeElement, 'unit');
+    this.renderer2.addClass(selfRef.location.nativeElement, 'layout-item');
     let sizeWidth = '500px';
     if (size) {
       if (typeof size === 'string') {
@@ -62,7 +62,7 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit
         sizeWidth = `${size}px`;
       }
     }
-    this.renderer2.setStyle(selfRef.location.nativeElement, 'width', sizeWidth);
+    this.renderer2.setStyle(selfRef.location.nativeElement, 'min-width', sizeWidth);
     return this;
   }
 }

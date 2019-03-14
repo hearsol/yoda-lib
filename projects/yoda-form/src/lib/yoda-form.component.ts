@@ -123,7 +123,7 @@ interface FormRow {
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'yoda-form',
+  selector: 'yoda-form.unit',
   templateUrl: './yoda-form.component.html',
   styleUrls: ['./yoda-form.component.scss']
 })

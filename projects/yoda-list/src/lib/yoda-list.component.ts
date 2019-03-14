@@ -77,7 +77,7 @@ export interface YodaListOptions {
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'yoda-list',
+  selector: 'yoda-list.unit',
   templateUrl: './yoda-list.component.html',
   styleUrls: []
 })
