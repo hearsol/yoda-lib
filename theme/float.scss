@@ -1,0 +1,166 @@
+@import "./theme-variables";
+.search-ing-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+.layout-item {
+  height: 100%;
+  margin-right: 2px;
+}
+.unit-wrap {
+  background: $white;
+  height: 100%;
+}
+.unit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.unit.list {
+  min-width: 1100px;
+}
+.unit-header {
+  display: flex;
+  height: 65px;
+  border-bottom: 1px solid $bgray-600;
+}
+
+.unit-header h2.title {
+  font-size: 18px;
+  padding: 0 30px;
+  line-height: 65px;
+  flex: 1;
+  display: flex;
+}
+
+.unit-search {
+  display: flex;
+  padding-right: 30px;
+  position: relative;
+}
+
+.unit-search input[type="search"] {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid $bgray-400;
+  height: 36px;
+  box-sizing: border-box;
+  padding-left: 10px;
+  font-size: 14px;
+  background: none;
+  align-self: center;
+  width: 190px;
+  transition: color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out,
+    box-shadow .15s ease-in-out;
+}
+
+.unit-search input[type="search"]::placeholder {
+  color: $bgray-600;
+}
+
+.unit-search input[type="search"]:focus {
+  background: #FAFAFA;
+  border-bottom: 1px solid #FAFAFA;
+}
+
+.unit-search button {
+  position: absolute;
+  top: 13px;
+  right: 30px;
+  font-size: 13px;
+  width: 30px;
+  border-radius: 0;
+  background: none;
+  border: none;
+  height: 36px;
+  box-sizing: border-box;
+  align-self: center;
+}
+
+.unit-header .btn-close {
+  line-height: 65px;
+  width: 50px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.unit-body-list {
+  overflow: auto;
+  flex: 1;
+}
+
+.unit-body {
+  overflow: auto;
+  flex: 1;
+  padding: 30px;
+}
+
+.unit-footer {
+  margin-top: auto;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: center;
+  background: #FAFAFA;
+}
+
+.unit-footer.list {
+  justify-content: left !important;
+}
+
+.unit-footer>.button,
+.button-wrap>.button {
+  font-size: 13px;
+  border-radius: 2px;
+  height: 32px;
+  line-height: inherit;
+  box-sizing: border-box;
+  padding: 0 10px;
+  display: inline-block;
+  border: 0;
+  transition: color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out,
+    box-shadow .15s ease-in-out;
+}
+
+.unit-footer .button:not(:last-child),
+.unit-footer .button:not(:first-child) {
+  margin: 0 5px;
+}
+
+.unit-footer .button:hover,
+.unit-footer .button-blc:hover {
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
+}
+
+button:disabled {
+  background-color: $disable-bg;
+  color: $bgray-600;
+  border-color: $disable-bg;
+}
+
+.button-wrap {
+  margin-left: auto;
+}
+
+.filter-wrap {
+  padding: 20px 20px 0;
+}
+
+.filter-wrap .se-form-item {
+  margin: 0 10px;
+}
+
+.filter-wrap .in-input,
+.filter-wrap .in-select {
+  border-radius: 0 !important;
+}
+
+.input-group-prepend .calendar {
+  width: 40px;
+}
