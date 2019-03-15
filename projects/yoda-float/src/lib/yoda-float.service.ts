@@ -53,7 +53,7 @@ export class YodaFloatService {
       } else if (options.index === 'end') {
         index = undefined;
       } else if (options.index === 'onMyLeft' && options.callerRef) {
-        index = options.callerRef.viewIndex <= 0 ? 0 : options.callerRef.viewIndex - 1;
+        index = options.callerRef.viewIndex <= 0 ? 0 : options.callerRef.viewIndex;
       } else if (options.index === 'onMyRight' && options.callerRef) {
         index = options.callerRef.viewIndex + 1;
       } else if (typeof options.index === 'number') {
