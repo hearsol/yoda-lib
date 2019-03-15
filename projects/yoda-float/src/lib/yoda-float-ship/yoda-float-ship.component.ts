@@ -3,7 +3,7 @@ import {
   ComponentFactoryResolver, Type, ComponentRef,
   AfterViewInit, Input, Renderer2, AfterContentChecked, ChangeDetectorRef, Injector
 } from '@angular/core';
-import { YodaFloatService, YodaFloatRef } from '../yoda-float.service';
+import { YodaFloatRef } from '../yoda-float.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
@@ -14,25 +14,26 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   animations: [
     trigger('flipState', [
       state('active', style({
-        zIndex: 10,
+        // zIndex: 10,
         // transform: 'rotateY(0) translateZ(0)'
-        transform: 'translateX(0)',
-        position: 'relative',
-
-        // filter: 'blur(0)',
-        // transform: 'scaleX(1)',
+        // transform: 'translateX(0)',
+        // position: 'relative',
+        width: '100%',
+        filter: 'blur(0)',
+        transform: 'scale(1)',
         opacity: 1
       })),
       state('inactive', style({
-        zIndex: -10,
+        // zIndex: -10,
         opacity: 0,
-        position: 'relative',
-        // transform: 'scaleX(0.5)'
-        // filter: 'blur(4px)',
-        transform: 'translateX(-500px)',
+        width: '0',
+        // position: 'relative',
+        transform: 'scale(0.5)',
+        filter: 'blur(4px)',
+        // transform: 'translateX(-500px)',
         // transform: 'rotateY(90deg)'
       })),
-      transition('active => inactive', animate('200ms ease-out')),
+      transition('active => inactive', animate('100ms ease-out')),
       transition('inactive => active', animate('200ms ease-in'))
     ])
   ]
@@ -72,7 +73,7 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
       if (this.selfRef) {
         this.selfRef.destroy();
       }
-    }, this.animation ? 200 : 0);
+    }, this.animation ? 100 : 0);
   }
 
 
@@ -128,7 +129,7 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
 
   makeInjector() {
     return Injector.create({
-      providers: [{ provide: 'YodaFloatRef', useValue: this.selfRef.instance }],
+      providers: [{ provide: YodaFloatRef, useValue: this.selfRef.instance }],
       parent: this.injector
     });
   }
@@ -147,6 +148,7 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
     if (options && 'autoScroll' in options) {
       this.needScroll = options.autoScroll;
     }
+    this.smoothScroll = true;
     if (options && 'smoothScroll' in options) {
       this.smoothScroll = options.smoothScroll;
     }

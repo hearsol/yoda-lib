@@ -1,11 +1,12 @@
 import { Injectable, ComponentFactoryResolver, ViewContainerRef, Type, ComponentRef, ComponentFactory } from '@angular/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
-export interface YodaFloatRef<T> {
-  instance: T;
-  ref: ComponentRef<T>;
-  viewIndex: number;
-  destroy(): void;
+@Injectable()
+export abstract class YodaFloatRef<T> {
+  abstract instance: T;
+  abstract ref: ComponentRef<T>;
+  abstract viewIndex: number;
+  abstract destroy(): void;
 }
 
 export type ScrollTo = 'toRight' | 'toLeft' | 'toBottom' | 'toTop';

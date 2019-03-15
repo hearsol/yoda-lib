@@ -11,12 +11,14 @@ import { YodaFormModule } from 'projects/yoda-form/src/public_api';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormTestComponent } from './form-test/form-test.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     YodaTestComponent,
     YodaFloatTestComponent,
+    FormTestComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,6 +29,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     YodaFloatModule.forRoot(),
     YodaListModule,
     YodaFormModule,
+  ],
+  entryComponents: [
+    FormTestComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
