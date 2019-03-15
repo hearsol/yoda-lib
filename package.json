@@ -15,7 +15,7 @@
     "publish:yoda-table": "cd dist/yoda-table && npm publish --access public --tag latest",
     "install:yoda-float": "cd projects/yoda-float && npm install",
     "version:yoda-float": "cd projects/yoda-float && npm version patch -f",
-    "build:yoda-float": "ng build yoda-float",
+    "build:yoda-float": "ng build yoda-float && npx scss-bundle -c scss-bundle.yoda-float.config.json",
     "publish:yoda-float": "cd dist/yoda-float && npm publish --access public --tag latest",
     "install:yoda-list": "cd projects/yoda-list && npm install",
     "version:yoda-list": "cd projects/yoda-list && npm version patch -f",

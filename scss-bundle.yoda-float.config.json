@@ -1,0 +1,4 @@
+{
+  "entry": "./theme/float.scss",
+  "dest": "./dist/yoda-float/dist/yoda-float.scss"
+}
