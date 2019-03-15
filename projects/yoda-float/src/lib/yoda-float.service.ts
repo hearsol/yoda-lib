@@ -4,6 +4,7 @@ import { Subject, Observable, BehaviorSubject } from 'rxjs';
 export interface YodaFloatRef<T> {
   instance: T;
   ref: ComponentRef<T>;
+  viewIndex: number;
   destroy(): void;
 }
 
@@ -26,14 +27,43 @@ export class YodaFloatService {
     this.rootViewContainer = viewContainerRef;
   }
 
+  /**
+   *
+   *
+   * @param c Component Type
+   * @param options.callerRef? callers YodaFloatRef
+   * @param options.index?: number | 'onMyLeft' | 'onMyRight' when use onMyLeft or onMyRight you should set seflRef default is append
+   * @param options.size?: string | number; 'small', 'medium', 'large' or px default is '500px'
+   * @param options.autoScroll?: boolean set for auto scroll when appear default true
+   * @param options.smoothScroll?: boolean set for smooth scroll default true
+   * @param options.animation?: boolean  set for animation appear and disappear default true
+   */
   addComponent<T>(c: Type<T>, options?: {
-    index?: number;
+    callerRef?: YodaFloatRef<any>;
+    index?: number | 'start' | 'end' | 'onMyLeft' | 'onMyRight';
     size?: string | number;
+    autoScroll?: boolean;
+    smoothScroll?: boolean;
+    animation?: boolean;
   }): YodaFloatRef<T> {
-    const shipComponentRef = this.rootViewContainer.createComponent(this.factory, options ? options.index : undefined);
+    let index;
+    if (options && 'index' in options) {
+      if (options.index === 'start') {
+        index = 0;
+      } else if (options.index === 'end') {
+        index = undefined;
+      } else if (options.index === 'onMyLeft' && options.callerRef) {
+        index = options.callerRef.viewIndex <= 0 ? 0 : options.callerRef.viewIndex - 1;
+      } else if (options.index === 'onMyRight' && options.callerRef) {
+        index = options.callerRef.viewIndex + 1;
+      } else if (typeof options.index === 'number') {
+        index = options.index;
+      }
+    }
+    const shipComponentRef = this.rootViewContainer.createComponent(this.factory, index);
+    shipComponentRef.instance.viewIndex = this.rootViewContainer.indexOf(shipComponentRef.hostView);
     this.refreshSubject.next();
-    const size = options ? options.size : undefined;
-    return shipComponentRef.instance.init(shipComponentRef, c, size) as any as YodaFloatRef<T>;
+    return shipComponentRef.instance.init(shipComponentRef, c, options) as any as YodaFloatRef<T>;
   }
 
   initialized() {

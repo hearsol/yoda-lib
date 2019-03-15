@@ -42,7 +42,6 @@ export class YodaTestComponent implements OnInit {
 
   ngOnInit() {
     this.initMockData();
-    this.initForm();
   }
 
   initMockData() {
@@ -216,10 +215,11 @@ export class YodaTestComponent implements OnInit {
         }
       ],
       buttons: [{
-        label: '취소요청 수락',
+        label: 'Form Test',
         id: 'acceptCancel',
         color: 'danger',
         onClick: _ => {
+          this.initForm();
         },
         onState: _ => this.cancelReq ? 'enabled' : 'hide'
       }
@@ -387,7 +387,10 @@ export class YodaTestComponent implements OnInit {
     console.log('form inited');
     // setTimeout(() => {
     console.log('add form component');
-    this.ref = this.yodaFloatService.addComponent(YodaFormComponent);
+    this.ref = this.yodaFloatService.addComponent(YodaFormComponent, {
+      size: 'm',
+      index: 'end'
+    });
     this.ref.instance.setOptions(this.options);
     // }, 100);
 
