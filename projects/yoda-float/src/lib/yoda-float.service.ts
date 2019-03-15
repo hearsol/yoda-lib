@@ -49,6 +49,10 @@ export class YodaFloatService {
   }): YodaFloatRef<T> {
     let index;
     if (options && 'index' in options) {
+      if (options && options.callerRef && options.callerRef.ref) {
+        // update view index
+        options.callerRef.viewIndex = this.rootViewContainer.indexOf(options.callerRef.ref.hostView);
+      }
       if (options.index === 'start') {
         index = 0;
       } else if (options.index === 'end') {
