@@ -4,6 +4,7 @@ import { Subject, Observable, BehaviorSubject } from 'rxjs';
 @Injectable()
 export abstract class YodaFloatRef<T> {
   abstract instance: T;
+  abstract selfRef: ComponentRef<any>;
   abstract ref: ComponentRef<T>;
   abstract viewIndex: number;
   abstract destroy(): void;
@@ -51,7 +52,7 @@ export class YodaFloatService {
     if (options && 'index' in options) {
       if (options && options.callerRef && options.callerRef.ref) {
         // update view index
-        options.callerRef.viewIndex = this.rootViewContainer.indexOf(options.callerRef.ref.hostView);
+        options.callerRef.viewIndex = this.rootViewContainer.indexOf(options.callerRef.selfRef.hostView);
       }
       if (options.index === 'start') {
         index = 0;

@@ -1,10 +1,11 @@
 import {
   Component, OnInit, ViewChild, ViewContainerRef,
   ComponentFactoryResolver, Type, ComponentRef,
-  AfterViewInit, Input, Renderer2, AfterContentChecked, ChangeDetectorRef, Injector
+  AfterViewInit, Input, Renderer2, AfterContentChecked, ChangeDetectorRef, Injector, ElementRef
 } from '@angular/core';
 import { YodaFloatRef } from '../yoda-float.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -38,7 +39,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
     ])
   ]
 })
-export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentChecked, AfterViewInit, OnInit {
+export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit, OnInit {
   @ViewChild('vc', { read: ViewContainerRef }) vc: ViewContainerRef;
   @Input() c: Type<T>;
   viewIndex: number;
@@ -56,7 +57,8 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
     private fr: ComponentFactoryResolver,
     private renderer2: Renderer2,
     private injector: Injector,
-    private cdf: ChangeDetectorRef
+    private cdf: ChangeDetectorRef,
+    private elementRef: ElementRef,
   ) { }
 
   ngOnInit() {
@@ -93,20 +95,18 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
     if (this.needScroll) {
       setTimeout(() => {
         const option = this.smoothScroll ?
-          { behavior: 'smooth' } : { block: 'start' };
-        this.selfRef.location.nativeElement.scrollIntoView(option);
+          { behavior: 'smooth', inline: 'end' } : { inline: 'end' };
+        const ele = this.renderer2.selectRootElement(this.elementRef, true);
+        ele.nativeElement.scrollIntoView(option);
 
         this.needScroll = false;
         // this.yodaFloatService.scroll('toRight');
-      });
+      }, 10);
     }
   }
 
-  ngAfterContentChecked() {
-
-  }
-
-  setSize(size: string | number) {
+  setSize(options: any) {
+    const size = options ? options.size : undefined;
     let sizeWidth = '500px';
     if (size) {
       if (typeof size === 'string') {
@@ -123,6 +123,14 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
         sizeWidth = `${size}px`;
       }
     }
+    const numSize = Number(sizeWidth.replace(/[^-\d\.]/g, ''));
+    if (options && 'animation' in options) {
+      this.animation = options.animation;
+    } else if (numSize >= 1000) {
+      this.animation = false;
+    }
+    this.flip = this.animation ? 'inactive' : 'active';
+
     this.renderer2.setStyle(this.selfRef.location.nativeElement, 'min-width', sizeWidth);
     this.renderer2.setStyle(this.selfRef.location.nativeElement, 'max-width', sizeWidth);
   }
@@ -142,9 +150,7 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
     smoothScroll?: boolean;
     animation?: boolean;
   }): YodaFloatShipComponent<T> {
-    if (options && 'animation' in options) {
-      this.animation = options.animation;
-    }
+
     if (options && 'autoScroll' in options) {
       this.needScroll = options.autoScroll;
     }
@@ -157,14 +163,13 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterContentC
     this.ref = this.vc.createComponent(factory, undefined, this.makeInjector());
     this.instance = this.ref.instance;
     this.isVisible = false;
-    this.flip = this.animation ? 'inactive' : 'active';
 
     this.renderer2.addClass(selfRef.location.nativeElement, 'layout-item');
     this.renderer2.addClass(this.ref.location.nativeElement, 'unit');
     // this.renderer2.setStyle(selfRef.location.nativeElement, 'position', 'relative');
     // this.renderer2.setStyle(selfRef.location.nativeElement, 'perspective', '800px');
     // this.renderer2.setStyle(selfRef.location.nativeElement, 'z-index', '-1');
-    this.setSize(options ? options.size : undefined);
+    this.setSize(options);
     return this;
   }
 }

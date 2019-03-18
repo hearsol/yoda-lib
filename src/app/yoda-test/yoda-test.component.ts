@@ -29,6 +29,8 @@ export class YodaTestComponent implements OnInit {
   listRef: YodaFloatRef<YodaListComponent>;
   searchText: string;
 
+  formRef: YodaFloatRef<FormTestComponent>;
+
   cancelReq = true;
 
   yodaTableOptions: YodaTableOptions;
@@ -232,8 +234,21 @@ export class YodaTestComponent implements OnInit {
     }
   }
 
+  openForm() {
+    if (this.formRef) {
+      this.closeForm();
+    } else {
+      this.formRef = this.yodaFloatService.addComponent(FormTestComponent);
+    }
+  }
+  closeForm() {
+    if (this.formRef) {
+      this.formRef.destroy();
+      this.formRef = null;
+    }
+  }
   initForm() {
-    this.yodaFloatService.addComponent(FormTestComponent);
+    this.openForm();
   }
 
 }
