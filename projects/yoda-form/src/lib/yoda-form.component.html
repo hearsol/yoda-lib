@@ -22,7 +22,7 @@
             </div>
             <ng-container *ngSwitchCase="'select'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
                 <select class="in-select" [class.error]="f.errors?true: null" [formControlName]="f.name">
                   <ng-container *ngIf="f.asyncOptions; else staticOptionsTemplate">
                     <option *ngFor="let op of f.asyncOptions | async" [value]="op.value">{{op.text}}</option>
@@ -37,7 +37,7 @@
 
             <ng-container *ngSwitchCase="'search-list'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
 
                 <input [id]="f._id" type="text" class="in-branch" [placeholder]="f.placeholder" [formControlName]="f.name + 'search'">
                 <select class="in-branch-multi" multiple size="10" [formControlName]="f.name">
@@ -49,7 +49,7 @@
 
             <ng-container *ngSwitchCase="'date'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
 
                 <div class="input-group" [class.error]="f.errors?true: null">
                   <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" placeholder="yyyy-mm-dd"
@@ -66,7 +66,7 @@
 
             <ng-container *ngSwitchCase="'textarea'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
 
                 <textarea class="in-input" [class.error]="f.errors?true: null" [formControlName]="f.name" [placeholder]="f.placeholder"
                   [required]="f.required ? true: null"></textarea>
@@ -76,7 +76,7 @@
 
             <ng-container *ngSwitchCase="'typeahead'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
                 <div class="input-group" [class.error]="f.errors?true: null">
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
                   <input [id]="f._id" type="text" class="in-input" [formControlName]="f.name" [placeholder]="f.placeholder"
@@ -89,7 +89,7 @@
 
             <ng-container *ngSwitchCase="'decimal'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
                 <div class="input-group" [class.error]="f.errors?true: null">
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
 
@@ -107,7 +107,7 @@
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" class="se-button" [hidden]="f.state==='hide'">
                 <button *ngIf="f.state!=='hide'" [ngClass]="f.class" [attr.disabled]="f.state === 'disabled' ? true: null"
                   (click)="f.onClick(f.name, _d)" class="fo-button">
-                  <span [innerHTML]="f.title | safeHtml"></span>
+                  <span [innerHTML]="getTitle(f) | safeHtml"></span>
                 </button>
               </div>
 
@@ -115,7 +115,7 @@
 
             <ng-container *ngSwitchCase="'file'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
                 <div class="custom-file">
                   <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
                     (change)="_onFileChange(f, $event)" [placeholder]="f.placeholder" [required]="f.required ? true: null">
@@ -129,7 +129,7 @@
 
             <ng-container *ngSwitchCase="'file-multiple'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
                 <div class="custom-file">
                   <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
                     multiple (change)="_onFileChange(f, $event)" [required]="f.required ? true: null">
@@ -144,7 +144,7 @@
 
             <ng-container *ngSwitchDefault>
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
-                <label class="label">{{f.title}}</label>
+                <label class="label">{{getTitle(f)}}</label>
                 <div class="input-group" [class.error]="f.errors?true: null">
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
                   <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" [type]="f.type"

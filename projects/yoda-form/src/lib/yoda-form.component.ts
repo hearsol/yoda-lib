@@ -26,7 +26,7 @@ export interface YodaFormActionButton {
 }
 
 export interface YodaFormField {
-  title?: string;
+  title?: any;
   name?: string;
   value?: any;
   type: YodaFormType;
@@ -72,7 +72,7 @@ export interface YodaFormOptions {
 
 interface FormField {
   _id: string;
-  title: string;
+  title: any;
   name: string;
   value?: any;
   type: YodaFormType;
@@ -259,6 +259,13 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   _isHiddenRow(row: FormRow): boolean {
     return row.columns ? row.columns.every(col => col.state === 'hide') : true;
+  }
+
+  getTitle(f: FormField) {
+    if (f.title && typeof f.title === 'function') {
+      return f.title();
+    }
+    return f.title || '';
   }
 
   protected _findIdByName(name: string) {
