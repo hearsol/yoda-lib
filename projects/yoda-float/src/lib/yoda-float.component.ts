@@ -1,6 +1,6 @@
 import {
   Component, ViewChild, ViewContainerRef, ElementRef,
-  ComponentFactoryResolver, AfterViewInit, Input, ComponentFactory
+  ComponentFactoryResolver, AfterViewInit, Input, ComponentFactory, SimpleChanges, OnChanges
 } from '@angular/core';
 import { YodaFloatService, ScrollTo } from './yoda-float.service';
 import { YodaFloatShipComponent } from './yoda-float-ship/yoda-float-ship.component';
@@ -11,11 +11,13 @@ import { YodaFloatShipComponent } from './yoda-float-ship/yoda-float-ship.compon
   templateUrl: './yoda-float.component.html',
   styleUrls: ['./yoda-float.component.scss']
 })
-export class YodaFloatComponent implements AfterViewInit {
+export class YodaFloatComponent implements AfterViewInit, OnChanges {
+  @Input() width: string;
   @Input() useLocalScroll: boolean;
   @ViewChild('vc', { read: ViewContainerRef }) vc: ViewContainerRef;
   @ViewChild('osScroller') osScroller: ElementRef;
   isInited = false;
+  styleWidth = { width: '100%' };
   factory: ComponentFactory<any>;
   constructor(
     private fr: ComponentFactoryResolver,
@@ -32,6 +34,12 @@ export class YodaFloatComponent implements AfterViewInit {
       this.yodaFloatService.setRootViewContainerRef(this.factory, this.vc);
       this.yodaFloatService.initialized();
       this.isInited = true;
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['width']) {
+      this.styleWidth.width = this.width || '100%';
     }
   }
 
