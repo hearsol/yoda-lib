@@ -15,24 +15,16 @@ import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '
   animations: [
     trigger('flipState', [
       state('active', style({
-        // zIndex: 10,
-        // transform: 'rotateY(0) translateZ(0)'
-        // transform: 'translateX(0)',
-        // position: 'relative',
         width: '100%',
         filter: 'blur(0)',
         transform: 'scale(1)',
         opacity: 1
       })),
       state('inactive', style({
-        // zIndex: -10,
         opacity: 0,
         width: '0',
-        // position: 'relative',
         transform: 'scale(0.5)',
         filter: 'blur(4px)',
-        // transform: 'translateX(-500px)',
-        // transform: 'rotateY(90deg)'
       })),
       transition('active => inactive', animate('100ms ease-out')),
       transition('inactive => active', animate('200ms ease-in'))
@@ -41,6 +33,7 @@ import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '
 })
 export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit, OnInit {
   @ViewChild('vc', { read: ViewContainerRef }) vc: ViewContainerRef;
+  @ViewChild('flip') flipElement: ElementRef;
   @Input() c: Type<T>;
   viewIndex: number;
   needScroll = true;
@@ -67,7 +60,6 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit
 
   destroy() {
     this.flip = 'inactive';
-    // this.renderer2.setStyle(this.selfRef.location.nativeElement, 'z-index', '-1');
     setTimeout(() => {
       if (this.ref) {
         this.ref.destroy();
@@ -87,10 +79,15 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit
         this.cdf.detectChanges();
         setTimeout(() => {
           this.isFlipped = true;
-          // this.renderer2.setStyle(this.selfRef.location.nativeElement, 'perspective', '0');
-          // this.renderer2.setStyle(this.selfRef.location.nativeElement, 'z-index', '1');
+          this.renderer2.setStyle(this.flipElement.nativeElement, 'filter', '');
+          this.renderer2.setStyle(this.flipElement.nativeElement, 'transform', '');
         }, 200);
-      }
+      } else {
+        setTimeout(() => {
+          this.renderer2.setStyle(this.flipElement.nativeElement, 'filter', '');
+          this.renderer2.setStyle(this.flipElement.nativeElement, 'transform', '');
+        });
+    }
     }
     if (this.needScroll) {
       setTimeout(() => {
@@ -100,7 +97,6 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit
         ele.nativeElement.scrollIntoView(option);
 
         this.needScroll = false;
-        // this.yodaFloatService.scroll('toRight');
       }, 10);
     }
   }
@@ -166,9 +162,6 @@ export class YodaFloatShipComponent<T> implements YodaFloatRef<T>, AfterViewInit
 
     this.renderer2.addClass(selfRef.location.nativeElement, 'layout-item');
     this.renderer2.addClass(this.ref.location.nativeElement, 'unit');
-    // this.renderer2.setStyle(selfRef.location.nativeElement, 'position', 'relative');
-    // this.renderer2.setStyle(selfRef.location.nativeElement, 'perspective', '800px');
-    // this.renderer2.setStyle(selfRef.location.nativeElement, 'z-index', '-1');
     this.setSize(options);
     return this;
   }

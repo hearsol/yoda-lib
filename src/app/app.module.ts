@@ -12,6 +12,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormTestComponent } from './form-test/form-test.component';
+import { CommonModule } from '@angular/common';
+import { ChartComponent } from './chart/chart.component';
+
 
 @NgModule({
   declarations: [
@@ -19,9 +22,11 @@ import { FormTestComponent } from './form-test/form-test.component';
     YodaTestComponent,
     YodaFloatTestComponent,
     FormTestComponent,
+    ChartComponent,
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     ReactiveFormsModule,
     NgbModule,
     FontAwesomeModule,

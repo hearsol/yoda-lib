@@ -1,7 +1,9 @@
-import { Component, ViewChild, ViewContainerRef, ElementRef, ComponentFactoryResolver, AfterViewInit, Input } from '@angular/core';
+import {
+  Component, ViewChild, ViewContainerRef, ElementRef,
+  ComponentFactoryResolver, AfterViewInit, Input, ComponentFactory
+} from '@angular/core';
 import { YodaFloatService, ScrollTo } from './yoda-float.service';
 import { YodaFloatShipComponent } from './yoda-float-ship/yoda-float-ship.component';
-import { ComponentFactory } from '@angular/core/src/render3';
 
 @Component({
   // tslint:disable-next-line:component-selector
