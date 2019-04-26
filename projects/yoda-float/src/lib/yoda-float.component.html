@@ -1,4 +1,4 @@
-<div class="work-board" [hidden]="isHide()">
+<div class="work-board" [ngStyle]="styleWidth" [hidden]="isHide()">
   <div class="work" #osScroller>
     <div class="layout-wrap">
       <ng-content></ng-content>
