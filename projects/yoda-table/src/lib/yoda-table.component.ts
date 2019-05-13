@@ -656,6 +656,14 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  getRowClass(row: any, even: boolean) {
+    const cls = row.__yoda_row_class;
+    if (even) {
+      cls['tr-even'] = true;
+    }
+    return cls;
+  }
+
   private updateRowStates(init?: boolean) {
     if (init) {
       this._fielddata.forEach(f => f.checked = false);
