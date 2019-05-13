@@ -1,29 +1,29 @@
 @import "./theme-variables";
-$tbl:#CDD5E4;
-$tbl-line:#dfe8f1;
-$tbl-even:#f9f9f9;
+$tbl: #cdd5e4;
+$tbl-line: #dfe8f1;
+$tbl-even: #f9f9f9;
 /*$tbl-th:#F9FAFE;
 $tbl-th:#D5DBE7;*/
-$tbl-th:#E5E9F1;
-$tbl-th-line:#D5DBE7;
+$tbl-th: #e5e9f1;
+$tbl-th-line: #d5dbe7;
 
-$selected-bg : #A0DDCC;
-$selected-link :#E67E22;
-$selected-text:#21705D;
-$white : #fff;
+$selected-bg: #a0ddcc;
+$selected-link: #e67e22;
+$selected-text: #21705d;
+$white: #fff;
 $disable-bg: #e9ecef;
 $disable-text: #ced4da;
 $disable-btn: #495057;
 /*$text-link : #2ECC71;*/
-$text-link : #3AB980;
-$text-th:#212C39;
-$text-td:#37495F;
+$text-link: #3ab980;
+$text-th: #212c39;
+$text-td: #37495f;
 
-$border:#dfe8f1;
-$hover:#f9f9f9;
-$green-lt:#D7EDDC;
-$red-lt:#FFDFE2;
-$space:#37495F;
+$border: #dfe8f1;
+$hover: #f9f9f9;
+$green-lt: #d7eddc;
+$red-lt: #ffdfe2;
+$space: #37495f;
 
 .data-tbl-wrap {
   width: 100%;
@@ -47,16 +47,16 @@ $space:#37495F;
 .data-tbl thead th,
 .data-tbl tbody td,
 .data-tbl tfoot td {
-  padding: .5rem 1rem .5rem;
+  padding: 0.5rem 1rem 0.5rem;
 }
 
 .data-tbl.tiny thead th {
-  padding: .1rem;
+  padding: 0.1rem;
 }
 
 .data-tbl.tiny tbody td,
 .data-tbl.tiny tfoot td {
-  padding: .2rem .3rem;
+  padding: 0.2rem 0.3rem;
 }
 
 .data-tbl thead th {
@@ -90,10 +90,6 @@ $space:#37495F;
   border-right: none;
 }
 
-.data-tbl tbody tr:nth-child(even) td {
-  background: $tbl-even;
-}
-
 .data-tbl tbody tr:last-of-type td {
   border-bottom: none;
 }
@@ -118,8 +114,15 @@ $space:#37495F;
   color: $text-th;
 }
 
-
 /* type */
+.tr-even td {
+  background: $tbl-even;
+}
+
+.tr-template td {
+  background: $white;
+}
+
 .tr-selected td,
 .data-tbl tr:hover td {
   background: $selected-bg !important;
@@ -164,7 +167,7 @@ $space:#37495F;
 }
 
 .td-no {
-  padding:0!important;
+  padding: 0 !important;
 }
 .td-product {
   display: block;
@@ -190,16 +193,16 @@ $space:#37495F;
 }
 
 .input:focus {
-  background: #FFF8ED;
+  background: #fff8ed;
 }
 
 .check-wrap {
   padding-left: 4px;
-  width:20px;
+  width: 20px;
 }
 
-.radio+label,
-.checkbox+label {
+.radio + label,
+.checkbox + label {
   position: relative;
   display: block;
   cursor: pointer;
@@ -210,48 +213,48 @@ $space:#37495F;
   display: none;
 }
 
-.radio+label:before,
-.checkbox+label:before {
+.radio + label:before,
+.checkbox + label:before {
   position: absolute;
   top: -8px;
   left: 0;
   display: inline-block;
   width: 15px;
   height: 15px;
-  content: '';
+  content: "";
   border: 1px solid $disable-text;
   background: $white;
 }
 
-.radio+label:before {
+.radio + label:before {
   border-radius: 50%;
 }
 
-.checkbox+label:before {
+.checkbox + label:before {
   border-radius: 3px;
 }
 
-.checkbox:checked+label:before {
+.checkbox:checked + label:before {
   border-color: $text-link;
   background: $text-link;
 }
 
-.radio:checked+label:before {
+.radio:checked + label:before {
   border-color: $text-link;
   background: $white;
 }
 
-.radio:checked+label:before,
-.checkbox:checked+label:before {
+.radio:checked + label:before,
+.checkbox:checked + label:before {
   animation-name: none;
 }
 
-.radio:checked+label:after,
-.checkbox:checked+label:after {
+.radio:checked + label:after,
+.checkbox:checked + label:after {
   display: block;
 }
 
-.checkbox+label:after {
+.checkbox + label:after {
   top: -6px;
   left: 6px;
   box-sizing: border-box;
@@ -265,7 +268,7 @@ $space:#37495F;
   border-left: 0;
 }
 
-.radio+label:after {
+.radio + label:after {
   top: -5px;
   left: 3px;
   width: 9px;
@@ -274,16 +277,15 @@ $space:#37495F;
   background: $text-link;
 }
 
-.radio+label:after,
-.checkbox+label:after {
+.radio + label:after,
+.checkbox + label:after {
   position: absolute;
   display: none;
-  content: '';
+  content: "";
 }
 
-
-.radio:checked+label:before,
-.checkbox:checked+label:before {
+.radio:checked + label:before,
+.checkbox:checked + label:before {
   animation-name: none;
 }
 
@@ -307,27 +309,27 @@ $space:#37495F;
   color: $white;
 }
 .i-btn {
-  margin:0;
-  padding:0 3px;
+  margin: 0;
+  padding: 0 3px;
 }
 .check {
-  width:50px!important;
+  width: 50px !important;
 }
 
 .badge {
   display: inline-block;
-  padding: .25rem .4rem;
+  padding: 0.25rem 0.4rem;
   font-size: 75%;
   font-weight: 700;
   line-height: 1;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
 }
 
 .badge-left {
-  color:$white;
+  color: $white;
   background-color: $left;
 }
 
