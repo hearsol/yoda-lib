@@ -2,7 +2,7 @@ import {
   Component, OnInit, OnDestroy, ViewChild,
   ElementRef, NgZone, Renderer, TemplateRef, AfterViewChecked
 } from '@angular/core';
-import { ValidationErrors, Validators, FormGroup, ValidatorFn, FormControl } from '@angular/forms';
+import { ValidationErrors, Validators, FormGroup, ValidatorFn, FormControl, AsyncValidatorFn } from '@angular/forms';
 import { faTimes, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject } from 'rxjs';
@@ -43,6 +43,7 @@ export interface YodaFormField {
   }[]>;
   onTypeahead?: (text: Observable<string>) => Observable<any[]>;
   validators?: ValidatorFn[];
+  asyncValidators?: AsyncValidatorFn[];
   onClick?: (name: string, value?: any) => void;
   onState?: YodaFormActionStateFunc;
   onError?: (name: string, errors: ValidationErrors) => string;
@@ -90,6 +91,7 @@ interface FormField {
   onTypeahead?: (text: Observable<string>) => Observable<any[]>;
   errors?: ValidationErrors | null;
   validators?: ValidatorFn[];
+  asyncValidators?: AsyncValidatorFn[];
   _search?: Observable<any[]>;
   onClick?: (name: string, value?: any) => void;
   onState: YodaFormActionStateFunc;
@@ -307,6 +309,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       onSearchList: field.onSearchList,
       onTypeahead: field.onTypeahead,
       validators: field.validators,
+      asyncValidators: field.asyncValidators,
       onClick: field.onClick,
       onState: field.onState,
       state: field.onState ? field.onState(field.name) : 'enabled',
@@ -346,7 +349,15 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
     let str = '';
     Object.keys(form.errors).forEach(err => {
-      str += `${err} error.. `;
+      if (err === 'required') {
+        str += '필수 입력 입니다.';
+      } else {
+        if (typeof form.errors[err] === 'string') {
+          str += form.errors[err];
+        } else {
+          str += `${err}`;
+        }
+      }
     });
     return str;
   }
@@ -458,7 +469,11 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       if (f.validators && f.validators.length > 0) {
         validators = validators.concat(f.validators);
       }
-      pr[f.name] = new FormControl(value, validators);
+      if (Array.isArray(f.asyncValidators) && f.asyncValidators.length > 0) {
+        pr[f.name] = new FormControl(value, validators, f.asyncValidators);
+      } else {
+        pr[f.name] = new FormControl(value, validators);
+      }
 
       if (f.onValueChanged) {
         this._formSubscribers['ctrl_' + f.name] = pr[f.name].valueChanges.subscribe((data: any) => f.onValueChanged(data));
@@ -481,6 +496,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
     this.form = new FormGroup(this.formControls);
     this._formSubscribers.valueChanges = this.form.valueChanges.subscribe(data => this.onValueChanged(data));
+    this._formSubscribers.statusChanges = this.form.statusChanges.subscribe(data => this.onStatusChanges(data));
     this.onValueChanged();
     if (dirty) {
       setTimeout(() => {
@@ -518,6 +534,21 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.options.onValueChanged) {
       this.options.onValueChanged(this._d);
     }
+  }
+
+  protected onStatusChanges(data?: any) {
+    if (!this.form) { return; }
+    this.formData.forEach(f => {
+      if (f.type !== 'subtitle') {
+        const ctrl = this.formControls[f.name];
+        if (ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched)) {
+          f.errors = ctrl.errors;
+        } else {
+          f.errors = null;
+        }
+      }
+    });
+    this.errors = this.form.errors;
   }
 
   _onFileChange(form: FormField, ev: any) {
