@@ -28,7 +28,8 @@
                     <option *ngFor="let op of f.asyncOptions | async" [value]="op.value">{{op.text}}</option>
                   </ng-container>
                   <ng-template #staticOptionsTemplate>
-                    <option *ngFor="let op of f.options" [value]="op.value">{{op.text}}</option>
+                    <option [disabled]="op.disabled" *ngFor="let op of f.options" [value]="op.value">{{op.text}}
+                    </option>
                   </ng-template>
                 </select>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
@@ -39,9 +40,11 @@
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <label class="label">{{getTitle(f)}}</label>
 
-                <input [id]="f._id" type="text" class="in-branch" [placeholder]="f.placeholder" [formControlName]="f.name + 'search'">
+                <input [id]="f._id" type="text" class="in-branch" [placeholder]="f.placeholder"
+                  [formControlName]="f.name + 'search'">
                 <select class="in-branch-multi" multiple size="10" [formControlName]="f.name">
-                  <option *ngFor="let op of f._search | async" [value]="op.value">{{op.text}}</option>
+                  <option [disabled]="op.disabled" *ngFor="let op of f._search | async" [value]="op.value">{{op.text}}
+                  </option>
                 </select>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
               </div>
@@ -68,8 +71,8 @@
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <label class="label">{{getTitle(f)}}</label>
 
-                <textarea class="in-input" [class.error]="f.errors?true: null" [formControlName]="f.name" [placeholder]="f.placeholder"
-                  [required]="f.required ? true: null"></textarea>
+                <textarea class="in-input" [class.error]="f.errors?true: null" [formControlName]="f.name"
+                  [placeholder]="f.placeholder" [required]="f.required ? true: null"></textarea>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
               </div>
             </ng-container>
@@ -79,8 +82,8 @@
                 <label class="label">{{getTitle(f)}}</label>
                 <div class="input-group" [class.error]="f.errors?true: null">
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
-                  <input [id]="f._id" type="text" class="in-input" [formControlName]="f.name" [placeholder]="f.placeholder"
-                    [ngbTypeahead]="f.onTypeahead" />
+                  <input [id]="f._id" type="text" class="in-input" [formControlName]="f.name"
+                    [placeholder]="f.placeholder" [ngbTypeahead]="f.onTypeahead" />
                   <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
                 </div>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
@@ -94,8 +97,8 @@
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
 
                   <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" type="text"
-                    [formControlName]="f.name" (blur)="transformDecimal(f, $event)" (focus)="toNumeric($event)" (click)="toNumeric($event)"
-                    [placeholder]="f.placeholder" [required]="f.required ? true: null" />
+                    [formControlName]="f.name" (blur)="transformDecimal(f, $event)" (focus)="toNumeric($event)"
+                    (click)="toNumeric($event)" [placeholder]="f.placeholder" [required]="f.required ? true: null" />
                   <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
 
                 </div>
@@ -104,9 +107,11 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="'button'">
-              <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" class="se-button" [hidden]="f.state==='hide'">
-                <button *ngIf="f.state!=='hide'" [ngClass]="f.class" [attr.disabled]="f.state === 'disabled' ? true: null"
-                  (click)="f.onClick(f.name, _d)" class="fo-button">
+              <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" class="se-button"
+                [hidden]="f.state==='hide'">
+                <button *ngIf="f.state!=='hide'" [ngClass]="f.class"
+                  [attr.disabled]="f.state === 'disabled' ? true: null" (click)="f.onClick(f.name, _d)"
+                  class="fo-button">
                   <span [innerHTML]="getTitle(f) | safeHtml"></span>
                 </button>
               </div>
@@ -118,7 +123,8 @@
                 <label class="label">{{getTitle(f)}}</label>
                 <div class="custom-file">
                   <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
-                    (change)="_onFileChange(f, $event)" [placeholder]="f.placeholder" [required]="f.required ? true: null">
+                    (change)="_onFileChange(f, $event)" [placeholder]="f.placeholder"
+                    [required]="f.required ? true: null">
                   <label class="custom-file-label" [for]="f._id">
                     <span *ngIf="f.files">{{f.files.name}}</span>
                   </label>
@@ -142,6 +148,42 @@
               </div>
             </ng-container>
 
+            <ng-container *ngSwitchCase="'checkbox'">
+              <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
+                <div class="input-group" [class.error]="f.errors?true: null">
+                  <label class="label mr-2" [for]="f._id">{{getTitle(f)}}</label>
+                  <input id="{{f._id}}" type="checkbox" formControlName="{{f.name}}">
+                </div>
+                <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'radio'">
+              <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
+                <ng-container *ngFor="let op of f.options; let idx=index;">
+                  <div class="input-group" [class.error]="f.errors?true: null">
+                    <label class="label" for="{{f._id}}-radio-{{idx}}">{{op.text}}</label>
+                    <input name="{{f.name}}" id="{{f._id}}-radio-{{idx}}" type="radio" [attr.disabled]="op.disabled"
+                      [value]="op.value" formControlName="{{f.name}}">
+                  </div>
+                </ng-container>
+                <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'radio-h'">
+              <ng-container *ngFor="let op of f.options; let idx=index;">
+                <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
+                  <div class="input-group" [class.error]="f.errors?true: null">
+                    <label class="label mr-2" for="{{f._id}}-radio-{{idx}}">{{op.text}}</label>
+                    <input name="{{f.name}}" id="{{f._id}}-radio-{{idx}}" type="radio"
+                      [attr.disabled]="op.disabled ? true : null" [value]="op.value" formControlName="{{f.name}}">
+                  </div>
+                </div>
+              </ng-container>
+              <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
+            </ng-container>
+
             <ng-container *ngSwitchDefault>
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <label class="label">{{getTitle(f)}}</label>
@@ -157,16 +199,18 @@
 
             <ng-template #prependTemplate>
               <div class="input-group-prepend">
-                <button class="input-group-text" type="button" *ngIf="f.prependButton.state!=='hide'" [ngClass]="f.prependButton.class"
-                  (click)="f.prependButton.onClick(_d)" [attr.disabled]="f.prependButton.state === 'disabled' ? true: null">
+                <button class="input-group-text" type="button" *ngIf="f.prependButton.state!=='hide'"
+                  [ngClass]="f.prependButton.class" (click)="f.prependButton.onClick(_d)"
+                  [attr.disabled]="f.prependButton.state === 'disabled' ? true: null">
                   <span [innerHTML]="f.prependButton.title | safeHtml"></span>
                 </button>
               </div>
             </ng-template>
             <ng-template #appendTemplate>
               <div class="input-group-append">
-                <button class="input-group-text" type="button" *ngIf="f.appendButton.state!=='hide'" [ngClass]="f.appendButton.class"
-                  (click)="f.appendButton.onClick(_d)" [attr.disabled]="f.appendButton.state === 'disabled' ? true: null">
+                <button class="input-group-text" type="button" *ngIf="f.appendButton.state!=='hide'"
+                  [ngClass]="f.appendButton.class" (click)="f.appendButton.onClick(_d)"
+                  [attr.disabled]="f.appendButton.state === 'disabled' ? true: null">
                   <span [innerHTML]="f.appendButton.title | safeHtml"></span>
                 </button>
               </div>

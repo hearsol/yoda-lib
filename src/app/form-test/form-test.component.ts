@@ -9,7 +9,7 @@ import { Validators } from '@angular/forms';
 @Component({
   selector: 'app-form-test',
   templateUrl: './form-test.component.html',
-  styleUrls: ['./form-test.component.scss']
+  styleUrls: [ './form-test.component.scss' ]
 })
 export class FormTestComponent implements OnInit {
   @ViewChild('testTemplate') testTempRef: TemplateRef<any>;
@@ -19,17 +19,15 @@ export class FormTestComponent implements OnInit {
   num: number;
   imgSrc = 'http://media.pixcove.com/I/5/8/Image-Editing-Textures-Backgrounds-Unleashed-Ebv-W-8490.jpg';
 
-  optionTestSubject = new Subject<{ value: any, text: string }[]>();
+  optionTestSubject = new Subject<{ value: any; text: string }[]>();
   ref: YodaFloatRef<YodaFormComponent>;
   options: YodaFormOptions;
 
-  constructor(
-    private yodaFloatService: YodaFloatService,
-    private yodaFloatRef: YodaFloatRef<any>,
-  ) { }
+  constructor(private yodaFloatService: YodaFloatService, private yodaFloatRef: YodaFloatRef<any>) {}
 
   ngOnInit() {
     this.initForm();
+    this.openForm();
   }
 
   openForm(side?: string) {
@@ -67,11 +65,48 @@ export class FormTestComponent implements OnInit {
         {
           title: '담당자 선택',
           name: '',
-          type: 'subtitle',
+          type: 'subtitle'
         },
         {
           type: 'template',
-          template: this.testTempRef,
+          template: this.testTempRef
+        },
+        {
+          type: 'row',
+          columns: [
+            {
+              title: 'Radio Test',
+              name: 'radiotest',
+              type: 'radio-h',
+              options: [
+                {
+                  value: 'one',
+                  text: '1-One',
+                  disabled: false
+                },
+                {
+                  value: 'two',
+                  text: '2-Two',
+                  disabled: false
+                },
+                {
+                  value: 'three',
+                  text: '3-Three',
+                  disabled: false
+                },
+                {
+                  value: 'disabled',
+                  text: '4-disabled',
+                  disabled: true
+                }
+              ]
+            },
+            {
+              title: 'Checkbox',
+              type: 'checkbox',
+              name: 'checkboxTest'
+            }
+          ]
         },
         {
           type: 'row',
@@ -84,8 +119,12 @@ export class FormTestComponent implements OnInit {
                 text$.pipe(
                   debounceTime(200),
                   distinctUntilChanged(),
-                  map(term => term.length < 2 ? []
-                    : testStates.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+                  map(
+                    (term) =>
+                      term.length < 2
+                        ? []
+                        : testStates.filter((v) => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10)
+                  )
                 ),
               required: true,
               appendButton: {
@@ -101,20 +140,20 @@ export class FormTestComponent implements OnInit {
               name: 'staff.[1]',
               value: new Date('2013-03-01'),
               type: 'date',
-              required: true,
+              required: true
             },
             {
               title: '<i class="far fa-plus"></i> 추가',
               name: 'addButton',
               type: 'button',
               color: 'primary',
-              onClick: () => { }
-            },
+              onClick: () => {}
+            }
           ]
         },
         {
           type: 'template',
-          template: this.imgsTempRef,
+          template: this.imgsTempRef
         },
         {
           type: 'file-multiple',
@@ -146,8 +185,8 @@ export class FormTestComponent implements OnInit {
           appendButton: {
             title: '<i class="fas fa-trash"></i>',
             color: 'danger',
-            onState: _ => this.num > 100000 ? 'enabled' : 'hide',
-            onClick: () => { }
+            onState: (_) => (this.num > 100000 ? 'enabled' : 'hide'),
+            onClick: () => {}
           }
         },
         {
@@ -155,20 +194,20 @@ export class FormTestComponent implements OnInit {
           name: 'addButton',
           type: 'button',
           color: 'success',
-          onClick: () => { },
-          onState: _ => this.num > 100000 ? 'enabled' : 'disabled'
+          onClick: () => {},
+          onState: (_) => (this.num > 100000 ? 'enabled' : 'disabled')
         },
 
         {
           title: '비고',
           name: 'staff.[4]',
           type: 'text',
-          value: 'test',
+          value: 'test'
         },
         {
           title: 'Select 테스트',
           name: '',
-          type: 'subtitle',
+          type: 'subtitle'
         },
         {
           type: 'row',
@@ -178,26 +217,25 @@ export class FormTestComponent implements OnInit {
               name: 'staff.[5]',
               type: 'text',
               required: true,
-              validators: [Validators.minLength(5)],
+              validators: [ Validators.minLength(5) ],
               width: 'col-5'
             },
             {
               title: '입고예정일',
-              'name': 'staff.[2]',
+              name: 'staff.[2]',
               value: new Date('2019-01-01'),
               type: 'date',
-              width: 'col-5',
+              width: 'col-5'
             },
             {
               title: 'test select',
               name: 'staff.[6]',
               type: 'select',
               value: '3',
-              asyncOptions: this.optionTestSubject,
+              asyncOptions: this.optionTestSubject
             }
           ]
-        },
-
+        }
       ],
       onValueChanged: (value) => {
         console.log(value);
@@ -212,7 +250,6 @@ export class FormTestComponent implements OnInit {
     // setTimeout(() => {
 
     // }, 100);
-
   }
 
   subjectTest() {
@@ -241,7 +278,7 @@ export class FormTestComponent implements OnInit {
         {
           value: '5',
           text: 'five'
-        },
+        }
       ]);
     }, 5000);
 
@@ -270,7 +307,7 @@ export class FormTestComponent implements OnInit {
         {
           value: '5',
           text: 'five 5'
-        },
+        }
       ]);
     }, 8000);
   }

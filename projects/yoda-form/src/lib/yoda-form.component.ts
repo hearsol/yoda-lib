@@ -1,6 +1,13 @@
 import {
-  Component, OnInit, OnDestroy, ViewChild,
-  ElementRef, NgZone, Renderer, TemplateRef, AfterViewChecked
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  NgZone,
+  Renderer,
+  TemplateRef,
+  AfterViewChecked
 } from '@angular/core';
 import { ValidationErrors, Validators, FormGroup, ValidatorFn, FormControl, AsyncValidatorFn } from '@angular/forms';
 import { faTimes, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
@@ -12,12 +19,38 @@ import { debounceTime } from 'rxjs/operators';
 export type YodaFormActionState = 'enabled' | 'disabled' | 'hide';
 export type YodaFormActionStateFunc = (name?: string, value?: any) => YodaFormActionState;
 export type YodaFormButtonColor = 'success' | 'info' | 'danger' | 'primary' | 'secondary' | 'warning';
-export type YodaFormWidth = 'col' | 'col-1' | 'col-2' | 'col-3' | 'col-4' | 'col-5' | 'col-6' | 'col-7' |
-  'col-8' | 'col-9' | 'col-10' | 'col-11' | 'col-12';
-export type YodaFormType = 'row' | 'subtitle' | 'template' |
-  'text' | 'textarea' | 'date' | 'number' | 'decimal' | 'typeahead' |
-  'file' | 'file-multiple' |
-  'select' | 'search-list' | 'button';
+export type YodaFormWidth =
+  | 'col'
+  | 'col-1'
+  | 'col-2'
+  | 'col-3'
+  | 'col-4'
+  | 'col-5'
+  | 'col-6'
+  | 'col-7'
+  | 'col-8'
+  | 'col-9'
+  | 'col-10'
+  | 'col-11'
+  | 'col-12';
+export type YodaFormType =
+  | 'row'
+  | 'subtitle'
+  | 'template'
+  | 'text'
+  | 'textarea'
+  | 'date'
+  | 'number'
+  | 'decimal'
+  | 'typeahead'
+  | 'file'
+  | 'file-multiple'
+  | 'checkbox'
+  | 'radio'
+  | 'radio-h'
+  | 'select'
+  | 'search-list'
+  | 'button';
 export interface YodaFormActionButton {
   title: string;
   onState?: YodaFormActionStateFunc;
@@ -34,13 +67,18 @@ export interface YodaFormField {
   options?: {
     value: string;
     text: string;
+    disabled?: boolean;
   }[];
-  asyncOptions?: Observable<{ value: any, text: string }[]>;
+  asyncOptions?: Observable<{ value: any; text: string; disabled?: boolean }[]>;
   placeholder?: string;
-  onSearchList?: (text: Observable<string>) => Observable<{
-    value: any;
-    text: string;
-  }[]>;
+  onSearchList?: (
+    text: Observable<string>
+  ) => Observable<
+    {
+      value: any;
+      text: string;
+    }[]
+  >;
   onTypeahead?: (text: Observable<string>) => Observable<any[]>;
   validators?: ValidatorFn[];
   asyncValidators?: AsyncValidatorFn[];
@@ -70,7 +108,6 @@ export interface YodaFormOptions {
   onValueChanged?: (value: any) => void;
 }
 
-
 interface FormField {
   _id: string;
   title: any;
@@ -81,13 +118,18 @@ interface FormField {
   options?: {
     value: string;
     text: string;
+    disabled?: boolean;
   }[];
-  asyncOptions?: Observable<{ value: any, text: string }[]>;
+  asyncOptions?: Observable<{ value: any; text: string; disabled?: boolean }[]>;
   placeholder?: string;
-  onSearchList?: (text: Observable<string>) => Observable<{
-    value: any;
-    text: string;
-  }[]>;
+  onSearchList?: (
+    text: Observable<string>
+  ) => Observable<
+    {
+      value: any;
+      text: string;
+    }[]
+  >;
   onTypeahead?: (text: Observable<string>) => Observable<any[]>;
   errors?: ValidationErrors | null;
   validators?: ValidatorFn[];
@@ -98,8 +140,20 @@ interface FormField {
   state: YodaFormActionState;
   class: any;
   onValueChanged?: (value: any) => void;
-  width: 'col' | 'col-1' | 'col-2' | 'col-3' | 'col-4' | 'col-5' | 'col-6' | 'col-7'
-  | 'col-8' | 'col-9' | 'col-10' | 'col-11' | 'col-12';
+  width:
+    | 'col'
+    | 'col-1'
+    | 'col-2'
+    | 'col-3'
+    | 'col-4'
+    | 'col-5'
+    | 'col-6'
+    | 'col-7'
+    | 'col-8'
+    | 'col-9'
+    | 'col-10'
+    | 'col-11'
+    | 'col-12';
   colClass: any;
   prependButton: FormActionButton;
   appendButton: FormActionButton;
@@ -127,7 +181,7 @@ interface FormRow {
   // tslint:disable-next-line:component-selector
   selector: 'yoda-form.unit',
   templateUrl: './yoda-form.component.html',
-  styleUrls: ['./yoda-form.component.scss']
+  styleUrls: [ './yoda-form.component.scss' ]
 })
 export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('yodaFormElement') yodaFormElement: ElementRef;
@@ -150,30 +204,25 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   formData: FormField[] = [];
   formRows: FormRow[] = [];
 
-  formControls: { [key: string]: FormControl; };
-  controlValuesChanges: { [key: string]: Observable<any>; };
+  formControls: { [key: string]: FormControl };
+  controlValuesChanges: { [key: string]: Observable<any> };
 
   isFirstBuild = true;
 
-  constructor(
-    private ngZone: NgZone,
-    private renderer: Renderer,
-  ) {
-    this._subscribers.refreshStateSubscription = this._refreshState
-      .pipe(debounceTime(5))
-      .subscribe(_ => {
-        this.formData.forEach(data => {
-          if (data.onState) {
-            data.state = data.onState(data.name, this._d);
-          }
-          if (data.prependButton && data.prependButton.onState) {
-            data.prependButton.state = data.prependButton.onState('', this._d);
-          }
-          if (data.appendButton && data.appendButton.onState) {
-            data.appendButton.state = data.appendButton.onState('', this._d);
-          }
-        });
+  constructor(private ngZone: NgZone, private renderer: Renderer) {
+    this._subscribers.refreshStateSubscription = this._refreshState.pipe(debounceTime(5)).subscribe((_) => {
+      this.formData.forEach((data) => {
+        if (data.onState) {
+          data.state = data.onState(data.name, this._d);
+        }
+        if (data.prependButton && data.prependButton.onState) {
+          data.prependButton.state = data.prependButton.onState('', this._d);
+        }
+        if (data.appendButton && data.appendButton.onState) {
+          data.appendButton.state = data.appendButton.onState('', this._d);
+        }
       });
+    });
   }
 
   ngOnDestroy(): void {
@@ -191,7 +240,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       });
     }
   }
-  ngOnInit() { }
+  ngOnInit() {}
 
   refreshState() {
     this._refreshState.next();
@@ -219,32 +268,35 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.formRows = [];
 
     const val: {
-      formData: FormField[],
-      d: any
-    } = this.options.fields.reduce((p, i, idx) => {
-      const row: FormRow = {
-        rowClass: { 'form-row': true },
-        columns: []
-      };
+      formData: FormField[];
+      d: any;
+    } = this.options.fields.reduce(
+      (p, i, idx) => {
+        const row: FormRow = {
+          rowClass: { 'form-row': true },
+          columns: []
+        };
 
-      if (i.type === 'row') {
-        if (i.columns && Array.isArray(i.columns)) {
-          i.columns.forEach( (c, cIdx) => {
-            const _f = this._buildFormField(c, idx, cIdx);
-            p.formData.push(_f);
-            row.columns.push(_f);
-            this._initFormValue(p.d, c);
-          });
+        if (i.type === 'row') {
+          if (i.columns && Array.isArray(i.columns)) {
+            i.columns.forEach((c, cIdx) => {
+              const _f = this._buildFormField(c, idx, cIdx);
+              p.formData.push(_f);
+              row.columns.push(_f);
+              this._initFormValue(p.d, c);
+            });
+          }
+        } else {
+          const _f = this._buildFormField(i, idx);
+          p.formData.push(_f);
+          row.columns.push(_f);
+          this._initFormValue(p.d, i);
         }
-      } else {
-        const _f = this._buildFormField(i, idx);
-        p.formData.push(_f);
-        row.columns.push(_f);
-        this._initFormValue(p.d, i);
-      }
-      this.formRows.push(row);
-      return p;
-    }, { formData: [], d: {} });
+        this.formRows.push(row);
+        return p;
+      },
+      { formData: [], d: {} }
+    );
     this.formData = val.formData;
     this._d = val.d;
     this.buildForm();
@@ -260,7 +312,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   _isHiddenRow(row: FormRow): boolean {
-    return row.columns ? row.columns.every(col => col.state === 'hide') : true;
+    return row.columns ? row.columns.every((col) => col.state === 'hide') : true;
   }
 
   getTitle(f: FormField) {
@@ -271,7 +323,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   protected _findIdByName(name: string) {
-    const fr = this.formData.find(f => f.name === name);
+    const fr = this.formData.find((f) => f.name === name);
     if (fr) {
       return fr._id;
     }
@@ -321,7 +373,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       appendButton: this._copyActionButton(field.appendButton),
       template: field.template,
       templateContext: field.templateContext,
-      onError: field.onError,
+      onError: field.onError
     };
   }
 
@@ -348,7 +400,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       return form.onError(form.name, form.errors);
     }
     let str = '';
-    Object.keys(form.errors).forEach(err => {
+    Object.keys(form.errors).forEach((err) => {
       if (err === 'required') {
         str += '필수 입력 입니다.';
       } else {
@@ -361,8 +413,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
     });
     return str;
   }
-  _onDblClick(form: FormField, value: any) {
-  }
+  _onDblClick(form: FormField, value: any) {}
 
   protected _getInputGroupActionClass(color: YodaFormButtonColor) {
     const c: any = {};
@@ -395,7 +446,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
           _is = ar[1];
         }
         if (is.length === 1 && value !== undefined) {
-          return obj[_is] = value;
+          return (obj[_is] = value);
         } else {
           if (value !== undefined && obj[_is] === undefined) {
             const sar = regex.exec(is[1]);
@@ -452,6 +503,9 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
       } else {
         switch (f.type) {
+          case 'checkbox':
+            value = false;
+            break;
           case 'text':
             value = '';
             break;
@@ -476,8 +530,26 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       }
 
       if (f.onValueChanged) {
-        this._formSubscribers['ctrl_' + f.name] = pr[f.name].valueChanges.subscribe((data: any) => f.onValueChanged(data));
+        this._formSubscribers['ctrl_' + f.name] = pr[f.name].valueChanges.subscribe((data: any) =>
+          f.onValueChanged(data)
+        );
       }
+      /*
+      if (f.type === 'radio') {
+
+        if (f.options && Array.isArray(f.options)) {
+          f.options.forEach((op, idx) => {
+            const id = `${f.name}-radio-${idx}`;
+            pr[id] = new FormControl(value === op.value);
+            pr[id].valueChanges.subscribe((v: any) => {
+              f.onValueChanged({
+                value: op.value,
+                checked: v
+              });
+            });
+          });
+        }
+      }*/
       if (f.type === 'search-list') {
         pr[f.name + 'search'] = new FormControl(value);
         f._search = f.onSearchList(pr[f.name + 'search'].valueChanges);
@@ -495,8 +567,8 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       dirty = this.form.dirty;
     }
     this.form = new FormGroup(this.formControls);
-    this._formSubscribers.valueChanges = this.form.valueChanges.subscribe(data => this.onValueChanged(data));
-    this._formSubscribers.statusChanges = this.form.statusChanges.subscribe(data => this.onStatusChanges(data));
+    this._formSubscribers.valueChanges = this.form.valueChanges.subscribe((data) => this.onValueChanged(data));
+    this._formSubscribers.statusChanges = this.form.statusChanges.subscribe((data) => this.onStatusChanges(data));
     this.onValueChanged();
     if (dirty) {
       setTimeout(() => {
@@ -506,8 +578,10 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   protected onValueChanged(data?: any) {
-    if (!this.form) { return; }
-    this.formData.forEach(f => {
+    if (!this.form) {
+      return;
+    }
+    this.formData.forEach((f) => {
       if (f.type !== 'subtitle') {
         if (f.type === 'date') {
           if (this.form.value[f.name]) {
@@ -537,8 +611,10 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   protected onStatusChanges(data?: any) {
-    if (!this.form) { return; }
-    this.formData.forEach(f => {
+    if (!this.form) {
+      return;
+    }
+    this.formData.forEach((f) => {
       if (f.type !== 'subtitle') {
         const ctrl = this.formControls[f.name];
         if (ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched)) {
@@ -554,14 +630,10 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   _onFileChange(form: FormField, ev: any) {
     if (this.formControls[form.name] && ev.target.files) {
       if (form.type === 'file-multiple') {
-        this.formControls[form.name].patchValue(
-          ev.target.files
-        );
+        this.formControls[form.name].patchValue(ev.target.files);
         form.files = ev.target.files;
       } else {
-        this.formControls[form.name].patchValue(
-          ev.target.files[0]
-        );
+        this.formControls[form.name].patchValue(ev.target.files[0]);
         form.files = ev.target.files[0];
       }
     }
@@ -583,12 +655,13 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   protected toNgbDate(date: Date): NgbDateStruct {
-    return (date instanceof Date && !isNaN(date.getTime())) ? this._fromNativeDate(date) : null;
+    return date instanceof Date && !isNaN(date.getTime()) ? this._fromNativeDate(date) : null;
   }
 
   protected toDate(date: NgbDateStruct): Date {
-    return date && isInteger(date.year) && isInteger(date.month) && isInteger(date.day) ?
-      this._toNativeDate(date) : null;
+    return date && isInteger(date.year) && isInteger(date.month) && isInteger(date.day)
+      ? this._toNativeDate(date)
+      : null;
   }
 
   protected _fromNativeDate(date: Date): NgbDateStruct {
@@ -603,13 +676,13 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   protected _cleanUpSubscribes() {
-    Object.keys(this._subscribers).forEach(key => {
+    Object.keys(this._subscribers).forEach((key) => {
       this._subscribers[key].unsubscribe();
     });
     this._subscribers = {};
   }
   protected _cleanUpFormSubscribes() {
-    Object.keys(this._formSubscribers).forEach(key => {
+    Object.keys(this._formSubscribers).forEach((key) => {
       this._formSubscribers[key].unsubscribe();
     });
     this._formSubscribers = {};
