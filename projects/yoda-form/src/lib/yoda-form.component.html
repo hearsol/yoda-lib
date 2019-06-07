@@ -151,8 +151,8 @@
             <ng-container *ngSwitchCase="'checkbox'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <div class="input-group" [class.error]="f.errors?true: null">
-                  <label class="label mr-2" [for]="f._id">{{getTitle(f)}}</label>
-                  <input id="{{f._id}}" type="checkbox" formControlName="{{f.name}}">
+                  <input class="mr-2" id="{{f._id}}" type="checkbox" formControlName="{{f.name}}">
+                  <label class="label" [for]="f._id">{{getTitle(f)}}</label>
                 </div>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
               </div>
@@ -162,9 +162,9 @@
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <ng-container *ngFor="let op of f.options; let idx=index;">
                   <div class="input-group" [class.error]="f.errors?true: null">
-                    <label class="label" for="{{f._id}}-radio-{{idx}}">{{op.text}}</label>
                     <input name="{{f.name}}" id="{{f._id}}-radio-{{idx}}" type="radio" [attr.disabled]="op.disabled"
                       [value]="op.value" formControlName="{{f.name}}">
+                    <label class="label" for="{{f._id}}-radio-{{idx}}">{{op.text}}</label>
                   </div>
                 </ng-container>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
@@ -175,9 +175,9 @@
               <ng-container *ngFor="let op of f.options; let idx=index;">
                 <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                   <div class="input-group" [class.error]="f.errors?true: null">
-                    <label class="label mr-2" for="{{f._id}}-radio-{{idx}}">{{op.text}}</label>
-                    <input name="{{f.name}}" id="{{f._id}}-radio-{{idx}}" type="radio"
+                    <input class="mr-2" name="{{f.name}}" id="{{f._id}}-radio-{{idx}}" type="radio"
                       [attr.disabled]="op.disabled ? true : null" [value]="op.value" formControlName="{{f.name}}">
+                    <label class="label" for="{{f._id}}-radio-{{idx}}">{{op.text}}</label>
                   </div>
                 </div>
               </ng-container>
