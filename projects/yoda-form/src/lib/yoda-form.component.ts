@@ -174,6 +174,8 @@ interface FormActionButton {
 
 interface FormRow {
   rowClass: any;
+  onState: YodaFormActionStateFunc;
+  state: YodaFormActionState;
   columns: FormField[];
 }
 
@@ -220,6 +222,11 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
         if (data.appendButton && data.appendButton.onState) {
           data.appendButton.state = data.appendButton.onState('', this._d);
+        }
+      });
+      this.formRows.forEach((row, idx) => {
+        if (row.onState) {
+          row.state = row.onState('row');
         }
       });
     });
@@ -274,6 +281,8 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       (p, i, idx) => {
         const row: FormRow = {
           rowClass: { 'form-row': true },
+          onState: i.onState,
+          state: i.onState ? i.onState('row') : 'enabled',
           columns: []
         };
 
@@ -312,7 +321,7 @@ export class YodaFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   _isHiddenRow(row: FormRow): boolean {
-    return row.columns ? row.columns.every((col) => col.state === 'hide') : true;
+    return row.state === 'hide' ||  (row.columns ? row.columns.every((col) => col.state === 'hide') : true);
   }
 
   getTitle(f: FormField) {

@@ -72,7 +72,7 @@
                         <button [ngClass]="row.__yoda_action_class[action.id]"
                           [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true"
                           (click)="onAction($event, action, row)">
-                          <span [innerHTML]="action.label | safeHtml"></span>
+                          <span [innerHTML]="getActionLabel(action, field.name, row) | safeHtml"></span>
                         </button>
                       </ng-container>
                       <ng-container *ngSwitchCase="'checkbox'">
@@ -88,7 +88,7 @@
                           <input class="radio" type="radio" [id]="action.id" (change)="onAction($event, action, row)"
                             [(ngModel)]="row.__yoda_action_checked"
                             [attr.disabled]="row.__yoda_action_state[action.id] !== 'disabled' ? null : true">
-                          <label><span [innerHTML]="action.label | safeHtml"></span></label>
+                          <label><span [innerHTML]="getActionLabel(action, field.name, row) | safeHtml"></span></label>
                         </div>
                       </ng-container>
                     </ng-container>

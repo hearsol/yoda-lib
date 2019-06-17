@@ -12,9 +12,11 @@ type AOA = Array<Array<any>>;
 export type YodaTableActionState = 'enabled' | 'disabled' | 'hide';
 export type YodaTableRowState = 'enabled' | 'completed' | 'selected' | 'disabled' | 'canceled';
 export type YodaTableActionStateFunc = (id: string, dataRow: any, rowInfo?: YodaTableRowInfo) => YodaTableActionState;
+
+type YodaTableActionLabelFunc = (value: any, row?: any) => string;
 export interface YodaTableAction {
   type: 'button' | 'checkbox' | 'radio';
-  label?: string;
+  label?: string | YodaTableActionLabelFunc;
   id: string;
   class?: any;
   color?: 'success' | 'info' | 'danger' | 'primary' | 'secondary' | 'warning';
@@ -356,6 +358,12 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  getActionLabel(action: YodaTableAction, fieldName: string, row: any): string {
+    if (action.label && typeof action.label === 'function') {
+      return action.label(this.indexObject(row, fieldName), row);
+    }
+    return action.label as string;
+  }
   refreshFields(fields: YodaTableField[], fieldGroups?: YodaTableFieldGroup[]) {
     this._actionStateList = [];
     this._fielddata = fields.map(f => {
