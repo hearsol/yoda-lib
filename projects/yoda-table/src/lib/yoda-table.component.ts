@@ -526,16 +526,22 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   indexObject(obj: any, is: any): any {
+    const regex = /\[(.*?)\]/;
     if (obj) {
       if (typeof is === 'string') {
         return this.indexObject(obj, is.split('.'));
-      } else if (is.length === 0) {
-        return obj;
       } else {
-        return this.indexObject(obj[is[0]], is.slice(1));
+        if (!is || is.length === 0) {
+          return obj;
+        }
+
+        const ar = regex.exec(is[0]);
+        let _is = is[0];
+        if (ar && ar.length > 0) {
+          _is = ar[1];
+        }
+        return this.indexObject(obj[_is], is.slice(1));
       }
-    } else {
-      return '';
     }
   }
 

@@ -41,7 +41,7 @@
                 <label class="label">{{getTitle(f)}}</label>
 
                 <input [id]="f._id" type="text" class="in-branch" [placeholder]="f.placeholder"
-                  [formControlName]="f.name + 'search'">
+                  [attr.disabled]="f.state === 'disabled' ? true: null" [formControlName]="f.name + 'search'">
                 <select class="in-branch-multi" multiple size="10" [formControlName]="f.name">
                   <option [disabled]="op.disabled" *ngFor="let op of f._search | async" [value]="op.value">{{op.text}}
                   </option>
@@ -72,7 +72,8 @@
                 <label class="label">{{getTitle(f)}}</label>
 
                 <textarea class="in-input" [class.error]="f.errors?true: null" [formControlName]="f.name"
-                  [placeholder]="f.placeholder" [required]="f.required ? true: null"></textarea>
+                  [attr.disabled]="f.state === 'disabled' ? true: null" [placeholder]="f.placeholder"
+                  [required]="f.required ? true: null"></textarea>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
               </div>
             </ng-container>
@@ -83,7 +84,8 @@
                 <div class="input-group" [class.error]="f.errors?true: null">
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
                   <input [id]="f._id" type="text" class="in-input" [formControlName]="f.name"
-                    [placeholder]="f.placeholder" [ngbTypeahead]="f.onTypeahead" />
+                    [attr.disabled]="f.state === 'disabled' ? true: null" [placeholder]="f.placeholder"
+                    [ngbTypeahead]="f.onTypeahead" />
                   <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
                 </div>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
@@ -97,8 +99,9 @@
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
 
                   <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" type="text"
-                    [formControlName]="f.name" (blur)="transformDecimal(f, $event)" (focus)="toNumeric($event)"
-                    (click)="toNumeric($event)" [placeholder]="f.placeholder" [required]="f.required ? true: null" />
+                    [attr.disabled]="f.state === 'disabled' ? true: null" [formControlName]="f.name"
+                    (blur)="transformDecimal(f, $event)" (focus)="toNumeric($event)" (click)="toNumeric($event)"
+                    [placeholder]="f.placeholder" [required]="f.required ? true: null" />
                   <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
 
                 </div>
@@ -122,7 +125,8 @@
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <label class="label">{{getTitle(f)}}</label>
                 <div class="custom-file">
-                  <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
+                  <input type="file" class="custom-file-input in-input" [id]="f._id"
+                    [attr.disabled]="f.state === 'disabled' ? true: null" [class.error]="f.errors?true: null"
                     (change)="_onFileChange(f, $event)" [placeholder]="f.placeholder"
                     [required]="f.required ? true: null">
                   <label class="custom-file-label" [for]="f._id">
@@ -137,8 +141,9 @@
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <label class="label">{{getTitle(f)}}</label>
                 <div class="custom-file">
-                  <input type="file" class="custom-file-input in-input" [id]="f._id" [class.error]="f.errors?true: null"
-                    multiple (change)="_onFileChange(f, $event)" [required]="f.required ? true: null">
+                  <input type="file" class="custom-file-input in-input" [id]="f._id"
+                    [attr.disabled]="f.state === 'disabled' ? true: null" [class.error]="f.errors?true: null" multiple
+                    (change)="_onFileChange(f, $event)" [required]="f.required ? true: null">
                   <label class="custom-file-label" [for]="f._id">
                     <span *ngIf="f.files">{{f.files.length}}개의 파일</span>
                     <span *ngIf="!f.files">{{f.placeholder}}</span>
@@ -151,7 +156,8 @@
             <ng-container *ngSwitchCase="'checkbox'">
               <div [ngClass]="f.colClass" [class.error]="f.errors?true: null" [hidden]="f.state==='hide'">
                 <div class="input-group" [class.error]="f.errors?true: null">
-                  <input class="mr-2" id="{{f._id}}" type="checkbox" formControlName="{{f.name}}">
+                  <input class="mr-2" id="{{f._id}}" type="checkbox"
+                    [attr.disabled]="f.state === 'disabled' ? true: null" formControlName="{{f.name}}">
                   <label class="label" [for]="f._id">{{getTitle(f)}}</label>
                 </div>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
@@ -190,7 +196,8 @@
                 <div class="input-group" [class.error]="f.errors?true: null">
                   <ng-container *ngIf="f.prependButton; then prependTemplate"></ng-container>
                   <input [id]="f._id" class="in-input" [class.error]="f.errors?true: null" [type]="f.type"
-                    [formControlName]="f.name" [placeholder]="f.placeholder" [required]="f.required ? true: null" />
+                    [attr.disabled]="f.state === 'disabled' ? true: null" [formControlName]="f.name"
+                    [placeholder]="f.placeholder" [required]="f.required ? true: null" />
                   <ng-container *ngIf="f.appendButton; then appendTemplate"></ng-container>
                 </div>
                 <div *ngIf="f.errors" class="error-feedback">{{_getErrorMsg(f)}}</div>
@@ -223,6 +230,6 @@
 </div>
 <div class="unit-footer" *ngIf="form">
   <button class="button blc primary" (click)="_onSave()" [disabled]="form.pristine||form.invalid">
-    <span>{{options.saveButtonText || '저장'}}</span>
+    <span>{{options.saveButtonText || '장'}}</span>
   </button>
 </div>

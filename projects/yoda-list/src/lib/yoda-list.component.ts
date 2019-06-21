@@ -222,6 +222,7 @@ export class YodaListComponent implements AfterViewInit, OnDestroy, OnInit {
       if (this.options.filters) {
         this.filters = this._getListFilters(this.options.filters);
       }
+      this._template = this.options.template ? this.options.template() : null;
     }
   }
 
