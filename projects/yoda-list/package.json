@@ -6,7 +6,7 @@
     "@angular/common": "^7.1.0",
     "@angular/core": "^7.1.0",
     "rxjs": "^6.3.3",
-    "@hsolpkg/yoda-table": "^0.1.18"
+    "@hsolpkg/yoda-table": "^0.1.41"
   },
   "dependencies": {
     "@fortawesome/angular-fontawesome": "^0.3.0",

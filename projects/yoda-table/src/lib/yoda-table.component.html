@@ -56,12 +56,7 @@
                 </ng-container>
               </ng-container>
               <ng-template #elseNoTemplate>
-                <ng-container *ngIf="field.formatter; else elseTemplate">
-                  <span [innerHTML]="field.formatter(indexObject(row, field.name), row) | safeHtml"></span>
-                </ng-container>
-                <ng-template #elseTemplate>
-                  <span [innerHTML]="indexObject(row, field.name) | safeHtml"></span>
-                </ng-template>
+                <span [innerHTML]="getField(row, field) | safeHtml"></span>
               </ng-template>
 
               <ng-container *ngIf="field.actions">
