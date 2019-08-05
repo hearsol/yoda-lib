@@ -35,20 +35,26 @@ button.info {
   color: $white;
 }
 
+button:disabled,
+button[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
 .spin-center {
   position: absolute;
-  padding:20px;
+  padding: 20px;
   border-radius: 10px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%);
 }
 
 .spin-title {
   display: inline;
   position: relative;
 }
-
 
 @keyframes lds-spinner {
   0% {
@@ -68,7 +74,7 @@ button.info {
 }
 .lds-spinner {
   position: relative;
-  margin-top:5px;
+  margin-top: 5px;
 }
 .lds-spinner div {
   left: 94px;

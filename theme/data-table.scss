@@ -118,9 +118,9 @@ $space: #37495f;
 .tr-even td {
   background: $tbl-even;
 }
-
+.tr-template:hover td,
 .tr-template td {
-  background: $white;
+  background: $white !important;
 }
 
 .tr-selected td,

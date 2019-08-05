@@ -49,8 +49,8 @@
         <tr [ngClass]="getRowClass(row, even)" (click)="onSelectRow($event, row)">
           <ng-container *ngFor="let field of _fielddata; let idx = index;">
             <td [ngClass]="field.class">
-
-              <ng-container *ngIf="row.__yoda_field_template[idx]?.template; else elseNoTemplate">
+              <ng-container
+                *ngIf="row.__yoda_field_template&&row.__yoda_field_template[idx]?.template; else elseNoTemplate">
                 <ng-container
                   *ngTemplateOutlet="row.__yoda_field_template[idx].template; context:row.__yoda_field_template[idx].templateContext">
                 </ng-container>
