@@ -1,6 +1,6 @@
 {
   "name": "@hsolpkg/yoda-table",
-  "version": "0.1.47",
+  "version": "0.1.49",
   "repository": "https://github.com/hearsol/yoda-lib",
   "peerDependencies": {
     "@angular/common": "^7.1.0",

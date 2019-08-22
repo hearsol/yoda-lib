@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges, TemplateRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Observable, of, concat, Subject, merge } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { Observable, of, concat, Subject, merge, BehaviorSubject } from 'rxjs';
+import { debounceTime, takeUntil, finalize } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 
 import * as momentImported from 'moment';
@@ -833,13 +833,29 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
   }
-
   exportExcel(prefix: string, exportOpt?: {
     fields?: YodaTableField[],
     additonalRow?: (rowData: any, isLast: boolean) => any[],
     postProcess?: (ws: XLSX.WorkSheet) => XLSX.WorkSheet,
     data?: any[]
   }) {
+    this.exportExcel$(prefix, exportOpt).subscribe(_ => { });
+  }
+
+  exportExcel$(prefix: string, exportOpt?: {
+    fields?: YodaTableField[],
+    additonalRow?: (rowData: any, isLast: boolean) => any[],
+    postProcess?: (ws: XLSX.WorkSheet) => XLSX.WorkSheet,
+    data?: any[]
+  }): Observable<{
+    isBusy: boolean;
+    error?: any;
+    progress?: {
+      total: number;
+      current: number;
+    };
+    msg?: string;
+  }> {
     let data: AOA = [[]];
     let _fields = this.options.fields;
     if (exportOpt && exportOpt.fields) {
@@ -880,6 +896,15 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
         length -= size;
       }
     }
+    const isBusy$ = new BehaviorSubject<{
+      isBusy: boolean;
+      error?: any;
+      progress?: {
+        total: number;
+        current: number;
+      };
+      msg?: string;
+    }>({ isBusy: true });
 
     let count = 0;
     observList.subscribe(res => {
@@ -911,7 +936,15 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       }
+      isBusy$.next({
+        isBusy: false,
+        progress: {
+          total: totalSize,
+          current: count
+        }
+      });
     }, err => {
+      isBusy$.next({ isBusy: false, error: err });
       throw Error(err);
     }, () => {
       let ws = XLSX.utils.aoa_to_sheet(data);
@@ -919,7 +952,16 @@ export class YodaTableComponent implements OnInit, OnChanges, OnDestroy {
         ws = exportOpt.postProcess(ws);
       }
       this._saveExcelFile(prefix, ws);
+      isBusy$.next({
+        isBusy: false,
+        progress: {
+          total: totalSize,
+          current: count
+        },
+        msg: 'complete'
+      });
     });
+    return isBusy$;
   }
 
   private s2ab(s: string): ArrayBuffer {
