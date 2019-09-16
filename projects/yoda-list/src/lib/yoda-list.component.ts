@@ -67,6 +67,7 @@ export interface YodaListOptions {
   title: string;
   tableOptions: YodaTableOptions;
   pageSize?: number;
+  paginationSize?: number;
   disableExport?: boolean;
   exportFilePrefix?: string;
   onSearch?: (text: string) => void;
@@ -96,6 +97,7 @@ export class YodaListComponent implements AfterViewInit, OnDestroy, OnInit {
   pageChange: Subject<{ page?: number, pageSize?: number }> = new Subject();
   currentPage = 1;
   pageSize = 10;
+  paginationSize = 5;
   totalSize: number;
 
   searchText: string;
@@ -205,6 +207,10 @@ export class YodaListComponent implements AfterViewInit, OnDestroy, OnInit {
       if (this.options.pageSize || this.tableOptions.pageSize) {
         this.pageSize = this.options.pageSize || this.tableOptions.pageSize;
       }
+      if ('paginationSize' in this.options && this.options.paginationSize > 0) {
+        this.paginationSize = this.options.paginationSize;
+      }
+
       this.tableOptions.asyncPaging = (pageNum: number, pageSize: number, sortInfo: YodaTableSortInfo[]) => {
         this.isLoading = true;
         return this.tableAsyncFunc(pageNum, pageSize, sortInfo).pipe(

@@ -1,16 +1,12 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone, TemplateRef, AfterViewChecked, Renderer2 } from '@angular/core';
-import { ValidationErrors, Validators, FormGroup, ValidatorFn, FormControl, AsyncValidatorFn } from '@angular/forms';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subject } from 'rxjs';
-import { isInteger } from 'lodash';
-import { debounceTime } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
 import { YodaFormOptions, YodaFormControlComponent } from './yoda-form-control.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'yoda-form.unit',
   templateUrl: './yoda-form.component.html',
-  styleUrls: [ './yoda-form.component.scss' ]
+  styleUrls: ['./yoda-form.component.scss']
 })
 export class YodaFormComponent implements OnInit {
   @ViewChild('yodaForm') yodaForm: YodaFormControlComponent;
@@ -21,7 +17,7 @@ export class YodaFormComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   refreshState() {
     this.refresh$.next('refresh');
@@ -45,6 +41,10 @@ export class YodaFormComponent implements OnInit {
 
   setOptions(options: YodaFormOptions): void {
     this.options = options;
+  }
+
+  getFormGroup() {
+    return this.yodaForm.form;
   }
 
   _getDisabled() {

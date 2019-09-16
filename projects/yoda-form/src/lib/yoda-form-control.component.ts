@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone, TemplateRef, AfterViewChecked, Renderer2, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, TemplateRef, Renderer2, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ValidationErrors, Validators, FormGroup, ValidatorFn, FormControl, AsyncValidatorFn } from '@angular/forms';
-import { faTimes, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject } from 'rxjs';
 import { isInteger } from 'lodash';
@@ -135,14 +134,12 @@ interface FormRow {
   // tslint:disable-next-line:component-selector
   selector: 'yoda-form-control',
   templateUrl: './yoda-form-control.component.html',
-  styleUrls: [ './yoda-form-control.component.scss' ]
+  styleUrls: ['./yoda-form-control.component.scss']
 })
 export class YodaFormControlComponent implements OnInit, OnDestroy, OnChanges {
   @Input() options: YodaFormOptions;
   @Input() reload: Observable<string>;
   @Input() refresh: Observable<string>;
-
-  closeIcon = faTimes;
 
   data: any;
   _d: any;
@@ -187,7 +184,7 @@ export class YodaFormControlComponent implements OnInit, OnDestroy, OnChanges {
     this._cleanUpFormSubscribes();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['reload']) {
@@ -293,7 +290,7 @@ export class YodaFormControlComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   _isHiddenRow(row: FormRow): boolean {
-    return row.state === 'hide' ||  (row.columns ? row.columns.every((col) => col.state === 'hide') : true);
+    return row.state === 'hide' || (row.columns ? row.columns.every((col) => col.state === 'hide') : true);
   }
 
   getTitle(f: FormField) {
@@ -394,7 +391,7 @@ export class YodaFormControlComponent implements OnInit, OnDestroy, OnChanges {
     });
     return str;
   }
-  _onDblClick(form: FormField, value: any) {}
+  _onDblClick(form: FormField, value: any) { }
 
   protected _getInputGroupActionClass(color: YodaFormButtonColor) {
     const c: any = {};
@@ -553,7 +550,7 @@ export class YodaFormControlComponent implements OnInit, OnDestroy, OnChanges {
     this.onValueChanged();
     if (dirty) {
       setTimeout(() => {
-        this.form.markAsDirty();
+        Object.values(this.formControls).forEach(control => control.markAsDirty());
       });
     }
   }
