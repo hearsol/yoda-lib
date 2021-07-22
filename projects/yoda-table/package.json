@@ -13,7 +13,7 @@
     "bootstrap": "^4.2.1",
     "file-saver": "^2.0.0",
     "moment": "^2.23.0",
-    "xlsx": "^0.14.1"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {},
   "author": "coded by sparkjd & designed by jadegreen, HSOL inc. <spark@hsol.io>",
