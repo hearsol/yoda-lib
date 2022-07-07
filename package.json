@@ -50,7 +50,7 @@
     "bootstrap": "^4.3.1",
     "core-js": "^2.5.4",
     "file-saver": "^2.0.0",
-    "moment": "^2.23.0",
+    "moment": "^2.29.4",
     "npm-bump": "0.0.25",
     "rxjs": "^6.3.3",
     "tslib": "^1.9.0",
